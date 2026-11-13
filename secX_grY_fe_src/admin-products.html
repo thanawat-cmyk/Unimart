@@ -264,12 +264,13 @@
 
                     <div class="modal-form-group modal-form-full">
                         <label>Product Image</label>
-                        <div class="modal-upload-zone" id="add-upload-zone" role="button" tabindex="0" title="คลิกเพื่อเลือกไฟล์รูปภาพ หรือลากรูปมาวางที่นี่">
-                            <img src="assets/images/icon-upload.png" alt="Upload Icon">
-                            <p style="margin: 0; font-weight: 600; color: #3b82f6;">Click to upload or drag &amp; drop</p>
-                            <small style="color: #64748b;">PNG, JPG, GIF or WebP (Recommend 600x600 px, max 10MB)</small>
-                            <input type="file" id="add-prod-image" accept="image/*" style="display: none;">
-                        </div>
+                        <label for="add-prod-image" class="modal-upload-zone" id="add-upload-zone" title="คลิกเพื่อเลือกไฟล์รูปภาพ หรือลากรูปมาวางที่นี่">
+                            <img src="assets/images/icon-upload.png" alt="Upload Icon" style="pointer-events: none;">
+                            <p style="margin: 0; font-weight: 600; color: #3b82f6; pointer-events: none;">Click to upload or drag &amp; drop</p>
+                            <span style="display: inline-flex; align-items: center; gap: 6px; background: #2563eb; color: #ffffff; padding: 8px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; margin: 4px 0; cursor: pointer; pointer-events: none;">📁 เลือกไฟล์รูปภาพ (Browse File)</span>
+                            <small style="color: #64748b; pointer-events: none;">PNG, JPG, GIF or WebP (Recommend 600x600 px, max 10MB)</small>
+                            <input type="file" id="add-prod-image" accept="image/*" onchange="window.handleImageInput(this, 'add')" style="position: absolute; opacity: 0; width: 0.1px; height: 0.1px; pointer-events: none;">
+                        </label>
                         <div id="add-image-preview-wrap" class="modal-image-preview-card" style="display: none;">
                             <img id="add-image-preview" src="" alt="Product Preview" class="modal-image-preview-thumb">
                             <div class="modal-image-preview-info">
@@ -349,12 +350,13 @@
 
                     <div class="modal-form-group modal-form-full">
                         <label>Product Image</label>
-                        <div class="modal-upload-zone" id="edit-upload-zone" role="button" tabindex="0" title="คลิกเพื่อเปลี่ยนรูปภาพ หรือลากรูปใหม่มาวางที่นี่">
-                            <img src="assets/images/icon-upload.png" alt="Upload Icon">
-                            <p style="margin: 0; font-weight: 600; color: #3b82f6;">Click to change image or drag &amp; drop</p>
-                            <small style="color: #64748b;">PNG, JPG, GIF or WebP (Recommend 600x600 px, max 10MB)</small>
-                            <input type="file" id="edit-prod-image" accept="image/*" style="display: none;">
-                        </div>
+                        <label for="edit-prod-image" class="modal-upload-zone" id="edit-upload-zone" title="คลิกเพื่อเปลี่ยนรูปภาพ หรือลากรูปใหม่มาวางที่นี่">
+                            <img src="assets/images/icon-upload.png" alt="Upload Icon" style="pointer-events: none;">
+                            <p style="margin: 0; font-weight: 600; color: #3b82f6; pointer-events: none;">Click to change image or drag &amp; drop</p>
+                            <span style="display: inline-flex; align-items: center; gap: 6px; background: #2563eb; color: #ffffff; padding: 8px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; margin: 4px 0; cursor: pointer; pointer-events: none;">📁 เลือกไฟล์รูปภาพใหม่ (Browse File)</span>
+                            <small style="color: #64748b; pointer-events: none;">PNG, JPG, GIF or WebP (Recommend 600x600 px, max 10MB)</small>
+                            <input type="file" id="edit-prod-image" accept="image/*" onchange="window.handleImageInput(this, 'edit')" style="position: absolute; opacity: 0; width: 0.1px; height: 0.1px; pointer-events: none;">
+                        </label>
                         <div id="edit-image-preview-wrap" class="modal-image-preview-card" style="display: none;">
                             <img id="edit-image-preview" src="" alt="Product Preview" class="modal-image-preview-thumb">
                             <div class="modal-image-preview-info">
@@ -513,43 +515,65 @@
         }
 
         /**
-         * ฟังก์ชันช่วยติดตั้งระบบ Drag & Drop และการเลือกรูปภาพพร้อมแปลงเป็น Base64
+         * ตัวประมวลผลไฟล์รูปภาพส่วนกลาง (Global Image Handler)
+         * แปลงไฟล์เป็น Base64 Data URL แสดงภาพพรีวิวทันที และเก็บค่าไว้ส่งไปพร้อมข้อมูลสินค้า
          */
-        function setupImageUploader({
-            zoneId,
-            inputId,
-            wrapId,
-            imgId,
-            nameId,
-            metaId,
-            removeBtnId,
-            onImageLoaded,
-            onImageCleared
-        }) {
+        window.handleImageInput = function(inputEl, mode) {
+            if (!inputEl || !inputEl.files || inputEl.files.length === 0) return;
+            processImageFile(inputEl.files[0], mode);
+        };
+
+        function processImageFile(file, mode) {
+            if (!file.type.startsWith('image/')) {
+                alert('⚠️ กรุณาเลือกไฟล์ที่เป็นรูปภาพเท่านั้น (เช่น PNG, JPG, WebP, GIF)');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('⚠️ ขนาดไฟล์รูปภาพเกิน 10MB กรุณาเลือกรูปภาพที่มีขนาดเล็กลง');
+                return;
+            }
+
+            const prefix = mode === 'edit' ? 'edit' : 'add';
+            const img = document.getElementById(`${prefix}-image-preview`);
+            const nameEl = document.getElementById(`${prefix}-image-name`);
+            const metaEl = document.getElementById(`${prefix}-image-meta`);
+            const wrap = document.getElementById(`${prefix}-image-preview-wrap`);
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64Url = e.target.result;
+                if (img) img.src = base64Url;
+                if (nameEl) nameEl.textContent = file.name;
+                if (metaEl) {
+                    const sizeKb = (file.size / 1024).toFixed(1);
+                    metaEl.textContent = `${sizeKb} KB • ${file.type.replace('image/', '').toUpperCase()}`;
+                }
+                if (wrap) wrap.style.display = 'flex';
+
+                if (mode === 'edit') {
+                    editProductImageBase64 = base64Url;
+                } else {
+                    addProductImageBase64 = base64Url;
+                }
+            };
+            reader.onerror = () => {
+                alert('เกิดข้อผิดพลาดในการอ่านไฟล์รูปภาพ');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /**
+         * ฟังก์ชันช่วยติดตั้งระบบ Drag & Drop และปุ่มลบพรีวิว
+         */
+        function setupImageUploader({ zoneId, inputId, wrapId, imgId, removeBtnId, mode }) {
             const zone = document.getElementById(zoneId);
             const input = document.getElementById(inputId);
             const wrap = document.getElementById(wrapId);
             const img = document.getElementById(imgId);
-            const nameEl = document.getElementById(nameId);
-            const metaEl = document.getElementById(metaId);
             const removeBtn = document.getElementById(removeBtnId);
 
             if (!zone || !input) return;
-
-            // เมื่อคลิกที่โซนอัปโหลด ให้กระตุ้น input file
-            zone.addEventListener('click', (e) => {
-                if (e.target !== input) {
-                    input.click();
-                }
-            });
-
-            // รองรับปุ่ม Enter / Space สำหรับ Accessibility
-            zone.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    input.click();
-                }
-            });
 
             // Drag and Drop Visual Feedback
             ['dragenter', 'dragover'].forEach(eventName => {
@@ -568,59 +592,30 @@
                 });
             });
 
-            // เมื่อปล่อยไฟล์ที่ Drag มา
+            // เมื่อปล่อยไฟล์ที่ Drag มาลงในกล่อง
             zone.addEventListener('drop', (e) => {
                 if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                    processFile(e.dataTransfer.files[0]);
+                    processImageFile(e.dataTransfer.files[0], mode);
                 }
             });
 
-            // เมื่อผู้ใช้เลือกไฟล์ผ่านปุ่มเรียกดู
-            input.addEventListener('change', () => {
-                if (input.files && input.files.length > 0) {
-                    processFile(input.files[0]);
-                }
-            });
-
-            function processFile(file) {
-                if (!file.type.startsWith('image/')) {
-                    alert('⚠️ กรุณาเลือกไฟล์ที่เป็นรูปภาพเท่านั้น (เช่น PNG, JPG, WebP, GIF)');
-                    return;
-                }
-
-                if (file.size > 10 * 1024 * 1024) {
-                    alert('⚠️ ขนาดไฟล์รูปภาพเกิน 10MB กรุณาเลือกรูปภาพที่มีขนาดเล็กลง');
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const base64Url = e.target.result;
-                    if (img) img.src = base64Url;
-                    if (nameEl) nameEl.textContent = file.name;
-                    if (metaEl) {
-                        const sizeKb = (file.size / 1024).toFixed(1);
-                        metaEl.textContent = `${sizeKb} KB • ${file.type.replace('image/', '').toUpperCase()}`;
-                    }
-                    if (wrap) wrap.style.display = 'flex';
-                    if (typeof onImageLoaded === 'function') {
-                        onImageLoaded(base64Url, file);
-                    }
-                };
-                reader.onerror = () => {
-                    alert('เกิดข้อผิดพลาดในการโหลดไฟล์รูปภาพ');
-                };
-                reader.readAsDataURL(file);
-            }
-
+            // ปุ่มลบ/รีเซ็ตรูปภาพพรีวิว
             if (removeBtn) {
                 removeBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    e.preventDefault();
                     input.value = '';
-                    if (img) img.src = '';
-                    if (wrap) wrap.style.display = 'none';
-                    if (typeof onImageCleared === 'function') {
-                        onImageCleared();
+                    if (mode === 'edit') {
+                        editProductImageBase64 = 'assets/images/product-freedom.png';
+                        if (img) img.src = editProductImageBase64;
+                        const nameEl = document.getElementById('edit-image-name');
+                        if (nameEl) nameEl.textContent = 'Default Gunpla Model';
+                        const metaEl = document.getElementById('edit-image-meta');
+                        if (metaEl) metaEl.textContent = 'Default Image';
+                    } else {
+                        addProductImageBase64 = '';
+                        if (img) img.src = '';
+                        if (wrap) wrap.style.display = 'none';
                     }
                 });
             }
@@ -638,15 +633,8 @@
                 inputId: 'add-prod-image',
                 wrapId: 'add-image-preview-wrap',
                 imgId: 'add-image-preview',
-                nameId: 'add-image-name',
-                metaId: 'add-image-meta',
                 removeBtnId: 'btn-remove-add-image',
-                onImageLoaded: (base64) => {
-                    addProductImageBase64 = base64;
-                },
-                onImageCleared: () => {
-                    addProductImageBase64 = '';
-                }
+                mode: 'add'
             });
 
             // ติดตั้ง Image Uploader สำหรับ Modal แก้ไขสินค้า
@@ -655,23 +643,8 @@
                 inputId: 'edit-prod-image',
                 wrapId: 'edit-image-preview-wrap',
                 imgId: 'edit-image-preview',
-                nameId: 'edit-image-name',
-                metaId: 'edit-image-meta',
                 removeBtnId: 'btn-remove-edit-image',
-                onImageLoaded: (base64) => {
-                    editProductImageBase64 = base64;
-                },
-                onImageCleared: () => {
-                    editProductImageBase64 = 'assets/images/product-freedom.png';
-                    const editImg = document.getElementById('edit-image-preview');
-                    if (editImg) editImg.src = editProductImageBase64;
-                    const wrap = document.getElementById('edit-image-preview-wrap');
-                    if (wrap) wrap.style.display = 'flex';
-                    const nameEl = document.getElementById('edit-image-name');
-                    if (nameEl) nameEl.textContent = 'Default Gunpla Model';
-                    const metaEl = document.getElementById('edit-image-meta');
-                    if (metaEl) metaEl.textContent = 'Default Image';
-                }
+                mode: 'edit'
             });
 
             // Add Modal Trigger
@@ -702,12 +675,27 @@
             // Add Product Web Service Submit (POST /api/products)
             addForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const name = document.getElementById('add-prod-name').value.trim();
+                const price = Number(document.getElementById('add-prod-price').value);
+                const stock = Number(document.getElementById('add-prod-stock').value);
+
+                if (!name) {
+                    alert('⚠️ กรุณาระบุชื่อสินค้า (Product Name)');
+                    document.getElementById('add-prod-name').focus();
+                    return;
+                }
+                if (isNaN(price) || price < 0) {
+                    alert('⚠️ กรุณาระบุราคาสินค้าที่ถูกต้อง');
+                    document.getElementById('add-prod-price').focus();
+                    return;
+                }
+
                 const newProduct = {
-                    name: document.getElementById('add-prod-name').value.trim(),
+                    name: name,
                     grade: document.getElementById('add-prod-grade').value,
                     category: document.getElementById('add-prod-category').value,
-                    price: Number(document.getElementById('add-prod-price').value),
-                    stock: Number(document.getElementById('add-prod-stock').value),
+                    price: price,
+                    stock: isNaN(stock) ? 0 : stock,
                     status: document.getElementById('add-prod-status').value,
                     series: 'Universal Century',
                     scale: '1/100',
@@ -715,16 +703,26 @@
                     description: document.getElementById('add-prod-desc').value.trim()
                 };
 
+                const saveBtn = addForm.querySelector('.btn-modal-save');
+                if (saveBtn) {
+                    saveBtn.disabled = true;
+                    saveBtn.textContent = 'SAVING...';
+                }
+
                 try {
                     const res = await UnimartAPI.createProduct(newProduct);
                     alert(`✅ เพิ่มสินค้า "${newProduct.name}" สำเร็จเรียบร้อยแล้ว!`);
                     await reloadProducts();
+                    addModal.classList.remove('open');
+                    addModal.setAttribute('aria-hidden', 'true');
                 } catch (err) {
                     alert(`เกิดข้อผิดพลาดในการเพิ่มสินค้า: ${err.message}`);
+                } finally {
+                    if (saveBtn) {
+                        saveBtn.disabled = false;
+                        saveBtn.textContent = 'SAVE';
+                    }
                 }
-
-                addModal.classList.remove('open');
-                addModal.setAttribute('aria-hidden', 'true');
             });
 
             // Edit Modal Cancel
@@ -748,16 +746,26 @@
                     description: document.getElementById('edit-prod-desc').value.trim()
                 };
 
+                const saveBtn = document.getElementById('edit-product-form').querySelector('.btn-modal-save');
+                if (saveBtn) {
+                    saveBtn.disabled = true;
+                    saveBtn.textContent = 'SAVING...';
+                }
+
                 try {
                     await UnimartAPI.updateProduct(id, updatedData);
                     alert(`✅ บันทึกการแก้ไขสินค้า ID #${id} สำเร็จ!`);
                     await reloadProducts();
+                    editModal.classList.remove('open');
+                    editModal.setAttribute('aria-hidden', 'true');
                 } catch (err) {
                     alert(`เกิดข้อผิดพลาดในการแก้ไขสินค้า: ${err.message}`);
+                } finally {
+                    if (saveBtn) {
+                        saveBtn.disabled = false;
+                        saveBtn.textContent = 'SAVE CHANGES';
+                    }
                 }
-
-                editModal.classList.remove('open');
-                editModal.setAttribute('aria-hidden', 'true');
             });
 
             // Delete Modal Handlers (DELETE /api/products/:id)
