@@ -471,3 +471,54 @@ const UnimartAPI = {
 if (typeof window !== 'undefined') {
   window.UnimartAPI = UnimartAPI;
 }
+
+/**
+ * ฟังก์ชันปรับปรุงแถบเมนูนำทาง (Navbar) อัตโนมัติ:
+ * ตรวจสอบสิทธิ์ผู้ใช้จาก localStorage และแยกการแสดงผลระหว่าง Admin และ Customer
+ */
+function updateNavbarAuth() {
+  const currentUser = UnimartAPI.getCurrentUser();
+  const navActions = document.querySelector('.nav-actions');
+  if (!navActions) return;
+
+  if (currentUser) {
+    const isCustomer = currentUser.role === 'Customer';
+    const roleBadge = isCustomer ? '👤 Customer' : '🛡️ Admin';
+    const badgeColor = isCustomer ? '#2563eb' : '#0d1117';
+    const roleLink = isCustomer ? 'profile.html' : 'admin-products.html';
+    const roleLabel = isCustomer ? 'My Profile' : 'Admin Panel';
+
+    navActions.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="font-size: 0.78rem; font-weight: 700; background: ${badgeColor}; color: #ffffff; padding: 4px 10px; border-radius: 6px;">
+          ${roleBadge}: ${currentUser.username}
+        </span>
+        <a href="${roleLink}" class="btn-primary" style="padding: 7px 14px; font-size: 0.85rem;" title="${roleLabel}">
+          ${roleLabel}
+        </a>
+        <button type="button" id="btn-global-logout" class="btn-secondary" style="padding: 7px 12px; font-size: 0.85rem; cursor: pointer;" title="ออกจากระบบ">
+          Sign out
+        </button>
+      </div>
+    `;
+
+    const logoutBtn = document.getElementById('btn-global-logout');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm('คุณต้องการออกจากระบบ (Sign out) ใช่หรือไม่?')) {
+          UnimartAPI.logout();
+        }
+      });
+    }
+  }
+}
+
+// อัปเดตเมนูอัตโนมัติเมื่อหน้าเว็บโหลดเสร็จ
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateNavbarAuth);
+  } else {
+    updateNavbarAuth();
+  }
+}
