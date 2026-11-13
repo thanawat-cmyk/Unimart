@@ -65,10 +65,16 @@
             <!-- Header Row with Page Title and Add Product Button -->
             <header class="admin-header-row">
                 <h1 class="admin-page-title">Product Management</h1>
-                <button type="button" id="btn-open-add-modal" class="btn-add-primary">
-                    <span>➕</span>
-                    <span>ADD PRODUCT</span>
-                </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button type="button" id="btn-open-quick-restock" class="btn-restock-primary" style="display: inline-flex; align-items: center; gap: 8px; background: #10b981; color: #ffffff; border: none; padding: 12px 22px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.25);" title="เติมสต็อกสินค้าที่หมดหรือเหลือน้อย">
+                        <span>📦</span>
+                        <span>RESTOCK</span>
+                    </button>
+                    <button type="button" id="btn-open-add-modal" class="btn-add-primary">
+                        <span>➕</span>
+                        <span>ADD PRODUCT</span>
+                    </button>
+                </div>
             </header>
 
             <!-- Search & Filter Card -->
@@ -114,7 +120,7 @@
                             <th scope="col" style="width: 120px;">Price</th>
                             <th scope="col" style="width: 90px;">Stock</th>
                             <th scope="col" style="width: 130px;">Status</th>
-                            <th scope="col" style="width: 120px; text-align: center;">Action</th>
+                            <th scope="col" style="width: 160px; text-align: center;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="admin-product-tbody">
@@ -131,7 +137,10 @@
                             <td>15 ชิ้น</td>
                             <td><span class="badge-status instock">In Stock</span></td>
                             <td>
-                                <div class="admin-actions-cell" style="justify-content: center;">
+                                <div class="admin-actions-cell" style="justify-content: center; gap: 6px;">
+                                    <button class="btn-action-icon restock" title="เติมสต็อกสินค้า (Restock)" onclick="openRestockModal(1)">
+                                        <img src="assets/images/icon-package.png" alt="Restock">
+                                    </button>
                                     <button class="btn-action-icon edit" title="แก้ไขสินค้า" onclick="openEditModal(1)">
                                         <img src="assets/images/icon-edit.png" alt="Edit">
                                     </button>
@@ -153,7 +162,10 @@
                             <td>8 ชิ้น</td>
                             <td><span class="badge-status instock">In Stock</span></td>
                             <td>
-                                <div class="admin-actions-cell" style="justify-content: center;">
+                                <div class="admin-actions-cell" style="justify-content: center; gap: 6px;">
+                                    <button class="btn-action-icon restock" title="เติมสต็อกสินค้า (Restock)" onclick="openRestockModal(2)">
+                                        <img src="assets/images/icon-package.png" alt="Restock">
+                                    </button>
                                     <button class="btn-action-icon edit" title="แก้ไขสินค้า" onclick="openEditModal(2)">
                                         <img src="assets/images/icon-edit.png" alt="Edit">
                                     </button>
@@ -175,7 +187,10 @@
                             <td>3 ชิ้น</td>
                             <td><span class="badge-status lowstock">Low Stock</span></td>
                             <td>
-                                <div class="admin-actions-cell" style="justify-content: center;">
+                                <div class="admin-actions-cell" style="justify-content: center; gap: 6px;">
+                                    <button class="btn-action-icon restock" title="เติมสต็อกสินค้า (Restock)" onclick="openRestockModal(3)">
+                                        <img src="assets/images/icon-package.png" alt="Restock">
+                                    </button>
                                     <button class="btn-action-icon edit" title="แก้ไขสินค้า" onclick="openEditModal(3)">
                                         <img src="assets/images/icon-edit.png" alt="Edit">
                                     </button>
@@ -401,6 +416,60 @@
         </article>
     </div>
 
+    <!-- =====================================================================
+         Modal 4: Restock Product Modal (Figma & Store Operations)
+         ===================================================================== -->
+    <div id="restock-product-modal" class="admin-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="restock-modal-title">
+        <article class="admin-modal-card" style="max-width: 520px;">
+            <h2 id="restock-modal-title" class="modal-header-title" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <span>📦</span>
+                <span>Restock Product (เติมสต็อกสินค้า)</span>
+            </h2>
+
+            <!-- Product Summary Card -->
+            <div style="display: flex; gap: 16px; align-items: center; background: #f8fafc; padding: 14px 16px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                <img id="restock-prod-thumb" src="assets/images/product-freedom.png" alt="Product Thumbnail" style="width: 70px; height: 70px; object-fit: contain; background: #ffffff; border-radius: 8px; border: 1px solid #cbd5e1; padding: 4px;">
+                <div style="flex: 1; overflow: hidden;">
+                    <h3 id="restock-prod-name" style="margin: 0 0 4px; font-size: 1.05rem; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Product Name</h3>
+                    <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 4px;" id="restock-prod-meta">Grade: MG • Price: ฿1,750</div>
+                    <div style="font-size: 0.9rem; font-weight: 600; color: #334155;">
+                        คงเหลือปัจจุบัน: <span id="restock-current-stock" style="color: #2563eb; font-size: 1.15rem; font-weight: 800;">0</span> ชิ้น
+                    </div>
+                </div>
+            </div>
+
+            <form id="restock-product-form">
+                <input type="hidden" id="restock-prod-id">
+
+                <div class="modal-form-group">
+                    <label for="restock-add-qty" style="font-weight: 700; color: #1e293b;">จำนวนชิ้นที่ต้องการเติมเข้าสต็อก (Add Quantity) *</label>
+                    <input type="number" id="restock-add-qty" class="modal-input" min="1" step="1" value="10" required style="font-size: 1.3rem; font-weight: 800; text-align: center; height: 52px; color: #0f172a;">
+                </div>
+
+                <!-- Quick Presets -->
+                <div style="display: flex; gap: 8px; margin: 12px 0 18px;">
+                    <button type="button" class="btn-restock-preset" onclick="setRestockQty(5)" style="flex: 1; padding: 9px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 700; cursor: pointer; color: #1e293b; transition: all 0.15s;">+5</button>
+                    <button type="button" class="btn-restock-preset" onclick="setRestockQty(10)" style="flex: 1; padding: 9px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 700; cursor: pointer; color: #1e293b; transition: all 0.15s;">+10</button>
+                    <button type="button" class="btn-restock-preset" onclick="setRestockQty(20)" style="flex: 1; padding: 9px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 700; cursor: pointer; color: #1e293b; transition: all 0.15s;">+20</button>
+                    <button type="button" class="btn-restock-preset" onclick="setRestockQty(50)" style="flex: 1; padding: 9px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 700; cursor: pointer; color: #1e293b; transition: all 0.15s;">+50</button>
+                </div>
+
+                <!-- Live Summary Preview -->
+                <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #065f46; font-size: 0.95rem; font-weight: 600;">สต็อกใหม่หลังเติม:</span>
+                    <strong id="restock-new-total" style="color: #059669; font-size: 1.2rem;">0 ชิ้น (In Stock)</strong>
+                </div>
+
+                <footer class="modal-actions-row">
+                    <button type="button" class="btn-modal-cancel" id="btn-cancel-restock">Cancel</button>
+                    <button type="submit" class="btn-modal-save" style="background-color: #10b981;">
+                        CONFIRM RESTOCK
+                    </button>
+                </footer>
+            </form>
+        </article>
+    </div>
+
     <!-- Shared Product Dataset & Admin Operations Script with Web Services Integration -->
     <script src="js/products.js"></script>
     <script src="js/api.js"></script>
@@ -471,7 +540,10 @@
                         <td>${p.stock} ชิ้น</td>
                         <td><span class="badge-status ${statusClass}">${statusText}</span></td>
                         <td>
-                            <div class="admin-actions-cell" style="justify-content: center;">
+                            <div class="admin-actions-cell" style="justify-content: center; gap: 6px;">
+                                <button type="button" class="btn-action-icon restock" title="เติมสต็อกสินค้า (Restock)" onclick="openRestockModal(${p.id})">
+                                    <img src="assets/images/icon-package.png" alt="Restock">
+                                </button>
                                 <button type="button" class="btn-action-icon edit" title="แก้ไขสินค้า" onclick="openEditModal(${p.id})">
                                     <img src="assets/images/icon-edit.png" alt="Edit">
                                 </button>
@@ -791,8 +863,84 @@
                 }
             });
 
+            // Restock Modal Trigger & Handlers (PUT /api/products/:id)
+            const restockModal = document.getElementById('restock-product-modal');
+            const cancelRestockBtn = document.getElementById('btn-cancel-restock');
+            const restockForm = document.getElementById('restock-product-form');
+            const restockQtyInput = document.getElementById('restock-add-qty');
+
+            if (cancelRestockBtn) {
+                cancelRestockBtn.addEventListener('click', () => {
+                    restockModal.classList.remove('open');
+                    restockModal.setAttribute('aria-hidden', 'true');
+                });
+            }
+
+            if (restockQtyInput) {
+                restockQtyInput.addEventListener('input', updateRestockTotalDisplay);
+            }
+
+            if (restockForm) {
+                restockForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const id = Number(document.getElementById('restock-prod-id').value);
+                    const addQty = Number(document.getElementById('restock-add-qty').value);
+                    const product = adminProducts.find(p => p.id === id);
+                    if (!product) return;
+
+                    if (isNaN(addQty) || addQty <= 0) {
+                        alert('⚠️ กรุณาระบุจำนวนสินค้าที่ต้องการเติมอย่างน้อย 1 ชิ้น');
+                        return;
+                    }
+
+                    const currentStock = Number(product.stock) || 0;
+                    const newStock = currentStock + addQty;
+                    const newStatus = newStock > 5 ? 'In Stock' : 'Low Stock';
+
+                    const submitBtn = restockForm.querySelector('.btn-modal-save');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'RESTOCKING...';
+                    }
+
+                    try {
+                        await UnimartAPI.updateProduct(id, {
+                            stock: newStock,
+                            status: newStatus
+                        });
+                        alert(`✅ เติมสต็อกสินค้า "${product.name}" สำเร็จ!\n📦 สต็อกเดิม: ${currentStock} ชิ้น\n➕ เติมเพิ่ม: ${addQty} ชิ้น\n🎉 สต็อกใหม่: ${newStock} ชิ้น (${newStatus})`);
+                        await reloadProducts();
+                        restockModal.classList.remove('open');
+                        restockModal.setAttribute('aria-hidden', 'true');
+                    } catch (err) {
+                        alert(`เกิดข้อผิดพลาดในการเติมสต็อก: ${err.message}`);
+                    } finally {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'CONFIRM RESTOCK';
+                        }
+                    }
+                });
+            }
+
+            // ปุ่ม RESTOCK บน Header: เติมสต็อกสินค้าที่หมดหรือเหลือน้อยอย่างรวดเร็ว
+            const quickRestockHeaderBtn = document.getElementById('btn-open-quick-restock');
+            if (quickRestockHeaderBtn) {
+                quickRestockHeaderBtn.addEventListener('click', () => {
+                    const priorityItem = adminProducts.find(p => Number(p.stock) <= 0) || 
+                                         adminProducts.find(p => Number(p.stock) <= 5) || 
+                                         adminProducts[0];
+                    if (priorityItem) {
+                        openRestockModal(priorityItem.id);
+                    } else {
+                        alert('ขณะนี้สินค้าทุกชิ้นมีสต็อกเพียงพอแล้ว');
+                    }
+                });
+            }
+
             // Close modals when clicking overlay outside card
-            [addModal, editModal, deleteModal].forEach(modal => {
+            [addModal, editModal, deleteModal, restockModal].forEach(modal => {
+                if (!modal) return;
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         modal.classList.remove('open');
@@ -800,6 +948,48 @@
                     }
                 });
             });
+        }
+
+        // ตัวแปรเก็บสินค้าที่กำลังเปิดเติมสต็อก
+        let activeRestockProduct = null;
+
+        window.openRestockModal = function(id) {
+            const product = adminProducts.find(p => p.id === id);
+            if (!product) return;
+            activeRestockProduct = product;
+
+            document.getElementById('restock-prod-id').value = product.id;
+            document.getElementById('restock-prod-name').textContent = product.name;
+            document.getElementById('restock-prod-meta').textContent = `${product.grade || 'Gunpla'} • ฿${Number(product.price).toLocaleString()} • ${product.series || ''}`;
+            document.getElementById('restock-current-stock').textContent = product.stock;
+            
+            const thumb = document.getElementById('restock-prod-thumb');
+            thumb.src = product.image_url || product.image || 'assets/images/product-freedom.png';
+            thumb.onerror = () => { thumb.src = 'assets/images/detail-gunpla-main.png'; };
+
+            document.getElementById('restock-add-qty').value = 10;
+            updateRestockTotalDisplay();
+
+            const restockModal = document.getElementById('restock-product-modal');
+            restockModal.classList.add('open');
+            restockModal.setAttribute('aria-hidden', 'false');
+        };
+
+        window.setRestockQty = function(qty) {
+            document.getElementById('restock-add-qty').value = qty;
+            updateRestockTotalDisplay();
+        };
+
+        function updateRestockTotalDisplay() {
+            if (!activeRestockProduct) return;
+            const currentStock = Number(activeRestockProduct.stock) || 0;
+            const addQty = Number(document.getElementById('restock-add-qty').value) || 0;
+            const total = currentStock + addQty;
+            const status = total > 5 ? 'In Stock' : total > 0 ? 'Low Stock' : 'Out of Stock';
+            const totalDisplay = document.getElementById('restock-new-total');
+            if (totalDisplay) {
+                totalDisplay.textContent = `${total} ชิ้น (${status})`;
+            }
         }
 
         // Global functions called from inline onclick buttons

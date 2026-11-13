@@ -2906,6 +2906,17 @@ footer {
     transform: scale(1.05);
 }
 
+.btn-action-icon.restock {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.btn-action-icon.restock:hover {
+    background-color: #dcfce7;
+    border-color: #10b981;
+    transform: scale(1.08);
+}
+
 .btn-action-icon.delete:hover {
     background-color: #fef2f2;
     border-color: #ef4444;
