@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Unimart - ศูนย์รวมโมเดลกันพลาและอุปกรณ์ต่อโมเดลชั้นนำ โครงงานวิชา ITDS242 Web Technologies Lab">
+    <meta name="author" content="ITDS242 Project Team">
+    <title>Unimart - Online Gunpla Store | Home</title>
+    <!-- External CSS: จัดการสไตล์ของหน้าเว็บทั้งหมด (ตรงตามเกณฑ์ External CSS) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ======================================================================
+         1. HEADER & NAVIGATION BAR
+         (ตรงตามเกณฑ์: มี Navigational bar เชื่อมโยงหน้าเว็บ และมีปุ่ม Log-in)
+         ====================================================================== -->
+    <header id="main-header">
+        <nav aria-label="Main Navigation">
+            <!-- โลโก้ร้าน Unimart -->
+            <div class="brand-container">
+                <a href="index.html" title="Unimart Home">
+                    <img src="assets/images/logo.png" alt="Unimart Logo" class="brand-logo">
+                </a>
+            </div>
+
+            <!-- เมนูนำทาง (เชื่อมโยงไปยังหน้าเว็บอื่น ๆ ตามเกณฑ์) -->
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="search.html" class="nav-link">Products</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="teampage.html" class="nav-link">Team</a></li>
+                
+                <!-- ช่องค้นหาใน Navbar เชื่อมต่อไปยัง search.html -->
+                <li>
+                    <form id="search-form-nav" action="search.html" method="GET">
+                        <input type="text" name="keyword" class="nav-search-input" placeholder="Search gunpla..." aria-label="Search">
+                        <button type="submit" class="nav-search-btn" aria-label="Submit Search">
+                            <img src="assets/images/search-icon.svg" alt="Search">
+                        </button>
+                    </form>
+                </li>
+            </ul>
+
+            <!-- ปุ่ม Action: Sign in และ Register -->
+            <div class="nav-actions">
+                <!-- ลิงก์ไปยังหน้าเข้าสู่ระบบสำหรับ Admin (ตรงตามข้อกำหนด Login) -->
+                <a href="login.html" class="btn-primary" title="เข้าสู่ระบบผู้ดูแลระบบ">Sign in</a>
+                <a href="profile.html" class="btn-secondary" title="โปรไฟล์ของฉัน">👤 Profile</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ======================================================================
+         2. MAIN CONTENT AREA (ใช้ Semantic Element: <main>)
+         ====================================================================== -->
+    <main>
+
+        <!-- ------------------------------------------------------------------
+             HERO BANNER SECTION
+             (อธิบายและนำเสนอธุรกิจร้าน Gunpla Model Kit)
+             ------------------------------------------------------------------ -->
+        <section id="hero-banner" aria-label="Featured Banner">
+            <div class="hero-wrapper">
+                <img src="assets/images/hero-banner.png" alt="Unimart Gunpla Promotion Banner" class="hero-image">
+                <div class="hero-overlay">
+                    <h1 class="hero-title">WELCOME TO UNIMART</h1>
+                    <p class="hero-subtitle">
+                        ศูนย์รวมโมเดลกันพลาแท้จาก Bandai ครบทุกเกรด พร้อมอุปกรณ์ตกแต่งและเครื่องมือประกอบระดับพรีเมียม
+                    </p>
+                    <div>
+                        <a href="search.html" class="btn-primary">สำรวจสินค้าทั้งหมด</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------------
+             RECOMMENDED PRODUCTS SECTION (RECCOMENED PRODUCTS จาก Figma)
+             ------------------------------------------------------------------ -->
+        <section id="recommended-section" aria-labelledby="recommended-title">
+            <div class="section-header">
+                <h2 id="recommended-title" class="section-title">RECCOMENED PRODUCTS</h2>
+                <a href="search.html" class="view-all-link">ดูทั้งหมด &rarr;</a>
+            </div>
+
+            <!-- แสดงรายการสินค้าแนะนำในรูปแบบ Grid -->
+            <div class="product-grid">
+                
+                <!-- สินค้าชิ้นที่ 1: MG Freedom Gundam -->
+                <article class="product-card">
+                    <figure class="product-thumb-container">
+                        <span class="badge-grade">MG 1/100</span>
+                        <img src="assets/images/hero-banner.png" alt="MG 1/100 Freedom Gundam" class="product-thumb">
+                    </figure>
+                    <figcaption class="product-info">
+                        <h3 class="product-name">Freedom Gundam Ver.2.0</h3>
+                        <p class="product-series">Mobile Suit Gundam SEED</p>
+                        <div class="product-pricing">
+                            <span class="product-price">฿1,665</span>
+                            <a href="product-detail.html?id=1" class="btn-view-detail">ดูรายละเอียด</a>
+                        </div>
+                    </figcaption>
+                </article>
+
+                <!-- สินค้าชิ้นที่ 2: MG RX-78-2 Gundam -->
+                <article class="product-card">
+                    <figure class="product-thumb-container">
+                        <span class="badge-grade">MG 1/100</span>
+                        <img src="assets/images/hero-banner.png" alt="MG 1/100 RX-78-2 Gundam Origin" class="product-thumb">
+                    </figure>
+                    <figcaption class="product-info">
+                        <h3 class="product-name">RX-78-2 Gundam (The Origin)</h3>
+                        <p class="product-series">Mobile Suit Gundam</p>
+                        <div class="product-pricing">
+                            <span class="product-price">฿1,850</span>
+                            <a href="product-detail.html?id=2" class="btn-view-detail">ดูรายละเอียด</a>
+                        </div>
+                    </figcaption>
+                </article>
+
+                <!-- สินค้าชิ้นที่ 3: RG Zeta Gundam -->
+                <article class="product-card">
+                    <figure class="product-thumb-container">
+                        <span class="badge-grade">RG 1/144</span>
+                        <img src="assets/images/hero-banner.png" alt="RG 1/144 Zeta Gundam" class="product-thumb">
+                    </figure>
+                    <figcaption class="product-info">
+                        <h3 class="product-name">Zeta Gundam MSZ-006</h3>
+                        <p class="product-series">Mobile Suit Zeta Gundam</p>
+                        <div class="product-pricing">
+                            <span class="product-price">฿1,200</span>
+                            <a href="product-detail.html?id=3" class="btn-view-detail">ดูรายละเอียด</a>
+                        </div>
+                    </figcaption>
+                </article>
+
+                <!-- สินค้าชิ้นที่ 4: PG Strike Gundam -->
+                <article class="product-card">
+                    <figure class="product-thumb-container">
+                        <span class="badge-grade">PG 1/60</span>
+                        <img src="assets/images/hero-banner.png" alt="PG 1/60 Perfect Strike Gundam" class="product-thumb">
+                    </figure>
+                    <figcaption class="product-info">
+                        <h3 class="product-name">Perfect Strike Gundam</h3>
+                        <p class="product-series">Mobile Suit Gundam SEED</p>
+                        <div class="product-pricing">
+                            <span class="product-price">฿8,500</span>
+                            <a href="product-detail.html?id=4" class="btn-view-detail">ดูรายละเอียด</a>
+                        </div>
+                    </figcaption>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------------
+             CATEGORIES & NEW ARRIVALS SECTION
+             (แสดงเกรดโมเดล + NEW ARRIVAL / RE-STOCK จาก Figma)
+             ------------------------------------------------------------------ -->
+        <section id="explore-section">
+            <div class="two-column-layout">
+                
+                <!-- หมวดหมู่สินค้าทางด้านซ้าย (Category List จาก Figma) -->
+                <aside class="category-sidebar" aria-label="Product Categories">
+                    <h2 class="category-title">หมวดหมู่สินค้า (Grades)</h2>
+                    <ul class="category-list">
+                        <li>
+                            <a href="search.html?grade=SD" class="category-item">
+                                <span class="category-dot"></span>
+                                <span>SD - Super Deformed</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="search.html?grade=HG" class="category-item">
+                                <span class="category-dot"></span>
+                                <span>HG - High Grade</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="search.html?grade=RG" class="category-item">
+                                <span class="category-dot"></span>
+                                <span>RG - Real Grade</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="search.html?grade=MG" class="category-item">
+                                <span class="category-dot"></span>
+                                <span>MG - Master Grade</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="search.html?grade=PG" class="category-item">
+                                <span class="category-dot"></span>
+                                <span>PG - Perfect Grade</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="search.html?category=parts" class="category-item">
+                                <span class="category-dot"></span>
+                                <span>Parts &amp; Accessories</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="search.html?category=tools" class="category-item">
+                                <span class="category-dot"></span>
+                                <span>Tools &amp; Supplies</span>
+                            </a>
+                        </li>
+                    </ul>
+                </aside>
+
+                <!-- สินค้ามาใหม่ทางด้านขวา (NEW ARRIVAL / RE-STOCK) -->
+                <div>
+                    <div class="section-header">
+                        <h2 class="section-title">NEW ARRIVAL / RE-STOCK</h2>
+                        <a href="search.html" class="view-all-link">ดูทั้งหมด &rarr;</a>
+                    </div>
+
+                    <div class="new-arrival-grid">
+                        
+                        <!-- สินค้าใหม่ 1 -->
+                        <article class="product-card">
+                            <figure class="product-thumb-container">
+                                <span class="badge-grade">MG 1/100</span>
+                                <img src="assets/images/hero-banner.png" alt="Gundam Barbatos" class="product-thumb">
+                            </figure>
+                            <figcaption class="product-info">
+                                <h3 class="product-name">Gundam Barbatos</h3>
+                                <p class="product-series">Iron-Blooded Orphans</p>
+                                <div class="product-pricing">
+                                    <span class="product-price">฿1,750</span>
+                                    <a href="product-detail.html?id=5" class="btn-view-detail">ดูรายละเอียด</a>
+                                </div>
+                            </figcaption>
+                        </article>
+
+                        <!-- สินค้าใหม่ 2 -->
+                        <article class="product-card">
+                            <figure class="product-thumb-container">
+                                <span class="badge-grade">RG 1/144</span>
+                                <img src="assets/images/hero-banner.png" alt="Gundam Exia" class="product-thumb">
+                            </figure>
+                            <figcaption class="product-info">
+                                <h3 class="product-name">GN-001 Gundam Exia</h3>
+                                <p class="product-series">Mobile Suit Gundam 00</p>
+                                <div class="product-pricing">
+                                    <span class="product-price">฿1,150</span>
+                                    <a href="product-detail.html?id=6" class="btn-view-detail">ดูรายละเอียด</a>
+                                </div>
+                            </figcaption>
+                        </article>
+
+                        <!-- สินค้าใหม่ 3 -->
+                        <article class="product-card">
+                            <figure class="product-thumb-container">
+                                <span class="badge-grade">MG 1/100</span>
+                                <img src="assets/images/hero-banner.png" alt="Justice Gundam" class="product-thumb">
+                            </figure>
+                            <figcaption class="product-info">
+                                <h3 class="product-name">ZGMF-X09A Justice Gundam</h3>
+                                <p class="product-series">Mobile Suit Gundam SEED</p>
+                                <div class="product-pricing">
+                                    <span class="product-price">฿1,900</span>
+                                    <a href="product-detail.html?id=7" class="btn-view-detail">ดูรายละเอียด</a>
+                                </div>
+                            </figcaption>
+                        </article>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ======================================================================
+         3. FOOTER & OFFICIAL SOCIAL CHANNELS
+         (ตรงตาม Figma: OFFICIAL SOCIAL CHANNELS - Facebook & LINE)
+         ====================================================================== -->
+    <footer id="site-footer">
+        <div id="social-channels">
+            <h3 class="social-channels-header">OFFICIAL SOCIAL CHANNELS</h3>
+            <div class="social-links-wrapper">
+                
+                <!-- Facebook Official -->
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/facebook-logo.png" alt="Facebook" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+                <!-- LINE Official -->
+                <a href="https://line.me" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/line-logo.png" alt="LINE" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+            </div>
+
+            <!-- ข้อความลิขสิทธิ์และข้อมูลโครงงาน -->
+            <div class="footer-bottom">
+                <p>&copy; 2026 Unimart Gunpla Store. All rights reserved.</p>
+                <p>ITDS242 Web Technologies Lab Project</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

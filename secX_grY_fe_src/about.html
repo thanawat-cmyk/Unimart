@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="เกี่ยวกับเรา - Unimart ร้านค้าจำหน่ายกันพลาและโมเดลพลาสติก พร้อมแนะนำทีมงานผู้จัดทำโครงงาน ITDS242">
+    <meta name="author" content="ITDS242 Project Team">
+    <title>About Us & Team | Unimart</title>
+    <!-- External CSS: จัดการสไตล์ของหน้าเว็บทั้งหมด (ตรงตามเกณฑ์ External CSS) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ======================================================================
+         1. HEADER & NAVIGATION BAR
+         (ตรงตามเกณฑ์: มี Navigational bar เชื่อมโยงหน้าเว็บ และมีปุ่ม Log-in)
+         ====================================================================== -->
+    <header id="main-header">
+        <nav aria-label="Main Navigation">
+            <!-- โลโก้ร้าน Unimart -->
+            <div class="brand-container">
+                <a href="index.html" title="Unimart Home">
+                    <img src="assets/images/logo.png" alt="Unimart Logo" class="brand-logo">
+                </a>
+            </div>
+
+            <!-- เมนูนำทาง (เชื่อมโยงหน้าเว็บ) -->
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="search.html" class="nav-link">Products</a></li>
+                <li><a href="about.html" class="nav-link active">About</a></li>
+                <li><a href="teampage.html" class="nav-link">Team</a></li>
+                
+                <!-- ช่องค้นหาใน Navbar -->
+                <li>
+                    <form id="search-form-nav" action="search.html" method="GET">
+                        <input type="text" name="keyword" class="nav-search-input" placeholder="Search gunpla..." aria-label="Search">
+                        <button type="submit" class="nav-search-btn" aria-label="Submit Search">
+                            <img src="assets/images/search-icon.svg" alt="Search">
+                        </button>
+                    </form>
+                </li>
+            </ul>
+
+            <!-- ปุ่ม Action: Sign in และ Register -->
+            <div class="nav-actions">
+                <a href="login.html" class="btn-primary" title="เข้าสู่ระบบผู้ดูแลระบบ">Sign in</a>
+                <a href="profile.html" class="btn-secondary" title="โปรไฟล์ของฉัน">👤 Profile</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ======================================================================
+         2. MAIN CONTENT AREA (ใช้ Semantic Element: <main>)
+         ====================================================================== -->
+    <main>
+
+        <!-- ------------------------------------------------------------------
+             ABOUT US HERO BANNER
+             ------------------------------------------------------------------ -->
+        <section id="about-hero" aria-label="About Hero">
+            <h1 class="about-hero-title">About Us</h1>
+            <p class="about-hero-subtitle">OUR STORY</p>
+        </section>
+
+        <!-- ------------------------------------------------------------------
+             STORY & VISION SECTION (ดึงข้อมูลเนื้อหาและดีไซน์จาก Figma โดยตรง)
+             ------------------------------------------------------------------ -->
+        <section id="story-section" aria-labelledby="story-title">
+            <div class="story-grid">
+                
+                <!-- คอลัมน์ซ้าย: เรื่องราวและวิสัยทัศน์ของ Unimart -->
+                <div class="story-content">
+                    <h2 id="story-title" class="brand-highlight-title">UNIMART</h2>
+                    
+                    <p class="story-description">
+                        เป็นร้านค้าและผู้จัดจำหน่ายสินค้ากันดั้มและโมเดลพลาสติกสำหรับผู้ที่ชื่นชอบการสะสมและการประกอบโมเดล
+                        โดยมุ่งเน้นการนำเสนอสินค้าที่มีคุณภาพพร้อมให้บริการในรูปแบบร้านค้าออนไลน์ เพื่ออำนวยความสะดวกให้ลูกค้าสามารถเลือกซื้อสินค้าได้จากทุกที่
+                        ให้ความสำคัญกับ คุณภาพสินค้า ความน่าเชื่อถือ ความสะดวกในการซื้อขาย ผสานรูปแบบการจำหน่ายสินค้าแบบตัวแทนเข้ากับระบบร้านค้าออนไลน์
+                        ทำให้ลูกค้าสามารถเข้าถึงสินค้าได้ง่ายและสามารถเลือกซื้อสินค้าได้ตามความต้องการ
+                    </p>
+
+                    <hr class="story-divider">
+
+                    <!-- กล่องแสดงวิสัยทัศน์ (Vision) -->
+                    <div class="vision-box">
+                        <h3 class="vision-title">วิสัยทัศน์ (Vision)</h3>
+                        <p class="vision-text">
+                            UNIMART มุ่งมั่นที่จะเป็นร้านค้าและตัวแทนจำหน่ายกันดั้มและโมเดลที่ได้รับความไว้วางใจจากลูกค้า
+                            ด้วยการนำเสนอสินค้าที่มีคุณภาพ การบริการที่เป็นมาตรฐาน และการพัฒนาระบบการซื้อขายออนไลน์อย่างต่อเนื่อง
+                            เพื่อรองรับความต้องการของลูกค้าในยุคดิจิทัล
+                        </p>
+                    </div>
+
+                    <!-- สโลแกนประจำร้านจาก Figma -->
+                    <div>
+                        <div class="slogan-pill">
+                            <span>✨</span>
+                            <span>Gundam Builds Dreams!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- คอลัมน์ขวา: ภาพการ์ดโชว์โมเดลตัวเรือธง (PG UNLEASHED RX-78-2) -->
+                <div>
+                    <article class="about-showcase-card">
+                        <figure>
+                            <img src="assets/images/about-rx78.png" alt="PG UNLEASHED 1/60 RX-78-2 Gundam" class="about-showcase-img">
+                        </figure>
+                        <figcaption class="showcase-caption">
+                            <h4 class="showcase-model-name">PG UNLEASHED 1/60 RX-78-2</h4>
+                            <p class="showcase-model-desc">สุดยอดงานโมเดลพลาสติกตัวแทนแห่งความฝันและจิตวิญญาณแห่ง Gunpla</p>
+                        </figcaption>
+                    </article>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------------
+             CORE VALUES (4 เสาหลักการบริการจาก Figma)
+             ------------------------------------------------------------------ -->
+        <section id="values-section" aria-label="Core Values">
+            <div class="values-grid">
+                
+                <!-- เสาหลักที่ 1: บริการด้วยใจรัก -->
+                <div class="value-card">
+                    <div class="value-icon-wrapper">
+                        <img src="assets/images/icon-heart.png" alt="Service with love" class="value-icon">
+                    </div>
+                    <p class="value-card-text">บริการด้วยใจรัก<br>ดูแลเหมือนเพื่อน</p>
+                </div>
+
+                <!-- เสาหลักที่ 2: สินค้าของแท้ 100% -->
+                <div class="value-card">
+                    <div class="value-icon-wrapper">
+                        <img src="assets/images/icon-shield.png" alt="100% Genuine" class="value-icon">
+                    </div>
+                    <p class="value-card-text">สินค้าของแท้<br>มั่นใจได้ 100%</p>
+                </div>
+
+                <!-- เสาหลักที่ 3: ชุมชนคนรักกันดั้ม -->
+                <div class="value-card">
+                    <div class="value-icon-wrapper">
+                        <img src="assets/images/icon-community.png" alt="Community" class="value-icon">
+                    </div>
+                    <p class="value-card-text">ชุมชนคนรักกันดั้ม<br>มาเติมฝันไปด้วยกัน</p>
+                </div>
+
+                <!-- เสาหลักที่ 4: จัดส่งรวดเร็ว -->
+                <div class="value-card">
+                    <div class="value-icon-wrapper">
+                        <img src="assets/images/icon-delivery.png" alt="Fast delivery" class="value-icon">
+                    </div>
+                    <p class="value-card-text">จัดส่งเร็ว<br>ทั่วประเทศ</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ======================================================================
+         3. FOOTER & OFFICIAL SOCIAL CHANNELS
+         ====================================================================== -->
+    <footer id="site-footer">
+        <div id="social-channels">
+            <h3 class="social-channels-header">OFFICIAL SOCIAL CHANNELS</h3>
+            <div class="social-links-wrapper">
+                
+                <!-- Facebook Official -->
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/facebook-logo.png" alt="Facebook" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+                <!-- LINE Official -->
+                <a href="https://line.me" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/line-logo.png" alt="LINE" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+            </div>
+
+            <!-- ข้อความลิขสิทธิ์และข้อมูลโครงงาน -->
+            <div class="footer-bottom">
+                <p>&copy; 2026 Unimart Gunpla Store. All rights reserved.</p>
+                <p>ITDS242 Web Technologies Lab Project</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

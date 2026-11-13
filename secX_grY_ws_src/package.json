@@ -1,0 +1,28 @@
+{
+  "name": "unimart-web-services",
+  "version": "1.0.0",
+  "description": "ITDS242 Web Technologies Lab - Task 3: RESTful Web Services for Unimart Gunpla Store",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "express",
+    "mysql2",
+    "gunpla",
+    "unimart",
+    "rest-api"
+  ],
+  "author": "ITDS242 Group Members (Section X, Group Y)",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mysql2": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

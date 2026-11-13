@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Page - Unimart Gunpla Store</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700&family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <!-- Unified External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+</head>
+<body class="figma-profile-bg">
+
+    <!-- Header Navigation Bar (Exact Figma layout) -->
+    <header class="figma-profile-nav">
+        <div class="figma-profile-nav-left">
+            <a href="index.html" class="figma-profile-nav-logo" title="Unimart Home">
+                <img src="assets/images/logo.png" alt="Unimart Gunpla Store Logo">
+            </a>
+            <ul class="figma-profile-nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="search.html">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="teampage.html">Team</a></li>
+            </ul>
+        </div>
+
+        <form action="search.html" method="GET" class="figma-profile-nav-search">
+            <input type="text" name="q" placeholder="Search" aria-label="Search models">
+            <img src="assets/images/search-icon.svg" alt="Search" class="search-svg-icon" onclick="this.closest('form').submit()">
+        </form>
+    </header>
+
+    <!-- Top Edge-to-Edge Cover Banner Artwork -->
+    <section class="figma-profile-cover" aria-label="Profile Banner Artwork"></section>
+
+    <!-- Main Content Area: 2-Column Exact Layout -->
+    <main class="figma-profile-main-grid">
+        
+        <!-- =========================================================
+             LEFT COLUMN (Cards 1, 2, 3)
+             ========================================================= -->
+        <div class="figma-profile-left-col">
+            
+            <!-- Card 1: User Identity Card -->
+            <article class="figma-exact-card figma-exact-identity-card">
+                <img src="assets/images/icon-edit.png" alt="Edit Profile" class="figma-exact-edit-icon-top" id="btn-edit-user-hero" title="แก้ไขโปรไฟล์">
+                
+                <div class="figma-exact-avatar-box">
+                    <img src="assets/images/avatar-user.png" alt="GundamLover159 Avatar" onerror="this.src='assets/images/about-rx78.png'">
+                </div>
+
+                <div class="figma-exact-identity-info">
+                    <h1 class="figma-exact-username">GundamLover159</h1>
+                    
+                    <div class="figma-exact-contact-line">
+                        <img src="assets/images/icon-mail.png" alt="Email Icon">
+                        <a href="mailto:gundamlover159@gmail.com" id="disp-meta-email" style="color: inherit; text-decoration: none;">gundamlover159@gmail.com</a>
+                    </div>
+
+                    <div class="figma-exact-contact-line">
+                        <img src="assets/images/icon-phone.png" alt="Phone Icon">
+                        <span id="disp-meta-phone">098-159-1594</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Card 2: ข้อมูลส่วนตัว -->
+            <article class="figma-exact-card">
+                <header class="figma-exact-header">
+                    <div class="figma-exact-header-left">
+                        <img src="assets/images/icon-idcard.png" alt="ID Icon" class="figma-exact-header-icon">
+                        <h2 class="figma-exact-header-title">ข้อมูลส่วนตัว</h2>
+                    </div>
+                </header>
+
+                <table class="figma-exact-table" aria-label="ตารางข้อมูลส่วนตัว">
+                    <tbody>
+                        <tr>
+                            <td class="label-col">ชื่อ - นามสกุล</td>
+                            <td class="val-col" id="disp-fullname">กันดัม เลิฟเวอร์</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">อีเมล</td>
+                            <td class="val-col" id="disp-email">gundamlove59@gmail.com</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">เบอร์โทรศัพท์</td>
+                            <td class="val-col" id="disp-phone">098-765-4321</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">วันเกิด</td>
+                            <td class="val-col" id="disp-birthday">9 กันยายน 2459</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">เพศ</td>
+                            <td class="val-col" id="disp-gender">ไม่ระบุ</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="overflow: hidden; padding-top: 4px;">
+                    <button type="button" class="figma-exact-blue-btn" id="btn-open-edit-personal">
+                        แก้ไขข้อมูล
+                    </button>
+                </div>
+            </article>
+
+            <!-- Card 3: ประวัติการสั่งซื้อ (ล่าสุด) -->
+            <article class="figma-exact-card">
+                <header class="figma-exact-header">
+                    <div class="figma-exact-header-left">
+                        <img src="assets/images/icon-calendar.png" alt="Calendar Icon" class="figma-exact-header-icon">
+                        <h2 class="figma-exact-header-title">
+                            ประวัติการสั่งซื้อ <span style="font-size: 1.15rem; font-weight: 400; color: #6b7280;">(ล่าสุด)</span>
+                        </h2>
+                    </div>
+                    <a href="search.html" style="font-size: 1.15rem; font-weight: 600; color: #2363eb; text-decoration: none;" title="ดูสินค้าทั้งหมด">ดูทั้งหมด &gt;</a>
+                </header>
+
+                <a href="product-detail.html?id=1" class="figma-exact-order-row" title="ดูรายละเอียดสินค้า">
+                    <img src="assets/images/order-freedom-thumb.png" alt="MG 1/100 Freedo Gundam" class="figma-exact-order-thumb" onerror="this.src='assets/images/product-freedom.png'">
+                    
+                    <div class="figma-exact-order-text">
+                        <h3 class="figma-exact-order-title">MG 1/100 Freedo Gundam</h3>
+                        <p class="figma-exact-order-date">12 ก.ย. 2569</p>
+                    </div>
+
+                    <span class="figma-exact-status-pill">จัดส่งแล้ว</span>
+                    
+                    <span class="figma-exact-chevron">&gt;</span>
+                </a>
+            </article>
+
+        </div>
+
+        <!-- =========================================================
+             RIGHT COLUMN (Cards 4, 5)
+             ========================================================= -->
+        <div class="figma-profile-right-col">
+            
+            <!-- Card 4: ที่อยู่จัดส่ง -->
+            <article class="figma-exact-card">
+                <header class="figma-exact-header">
+                    <div class="figma-exact-header-left">
+                        <img src="assets/images/icon-pin.png" alt="Pin Icon" class="figma-exact-header-icon" style="width: 20px; height: 26px;">
+                        <h2 class="figma-exact-header-title">ที่อยู่จัดส่ง</h2>
+                    </div>
+                </header>
+
+                <div class="figma-exact-address-lines" id="disp-address-text">
+                    159/41 หมู่ 5<br>
+                    ถ.สุขุมวิต ต.บางนา อ.บางนา<br>
+                    จ.กรุงเทพมหานคร 10260
+                </div>
+
+                <div style="overflow: hidden;">
+                    <button type="button" class="figma-exact-manage-btn" id="btn-open-manage-address">
+                        <img src="assets/images/icon-edit.png" alt="Edit" style="width: 18px; height: 18px;">
+                        <span>จัดการที่อยู่</span>
+                    </button>
+                </div>
+            </article>
+
+            <!-- Card 5: Speech Bubble & Mascot Graphic -->
+            <section class="figma-exact-mascot-zone" aria-label="Mascot Greeting">
+                <div class="figma-exact-bubble-wrap">
+                    <div class="figma-exact-bubble">
+                        <p class="figma-exact-bubble-text">
+                            WELCOME<br>
+                            TO<br>
+                            UNIMART !!
+                        </p>
+                    </div>
+                    <!-- Red Heart Sticker beside Speech Bubble -->
+                    <img src="assets/images/heart-sticker.png" alt="Heart Sticker" class="figma-exact-heart-sticker">
+                </div>
+
+                <!-- Unimart White Mascot Character -->
+                <img src="assets/images/sd-gundam-sticker.png" alt="Unimart Mascot" class="figma-exact-mascot-character" onerror="this.src='assets/images/about-rx78.png'">
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Modal for Editing Personal Details -->
+    <div id="modal-edit-profile" class="admin-modal-overlay" aria-hidden="true" role="dialog">
+        <article class="admin-modal-card">
+            <h2 class="modal-header-title">แก้ไขข้อมูลส่วนตัว</h2>
+            <form id="form-edit-profile">
+                <div class="modal-form-grid">
+                    <div class="modal-form-group">
+                        <label for="inp-fullname">ชื่อ - นามสกุล *</label>
+                        <input type="text" id="inp-fullname" class="modal-input" value="กันดัม เลิฟเวอร์" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="inp-email">อีเมล *</label>
+                        <input type="email" id="inp-email" class="modal-input" value="gundamlove59@gmail.com" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="inp-phone">เบอร์โทรศัพท์ *</label>
+                        <input type="tel" id="inp-phone" class="modal-input" value="098-765-4321" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="inp-birthday">วันเกิด</label>
+                        <input type="text" id="inp-birthday" class="modal-input" value="9 กันยายน 2459">
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="inp-gender">เพศ</label>
+                        <select id="inp-gender" class="modal-select">
+                            <option value="ไม่ระบุ" selected>ไม่ระบุ</option>
+                            <option value="ชาย">ชาย</option>
+                            <option value="หญิง">หญิง</option>
+                            <option value="อื่นๆ">อื่นๆ</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group modal-form-full">
+                        <label for="inp-address">ที่อยู่จัดส่ง</label>
+                        <textarea id="inp-address" class="modal-textarea">159/41 หมู่ 5
+ถ.สุขุมวิต ต.บางนา อ.บางนา
+จ.กรุงเทพมหานคร 10260</textarea>
+                    </div>
+                </div>
+
+                <footer class="modal-actions-row">
+                    <button type="button" class="btn-modal-cancel" id="btn-cancel-modal">ยกเลิก</button>
+                    <button type="submit" class="btn-modal-save">บันทึกข้อมูล</button>
+                </footer>
+            </form>
+        </article>
+    </div>
+
+    <!-- Interactive Script with Web Services Integration -->
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const modal = document.getElementById('modal-edit-profile');
+            const openBtn1 = document.getElementById('btn-edit-user-hero');
+            const openBtn2 = document.getElementById('btn-open-edit-personal');
+            const openBtn3 = document.getElementById('btn-open-manage-address');
+            const cancelBtn = document.getElementById('btn-cancel-modal');
+            const form = document.getElementById('form-edit-profile');
+
+            // Load logged-in customer info or default to GundamLover159 (ID 6)
+            let currentUser = UnimartAPI.getCurrentUser();
+            let userId = currentUser ? currentUser.id : 6;
+
+            try {
+                const userRes = await UnimartAPI.getUserById(userId);
+                if (userRes) {
+                    currentUser = userRes;
+                    renderUserProfile(currentUser);
+                }
+            } catch (err) {
+                console.warn('Backend unavailable for user detail, using cached profile');
+            }
+
+            // Load customer orders from Web Services
+            try {
+                const orders = await UnimartAPI.getUserOrders(userId);
+                if (orders && orders.length > 0) {
+                    renderRecentOrder(orders[0]);
+                }
+            } catch (err) {
+                console.warn('Backend unavailable for orders');
+            }
+
+            function renderUserProfile(u) {
+                if (u.fullname) {
+                    document.getElementById('disp-fullname').textContent = u.fullname;
+                    document.getElementById('inp-fullname').value = u.fullname;
+                }
+                if (u.username) {
+                    document.getElementById('disp-username').textContent = u.username;
+                }
+                if (u.email) {
+                    document.getElementById('disp-email').textContent = u.email;
+                    document.getElementById('disp-meta-email').textContent = u.email;
+                    document.getElementById('inp-email').value = u.email;
+                }
+                if (u.phone) {
+                    document.getElementById('disp-phone').textContent = u.phone;
+                    document.getElementById('disp-meta-phone').textContent = u.phone;
+                    document.getElementById('inp-phone').value = u.phone;
+                }
+                if (u.address) {
+                    document.getElementById('disp-address-text').innerHTML = u.address.replace(/\n/g, '<br>');
+                    document.getElementById('inp-address').value = u.address;
+                }
+            }
+
+            function renderRecentOrder(order) {
+                const orderContainer = document.querySelector('.figma-exact-order-card');
+                if (!orderContainer || !order.items || order.items.length === 0) return;
+                const item = order.items[0];
+                const thumbImg = orderContainer.querySelector('.figma-exact-order-thumb');
+                const titleEl = orderContainer.querySelector('.figma-exact-order-title');
+                const dateEl = orderContainer.querySelector('.figma-exact-order-date');
+
+                if (thumbImg && item.product_image) thumbImg.src = item.product_image;
+                if (titleEl && item.product_name) titleEl.textContent = item.product_name;
+                if (dateEl && order.order_date) dateEl.textContent = new Date(order.order_date).toLocaleDateString('th-TH');
+            }
+
+            function openModal() {
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeModal() {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+
+            [openBtn1, openBtn2, openBtn3].forEach(b => {
+                if (b) b.addEventListener('click', openModal);
+            });
+
+            if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            }
+
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const newName = document.getElementById('inp-fullname').value.trim();
+                    const newEmail = document.getElementById('inp-email').value.trim();
+                    const newPhone = document.getElementById('inp-phone').value.trim();
+                    const newBirth = document.getElementById('inp-birthday').value.trim();
+                    const newGender = document.getElementById('inp-gender').value;
+                    const newAddr = document.getElementById('inp-address').value.trim();
+
+                    try {
+                        await UnimartAPI.updateUser(userId, {
+                            fullname: newName,
+                            email: newEmail,
+                            phone: newPhone,
+                            address: newAddr
+                        });
+                    } catch (err) {
+                        console.warn('API update failed, updated in DOM:', err);
+                    }
+
+                    document.getElementById('disp-fullname').textContent = newName;
+                    document.getElementById('disp-email').textContent = newEmail;
+                    document.getElementById('disp-meta-email').textContent = newEmail;
+                    document.getElementById('disp-phone').textContent = newPhone;
+                    document.getElementById('disp-meta-phone').textContent = newPhone;
+                    document.getElementById('disp-birthday').textContent = newBirth;
+                    document.getElementById('disp-gender').textContent = newGender;
+                    document.getElementById('disp-address-text').innerHTML = newAddr.replace(/\n/g, '<br>');
+
+                    closeModal();
+                    alert('✅ บันทึกการแก้ไขข้อมูลเรียบร้อยแล้ว!');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

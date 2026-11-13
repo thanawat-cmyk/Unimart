@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Unimart Gunpla Store</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Unified External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+</head>
+<body id="admin-login-body">
+
+    <main id="admin-login-wrapper">
+        <!-- Backdrop Overlay for readability & depth -->
+        <div class="login-backdrop-overlay"></div>
+
+        <div class="login-content-container">
+            <!-- Brand Logo at Top -->
+            <header class="login-brand-header">
+                <a href="index.html" title="กลับสู่หน้าหลัก Unimart">
+                    <img src="assets/images/logo.png" alt="Unimart Logo" width="220" height="90">
+                </a>
+            </header>
+
+            <!-- Login Card -->
+            <article id="login-card">
+                <h1 class="login-card-title">ADMIN LOGIN</h1>
+
+                <form id="admin-login-form" action="admin-products.html" method="GET" novalidate>
+                    <!-- Username Field -->
+                    <div class="login-form-group">
+                        <label for="admin-username">Username</label>
+                        <input 
+                            type="text" 
+                            id="admin-username" 
+                            name="username" 
+                            class="login-input" 
+                            placeholder="Enter username" 
+                            value="admin"
+                            required 
+                            autocomplete="username"
+                        >
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="login-form-group">
+                        <label for="admin-password">Password</label>
+                        <div class="password-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="admin-password" 
+                                name="password" 
+                                class="login-input" 
+                                placeholder="Enter password" 
+                                value="admin123"
+                                required 
+                                autocomplete="current-password"
+                            >
+                            <img 
+                                src="assets/images/icon-eye.png" 
+                                alt="Toggle Password Visibility" 
+                                id="toggle-password-btn" 
+                                class="toggle-password-icon" 
+                                title="คลิกเพื่อแสดง/ซ่อนรหัสผ่าน"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Remember Me Option -->
+                    <div class="login-options-row">
+                        <label class="remember-checkbox-group" for="remember-me">
+                            <input type="checkbox" id="remember-me" name="remember" checked>
+                            <span>Remember me</span>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="btn-login-submit" class="btn-admin-submit">
+                        LOGIN
+                    </button>
+
+                    <!-- Back to Home Link -->
+                    <a href="index.html" class="login-back-home" title="กลับสู่หน้าหลัก">
+                        &larr; Back to Home
+                    </a>
+
+                    <!-- Demo Instructions Badge for Graders -->
+                    <aside class="login-demo-badge" aria-label="Demo Credentials">
+                        <small>💡 <strong>Demo Account:</strong> Username: <code>admin</code> | Password: <code>admin123</code></small>
+                    </aside>
+                </form>
+            </article>
+        </div>
+    </main>
+
+    <!-- Client-side Interactive Script & API Integration -->
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const togglePasswordBtn = document.getElementById('toggle-password-btn');
+            const passwordInput = document.getElementById('admin-password');
+            const loginForm = document.getElementById('admin-login-form');
+            const usernameInput = document.getElementById('admin-username');
+            const submitBtn = document.getElementById('btn-login-submit');
+
+            // Password show/hide toggle
+            if (togglePasswordBtn && passwordInput) {
+                togglePasswordBtn.addEventListener('click', () => {
+                    const isPassword = passwordInput.getAttribute('type') === 'password';
+                    passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                    togglePasswordBtn.style.opacity = isPassword ? '1' : '0.55';
+                });
+            }
+
+            // Web Service Authentication via Fetch API
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const username = usernameInput.value.trim();
+                    const password = passwordInput.value.trim();
+
+                    if (!username) {
+                        alert('กรุณากรอก Username สำหรับเข้าสู่ระบบ');
+                        usernameInput.focus();
+                        return;
+                    }
+
+                    if (!password) {
+                        alert('กรุณากรอก Password');
+                        passwordInput.focus();
+                        return;
+                    }
+
+                    const originalBtnText = submitBtn.innerText;
+                    submitBtn.innerText = 'LOGGING IN...';
+                    submitBtn.disabled = true;
+
+                    try {
+                        const result = await UnimartAPI.login(username, password);
+                        if (result.success) {
+                            sessionStorage.setItem('unimart_admin_logged', 'true');
+                            sessionStorage.setItem('unimart_admin_user', username);
+                            
+                            // Redirect based on user role
+                            if (result.user && result.user.role === 'Customer') {
+                                window.location.href = 'profile.html';
+                            } else {
+                                window.location.href = 'admin-products.html';
+                            }
+                        } else {
+                            alert(result.message || 'การเข้าสู่ระบบล้มเหลว');
+                        }
+                    } catch (err) {
+                        alert(`เกิดข้อผิดพลาดในการเข้าสู่ระบบ: ${err.message}`);
+                    } finally {
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management - Unimart Backoffice</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Unified External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+</head>
+<body id="admin-body">
+
+    <div id="admin-layout">
+        <!-- Sidebar Navigation (Figma node 277:484) -->
+        <aside id="admin-sidebar" aria-label="Admin Navigation Sidebar">
+            <header class="admin-sidebar-logo">
+                <a href="index.html" title="Unimart Storefront">
+                    <img src="assets/images/logo.png" alt="Unimart Logo" width="160" height="60">
+                </a>
+            </header>
+
+            <nav aria-label="Backoffice Menu">
+                <ul class="admin-nav-list">
+                    <li class="admin-nav-item active">
+                        <a href="admin-products.html" aria-current="page">
+                            <span class="admin-nav-icon">📦</span>
+                            <span>Product Management</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="admin-users.html">
+                            <span class="admin-nav-icon">👥</span>
+                            <span>User Management</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="index.html" target="_blank" title="เปิดหน้าร้านค้าในแท็บใหม่">
+                            <span class="admin-nav-icon">🌐</span>
+                            <span>View Storefront</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <footer class="admin-sidebar-footer">
+                <a href="admin-profile.html" class="admin-user-profile" style="text-decoration: none;" title="ดูข้อมูลโปรไฟล์แอดมิน">
+                    <div class="admin-avatar">A</div>
+                    <div class="admin-user-info">
+                        <div class="admin-user-name">Admin Manager</div>
+                        <div class="admin-user-role">Super Admin &bull; Profile</div>
+                    </div>
+                </a>
+                <a href="login.html" class="btn-sidebar-logout" title="ออกจากระบบ">
+                    <span>🚪 Log out</span>
+                </a>
+            </footer>
+        </aside>
+
+        <!-- Main Product Management Content Area (Figma node 277:481) -->
+        <main id="admin-main">
+            <!-- Header Row with Page Title and Add Product Button -->
+            <header class="admin-header-row">
+                <h1 class="admin-page-title">Product Management</h1>
+                <button type="button" id="btn-open-add-modal" class="btn-add-primary">
+                    <span>➕</span>
+                    <span>ADD PRODUCT</span>
+                </button>
+            </header>
+
+            <!-- Search & Filter Card -->
+            <section class="admin-toolbar-card" aria-label="Product Search and Filter Controls">
+                <div class="admin-search-wrapper">
+                    <span class="admin-search-icon-inside">🔍</span>
+                    <input 
+                        type="text" 
+                        id="admin-product-search" 
+                        class="admin-search-input" 
+                        placeholder="Search product by name or id..."
+                        aria-label="ค้นหาสินค้า"
+                    >
+                </div>
+
+                <div class="admin-filter-group">
+                    <select id="admin-filter-grade" class="admin-select" aria-label="Filter by Grade">
+                        <option value="all">All Grades</option>
+                        <option value="RG">RG (Real Grade)</option>
+                        <option value="MG">MG (Master Grade)</option>
+                        <option value="HG">HG (High Grade)</option>
+                        <option value="PG">PG (Perfect Grade)</option>
+                    </select>
+
+                    <select id="admin-filter-category" class="admin-select" aria-label="Filter by Category">
+                        <option value="all">All Categories</option>
+                        <option value="gundam">Gundam Models</option>
+                        <option value="parts">Custom Parts</option>
+                        <option value="tools">Modelling Tools</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Product Data Table (Figma node 277:486) -->
+            <section class="admin-table-card" aria-label="Product Data Table">
+                <table class="admin-table" id="admin-product-table">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 70px;">ID</th>
+                            <th scope="col" style="width: 90px;">Image</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col" style="width: 100px;">Grade</th>
+                            <th scope="col" style="width: 120px;">Price</th>
+                            <th scope="col" style="width: 90px;">Stock</th>
+                            <th scope="col" style="width: 130px;">Status</th>
+                            <th scope="col" style="width: 120px; text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-product-tbody">
+                        <!-- Default Seed Data Rows (Populated by JS or Static Fallback) -->
+                        <tr>
+                            <td><strong>#1</strong></td>
+                            <td><img src="assets/images/product-freedom.png" alt="Strike Freedom" class="admin-table-thumb"></td>
+                            <td>
+                                <strong>ZGMF-X20A Strike Freedom Gundam</strong>
+                                <div style="font-size: 0.8rem; color: #64748b;">Mobile Suit Gundam SEED Destiny</div>
+                            </td>
+                            <td><span class="badge-grade">MG</span></td>
+                            <td><strong>฿2,450</strong></td>
+                            <td>15 ชิ้น</td>
+                            <td><span class="badge-status instock">In Stock</span></td>
+                            <td>
+                                <div class="admin-actions-cell" style="justify-content: center;">
+                                    <button class="btn-action-icon edit" title="แก้ไขสินค้า" onclick="openEditModal(1)">
+                                        <img src="assets/images/icon-edit.png" alt="Edit">
+                                    </button>
+                                    <button class="btn-action-icon delete" title="ลบสินค้า" onclick="openDeleteModal(1)">
+                                        <img src="assets/images/icon-delete.png" alt="Delete">
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>#2</strong></td>
+                            <td><img src="assets/images/product-god.png" alt="God Gundam" class="admin-table-thumb"></td>
+                            <td>
+                                <strong>GF13-017NJII God Gundam</strong>
+                                <div style="font-size: 0.8rem; color: #64748b;">Mobile Fighter G Gundam</div>
+                            </td>
+                            <td><span class="badge-grade">RG</span></td>
+                            <td><strong>฿1,850</strong></td>
+                            <td>8 ชิ้น</td>
+                            <td><span class="badge-status instock">In Stock</span></td>
+                            <td>
+                                <div class="admin-actions-cell" style="justify-content: center;">
+                                    <button class="btn-action-icon edit" title="แก้ไขสินค้า" onclick="openEditModal(2)">
+                                        <img src="assets/images/icon-edit.png" alt="Edit">
+                                    </button>
+                                    <button class="btn-action-icon delete" title="ลบสินค้า" onclick="openDeleteModal(2)">
+                                        <img src="assets/images/icon-delete.png" alt="Delete">
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>#3</strong></td>
+                            <td><img src="assets/images/about-rx78.png" alt="RX-78-2 Gundam" class="admin-table-thumb"></td>
+                            <td>
+                                <strong>RX-78-2 Gundam Perfect Grade Unleashed</strong>
+                                <div style="font-size: 0.8rem; color: #64748b;">Mobile Suit Gundam 0079</div>
+                            </td>
+                            <td><span class="badge-grade">PG</span></td>
+                            <td><strong>฿8,900</strong></td>
+                            <td>3 ชิ้น</td>
+                            <td><span class="badge-status lowstock">Low Stock</span></td>
+                            <td>
+                                <div class="admin-actions-cell" style="justify-content: center;">
+                                    <button class="btn-action-icon edit" title="แก้ไขสินค้า" onclick="openEditModal(3)">
+                                        <img src="assets/images/icon-edit.png" alt="Edit">
+                                    </button>
+                                    <button class="btn-action-icon delete" title="ลบสินค้า" onclick="openDeleteModal(3)">
+                                        <img src="assets/images/icon-delete.png" alt="Delete">
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination Footer (Figma node 277:530) -->
+                <footer class="admin-table-footer">
+                    <div class="admin-counts-text" id="admin-pagination-info">
+                        Showing <strong id="admin-showing-count">1-10</strong> of <strong id="admin-total-count">16</strong> products
+                    </div>
+                    <div class="admin-pagination">
+                        <button class="page-btn" id="btn-prev-page" title="หน้าก่อนหน้า">&lt;</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn" id="btn-next-page" title="หน้าถัดไป">&gt;</button>
+                    </div>
+                </footer>
+            </section>
+        </main>
+    </div>
+
+    <!-- =====================================================================
+         Modal 1: Add New Product Modal (Figma node 277:461)
+         ===================================================================== -->
+    <div id="add-product-modal" class="admin-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="add-modal-title">
+        <article class="admin-modal-card">
+            <h2 id="add-modal-title" class="modal-header-title">Add New Product</h2>
+            <form id="add-product-form">
+                <div class="modal-form-grid">
+                    <div class="modal-form-group">
+                        <label for="add-prod-name">Product Name *</label>
+                        <input type="text" id="add-prod-name" class="modal-input" placeholder="e.g. RG 1/144 Hi-Nu Gundam" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-prod-grade">Grade *</label>
+                        <select id="add-prod-grade" class="modal-select" required>
+                            <option value="RG">RG (Real Grade)</option>
+                            <option value="MG">MG (Master Grade)</option>
+                            <option value="HG">HG (High Grade)</option>
+                            <option value="PG">PG (Perfect Grade)</option>
+                            <option value="Non-Grade">Non-Grade</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-prod-category">Category *</label>
+                        <select id="add-prod-category" class="modal-select" required>
+                            <option value="gundam">Gundam Models</option>
+                            <option value="parts">Custom Parts</option>
+                            <option value="tools">Modelling Tools</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-prod-price">Price (THB) *</label>
+                        <input type="number" id="add-prod-price" class="modal-input" placeholder="e.g. 1950" min="0" step="50" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-prod-stock">Stock Quantity *</label>
+                        <input type="number" id="add-prod-stock" class="modal-input" placeholder="e.g. 10" min="0" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-prod-status">Status</label>
+                        <select id="add-prod-status" class="modal-select">
+                            <option value="In Stock">In Stock</option>
+                            <option value="Low Stock">Low Stock</option>
+                            <option value="Out of Stock">Out of Stock</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group modal-form-full">
+                        <label for="add-prod-desc">Description</label>
+                        <textarea id="add-prod-desc" class="modal-textarea" placeholder="รายละเอียดของโมเดลกันพลา จุดเด่น และอุปกรณ์ในกล่อง..."></textarea>
+                    </div>
+
+                    <div class="modal-form-group modal-form-full">
+                        <label>Product Image</label>
+                        <div class="modal-upload-zone" id="add-upload-zone" title="คลิกเพื่อเลือกไฟล์รูปภาพ">
+                            <img src="assets/images/icon-upload.png" alt="Upload Icon">
+                            <p style="margin: 0; font-weight: 600; color: #3b82f6;">Click to upload or drag &amp; drop</p>
+                            <small style="color: #64748b;">PNG, JPG or WebP (Recommend 600x600 px)</small>
+                            <input type="file" id="add-prod-image" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="modal-actions-row">
+                    <button type="button" class="btn-modal-cancel" id="btn-cancel-add">CANCLE</button>
+                    <button type="submit" class="btn-modal-save">SAVE</button>
+                </footer>
+            </form>
+        </article>
+    </div>
+
+    <!-- =====================================================================
+         Modal 2: Edit Product Modal (Figma node 277:436)
+         ===================================================================== -->
+    <div id="edit-product-modal" class="admin-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="edit-modal-title">
+        <article class="admin-modal-card">
+            <h2 id="edit-modal-title" class="modal-header-title">Edit Product</h2>
+            <form id="edit-product-form">
+                <input type="hidden" id="edit-prod-id">
+                <div class="modal-form-grid">
+                    <div class="modal-form-group">
+                        <label for="edit-prod-name">Product Name *</label>
+                        <input type="text" id="edit-prod-name" class="modal-input" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="edit-prod-grade">Grade *</label>
+                        <select id="edit-prod-grade" class="modal-select" required>
+                            <option value="RG">RG (Real Grade)</option>
+                            <option value="MG">MG (Master Grade)</option>
+                            <option value="HG">HG (High Grade)</option>
+                            <option value="PG">PG (Perfect Grade)</option>
+                            <option value="Non-Grade">Non-Grade</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="edit-prod-category">Category *</label>
+                        <select id="edit-prod-category" class="modal-select" required>
+                            <option value="gundam">Gundam Models</option>
+                            <option value="parts">Custom Parts</option>
+                            <option value="tools">Modelling Tools</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="edit-prod-price">Price (THB) *</label>
+                        <input type="number" id="edit-prod-price" class="modal-input" min="0" step="50" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="edit-prod-stock">Stock Quantity *</label>
+                        <input type="number" id="edit-prod-stock" class="modal-input" min="0" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="edit-prod-status">Status</label>
+                        <select id="edit-prod-status" class="modal-select">
+                            <option value="In Stock">In Stock</option>
+                            <option value="Low Stock">Low Stock</option>
+                            <option value="Out of Stock">Out of Stock</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group modal-form-full">
+                        <label for="edit-prod-desc">Description</label>
+                        <textarea id="edit-prod-desc" class="modal-textarea"></textarea>
+                    </div>
+                </div>
+
+                <footer class="modal-actions-row">
+                    <button type="button" class="btn-modal-cancel" id="btn-cancel-edit">CANCLE</button>
+                    <button type="submit" class="btn-modal-save">SAVE CHANGES</button>
+                </footer>
+            </form>
+        </article>
+    </div>
+
+    <!-- =====================================================================
+         Modal 3: Delete Confirmation Modal (Figma node 339:118)
+         ===================================================================== -->
+    <div id="delete-product-modal" class="admin-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="delete-modal-title">
+        <article class="delete-modal-card">
+            <h2 id="delete-modal-title" class="delete-modal-title">Confirm Product Delete</h2>
+            
+            <div class="delete-modal-body">
+                <img src="assets/images/product-freedom.png" alt="Product to Delete" id="delete-preview-thumb" class="delete-product-thumb">
+                <div class="delete-product-info">
+                    <p style="margin: 0 0 6px;"><strong>Product Name :</strong> <span id="delete-prod-name">ZGMF-X20A Strike Freedom</span></p>
+                    <p style="margin: 0 0 6px;"><strong>Price :</strong> <span id="delete-prod-price">฿2,450</span></p>
+                    <p style="margin: 0 0 6px;"><strong>Grade :</strong> <span id="delete-prod-grade">MG</span></p>
+                    <p style="margin: 0 0 6px;"><strong>Stock :</strong> <span id="delete-prod-stock">15 ชิ้น</span></p>
+                    <p style="margin: 0;"><strong>Status :</strong> <span id="delete-prod-status">On Sale</span></p>
+                </div>
+            </div>
+
+            <footer class="delete-modal-actions">
+                <button type="button" class="btn-delete-cancel" id="btn-cancel-delete">Cancel</button>
+                <button type="button" class="btn-delete-confirm" id="btn-confirm-delete">Delete</button>
+            </footer>
+        </article>
+    </div>
+
+    <!-- Shared Product Dataset & Admin Operations Script with Web Services Integration -->
+    <script src="js/products.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        // Array of admin products loaded via Web Services API
+        let adminProducts = [];
+        let pendingDeleteId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await reloadProducts();
+            setupAdminEventListeners();
+        });
+
+        // Load or reload products from Web Services API
+        async function reloadProducts() {
+            try {
+                adminProducts = await UnimartAPI.getProducts();
+            } catch (err) {
+                console.warn('Backend unavailable, fallback to local products.js:', err);
+                if (typeof products !== 'undefined' && Array.isArray(products)) {
+                    adminProducts = JSON.parse(JSON.stringify(products));
+                }
+            }
+            renderAdminTable(adminProducts);
+        }
+
+        // Render product rows into the table
+        function renderAdminTable(items) {
+            const tbody = document.getElementById('admin-product-tbody');
+            const showingCount = document.getElementById('admin-showing-count');
+            const totalCount = document.getElementById('admin-total-count');
+
+            if (!tbody) return;
+
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">ไม่พบข้อมูลสินค้าที่ตรงกับคำค้นหา</td></tr>`;
+                if (showingCount) showingCount.textContent = '0';
+                if (totalCount) totalCount.textContent = '0';
+                return;
+            }
+
+            let html = '';
+            items.forEach((p) => {
+                let statusClass = 'instock';
+                let statusText = p.status || 'In Stock';
+                if (p.stock <= 0) {
+                    statusClass = 'outofstock';
+                    statusText = 'Out of Stock';
+                } else if (p.stock <= 5) {
+                    statusClass = 'lowstock';
+                    statusText = 'Low Stock';
+                }
+
+                const imgUrl = p.image_url || p.image || 'assets/images/product-freedom.png';
+
+                html += `
+                    <tr data-id="${p.id}">
+                        <td><strong>#${p.id}</strong></td>
+                        <td><img src="${imgUrl}" alt="${p.name}" class="admin-table-thumb" onerror="this.src='assets/images/detail-gunpla-main.png'"></td>
+                        <td>
+                            <strong>${p.name}</strong>
+                            <div style="font-size: 0.8rem; color: #64748b;">${p.series || 'Bandai Gunpla Original'}</div>
+                        </td>
+                        <td><span class="badge-grade">${p.grade || 'N/A'}</span></td>
+                        <td><strong>฿${Number(p.price).toLocaleString()}</strong></td>
+                        <td>${p.stock} ชิ้น</td>
+                        <td><span class="badge-status ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <div class="admin-actions-cell" style="justify-content: center;">
+                                <button type="button" class="btn-action-icon edit" title="แก้ไขสินค้า" onclick="openEditModal(${p.id})">
+                                    <img src="assets/images/icon-edit.png" alt="Edit">
+                                </button>
+                                <button type="button" class="btn-action-icon delete" title="ลบสินค้า" onclick="openDeleteModal(${p.id})">
+                                    <img src="assets/images/icon-delete.png" alt="Delete">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            if (showingCount) showingCount.textContent = `1-${items.length}`;
+            if (totalCount) totalCount.textContent = items.length;
+        }
+
+        // Search & Filter Handler via Web Services API
+        async function applyFilters() {
+            const query = document.getElementById('admin-product-search').value.toLowerCase().trim();
+            const grade = document.getElementById('admin-filter-grade').value;
+            const category = document.getElementById('admin-filter-category').value;
+
+            try {
+                const results = await UnimartAPI.getProducts({
+                    q: query,
+                    grade: grade === 'all' ? '' : grade,
+                    category: category === 'all' ? '' : category
+                });
+                adminProducts = results;
+                renderAdminTable(results);
+            } catch (err) {
+                const filtered = adminProducts.filter(p => {
+                    const matchQuery = !query || p.name.toLowerCase().includes(query) || String(p.id).includes(query);
+                    const matchGrade = (grade === 'all') || (p.grade === grade);
+                    const matchCat = (category === 'all') || (p.category === category);
+                    return matchQuery && matchGrade && matchCat;
+                });
+                renderAdminTable(filtered);
+            }
+        }
+
+        // Setup Event Listeners
+        function setupAdminEventListeners() {
+            document.getElementById('admin-product-search').addEventListener('input', applyFilters);
+            document.getElementById('admin-filter-grade').addEventListener('change', applyFilters);
+            document.getElementById('admin-filter-category').addEventListener('change', applyFilters);
+
+            // Add Modal Trigger
+            const addModal = document.getElementById('add-product-modal');
+            const openAddBtn = document.getElementById('btn-open-add-modal');
+            const cancelAddBtn = document.getElementById('btn-cancel-add');
+            const addForm = document.getElementById('add-product-form');
+
+            openAddBtn.addEventListener('click', () => {
+                addForm.reset();
+                addModal.classList.add('open');
+                addModal.setAttribute('aria-hidden', 'false');
+            });
+
+            cancelAddBtn.addEventListener('click', () => {
+                addModal.classList.remove('open');
+                addModal.setAttribute('aria-hidden', 'true');
+            });
+
+            // Add Product Web Service Submit (POST /api/products)
+            addForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const newProduct = {
+                    name: document.getElementById('add-prod-name').value.trim(),
+                    grade: document.getElementById('add-prod-grade').value,
+                    category: document.getElementById('add-prod-category').value,
+                    price: Number(document.getElementById('add-prod-price').value),
+                    stock: Number(document.getElementById('add-prod-stock').value),
+                    status: document.getElementById('add-prod-status').value,
+                    series: 'Universal Century',
+                    scale: '1/100',
+                    image_url: 'assets/images/product-freedom.png',
+                    description: document.getElementById('add-prod-desc').value.trim()
+                };
+
+                try {
+                    const res = await UnimartAPI.createProduct(newProduct);
+                    alert(`✅ เพิ่มสินค้า "${newProduct.name}" สำเร็จเรียบร้อยแล้ว!`);
+                    await reloadProducts();
+                } catch (err) {
+                    alert(`เกิดข้อผิดพลาดในการเพิ่มสินค้า: ${err.message}`);
+                }
+
+                addModal.classList.remove('open');
+                addModal.setAttribute('aria-hidden', 'true');
+            });
+
+            // Edit Modal Cancel
+            const editModal = document.getElementById('edit-product-modal');
+            document.getElementById('btn-cancel-edit').addEventListener('click', () => {
+                editModal.classList.remove('open');
+                editModal.setAttribute('aria-hidden', 'true');
+            });
+
+            // Edit Form Web Service Submit (PUT /api/products/:id)
+            document.getElementById('edit-product-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = Number(document.getElementById('edit-prod-id').value);
+                const updatedData = {
+                    name: document.getElementById('edit-prod-name').value.trim(),
+                    grade: document.getElementById('edit-prod-grade').value,
+                    category: document.getElementById('edit-prod-category').value,
+                    price: Number(document.getElementById('edit-prod-price').value),
+                    stock: Number(document.getElementById('edit-prod-stock').value),
+                    description: document.getElementById('edit-prod-desc').value.trim()
+                };
+
+                try {
+                    await UnimartAPI.updateProduct(id, updatedData);
+                    alert(`✅ บันทึกการแก้ไขสินค้า ID #${id} สำเร็จ!`);
+                    await reloadProducts();
+                } catch (err) {
+                    alert(`เกิดข้อผิดพลาดในการแก้ไขสินค้า: ${err.message}`);
+                }
+
+                editModal.classList.remove('open');
+                editModal.setAttribute('aria-hidden', 'true');
+            });
+
+            // Delete Modal Handlers (DELETE /api/products/:id)
+            const deleteModal = document.getElementById('delete-product-modal');
+            document.getElementById('btn-cancel-delete').addEventListener('click', () => {
+                deleteModal.classList.remove('open');
+                deleteModal.setAttribute('aria-hidden', 'true');
+                pendingDeleteId = null;
+            });
+
+            document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+                if (pendingDeleteId !== null) {
+                    try {
+                        await UnimartAPI.deleteProduct(pendingDeleteId);
+                        alert(`🗑️ ลบสินค้า ID #${pendingDeleteId} ออกจากระบบเรียบร้อยแล้ว`);
+                        await reloadProducts();
+                    } catch (err) {
+                        alert(`เกิดข้อผิดพลาดในการลบสินค้า: ${err.message}`);
+                    }
+                    deleteModal.classList.remove('open');
+                    deleteModal.setAttribute('aria-hidden', 'true');
+                    pendingDeleteId = null;
+                }
+            });
+
+            // Close modals when clicking overlay outside card
+            [addModal, editModal, deleteModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('open');
+                        modal.setAttribute('aria-hidden', 'true');
+                    }
+                });
+            });
+        }
+
+        // Global functions called from inline onclick buttons
+        window.openEditModal = function(id) {
+            const product = adminProducts.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('edit-prod-id').value = product.id;
+            document.getElementById('edit-prod-name').value = product.name;
+            document.getElementById('edit-prod-grade').value = product.grade || 'HG';
+            document.getElementById('edit-prod-category').value = product.category || 'gundam';
+            document.getElementById('edit-prod-price').value = product.price;
+            document.getElementById('edit-prod-stock').value = product.stock;
+            document.getElementById('edit-prod-desc').value = product.description || '';
+
+            const editModal = document.getElementById('edit-product-modal');
+            editModal.classList.add('open');
+            editModal.setAttribute('aria-hidden', 'false');
+        };
+
+        window.openDeleteModal = function(id) {
+            const product = adminProducts.find(p => p.id === id);
+            if (!product) return;
+
+            pendingDeleteId = id;
+            document.getElementById('delete-prod-name').textContent = product.name;
+            document.getElementById('delete-prod-price').textContent = '฿' + Number(product.price).toLocaleString();
+            document.getElementById('delete-prod-grade').textContent = product.grade || 'N/A';
+            document.getElementById('delete-prod-stock').textContent = `${product.stock} ชิ้น`;
+            document.getElementById('delete-prod-status').textContent = product.stock > 0 ? (product.status || 'In Stock') : 'Out of Stock';
+            
+            const thumb = document.getElementById('delete-preview-thumb');
+            thumb.src = product.image_url || product.image || 'assets/images/product-freedom.png';
+            thumb.onerror = () => { thumb.src = 'assets/images/detail-gunpla-main.png'; };
+
+            const deleteModal = document.getElementById('delete-product-modal');
+            deleteModal.classList.add('open');
+            deleteModal.setAttribute('aria-hidden', 'false');
+        };
+    </script>
+</body>
+</html>

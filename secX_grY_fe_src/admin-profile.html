@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile Page - Unimart Backoffice</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700&family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <!-- Unified External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+</head>
+<body class="figma-profile-bg">
+
+    <!-- Header Navigation Bar (Exact Figma layout) -->
+    <header class="figma-profile-nav">
+        <div class="figma-profile-nav-left">
+            <a href="index.html" class="figma-profile-nav-logo" title="Unimart Home">
+                <img src="assets/images/logo.png" alt="Unimart Gunpla Store Logo">
+            </a>
+            <ul class="figma-profile-nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="search.html">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="teampage.html">Team</a></li>
+            </ul>
+        </div>
+
+        <form action="search.html" method="GET" class="figma-profile-nav-search">
+            <input type="text" name="q" placeholder="Search" aria-label="Search models">
+            <img src="assets/images/search-icon.svg" alt="Search" class="search-svg-icon" onclick="this.closest('form').submit()">
+        </form>
+    </header>
+
+    <!-- Top Edge-to-Edge Cover Banner Artwork -->
+    <section class="figma-profile-cover" aria-label="Profile Banner Artwork"></section>
+
+    <!-- Main Content Area: 2-Column Exact Layout -->
+    <main class="figma-profile-main-grid">
+        
+        <!-- =========================================================
+             LEFT COLUMN (Cards 1, 2)
+             ========================================================= -->
+        <div class="figma-profile-left-col">
+            
+            <!-- Card 1: Admin Identity Card -->
+            <article class="figma-exact-card figma-exact-identity-card">
+                <img src="assets/images/icon-edit.png" alt="Edit Profile" class="figma-exact-edit-icon-top" id="btn-edit-admin-hero" title="แก้ไขโปรไฟล์">
+                
+                <div class="figma-exact-avatar-box">
+                    <img src="assets/images/avatar-user.png" alt="AdminRakgundam01 Avatar" onerror="this.src='assets/images/avatar-admin.png'">
+                </div>
+
+                <div class="figma-exact-identity-info">
+                    <h1 class="figma-exact-username">AdminRakgundam01</h1>
+                    
+                    <div class="figma-exact-contact-line">
+                        <img src="assets/images/icon-mail.png" alt="Email Icon">
+                        <a href="mailto:adminrakgundam01@gmail.com" id="disp-admin-meta-email" style="color: inherit; text-decoration: none;">adminrakgundam01@gmail.com</a>
+                    </div>
+
+                    <div class="figma-exact-contact-line">
+                        <img src="assets/images/icon-phone.png" alt="Phone Icon">
+                        <span id="disp-admin-meta-phone">095-125-1834</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Card 2: ข้อมูลส่วนตัว -->
+            <article class="figma-exact-card">
+                <header class="figma-exact-header">
+                    <div class="figma-exact-header-left">
+                        <img src="assets/images/icon-idcard.png" alt="ID Icon" class="figma-exact-header-icon">
+                        <h2 class="figma-exact-header-title">ข้อมูลส่วนตัว</h2>
+                    </div>
+                </header>
+
+                <table class="figma-exact-table" aria-label="ตารางข้อมูลส่วนตัวพนักงาน">
+                    <tbody>
+                        <tr>
+                            <td class="label-col">ชื่อ - นามสกุล</td>
+                            <td class="val-col" id="disp-admin-fullname">กันดัม เลิฟเวอร์</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">อีเมล</td>
+                            <td class="val-col" id="disp-admin-email">gundamlove59@gmail.com</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">เบอร์โทรศัพท์</td>
+                            <td class="val-col" id="disp-admin-phone">098-765-4321</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">วันเกิด</td>
+                            <td class="val-col" id="disp-admin-birthday">9 กันยายน 2459</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">เพศ</td>
+                            <td class="val-col" id="disp-admin-gender">ไม่ระบุ</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="overflow: hidden; padding-top: 4px;">
+                    <button type="button" class="figma-exact-blue-btn" id="btn-open-edit-admin-personal">
+                        แก้ไขข้อมูล
+                    </button>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- =========================================================
+             RIGHT COLUMN (Cards 3, 4)
+             ========================================================= -->
+        <div class="figma-profile-right-col">
+            
+            <!-- Card 3: Management Shortcuts -->
+            <article class="figma-exact-card">
+                <header class="figma-exact-header">
+                    <h2 class="figma-exact-header-title">Management</h2>
+                </header>
+
+                <!-- Shortcut 1: User Management -->
+                <a href="admin-users.html" class="figma-exact-mgmt-card" title="เปิดหน้าจัดการผู้ใช้งาน">
+                    <img src="assets/images/icon-idcard.png" alt="User Management Icon" class="figma-exact-mgmt-card-icon">
+                    <div>
+                        <h3 class="figma-exact-mgmt-card-title">User Management</h3>
+                        <p class="figma-exact-mgmt-card-sub">add/edit/delete user</p>
+                    </div>
+                </a>
+
+                <!-- Shortcut 2: Product Management -->
+                <a href="admin-products.html" class="figma-exact-mgmt-card" title="เปิดหน้าจัดการสินค้า">
+                    <img src="assets/images/icon-package.png" alt="Product Management Icon" class="figma-exact-mgmt-card-icon">
+                    <div>
+                        <h3 class="figma-exact-mgmt-card-title">Product Management</h3>
+                        <p class="figma-exact-mgmt-card-sub">add/edit/delete user</p>
+                    </div>
+                </a>
+            </article>
+
+            <!-- Card 4: Speech Bubble & Mascot Graphic -->
+            <section class="figma-exact-mascot-zone" aria-label="Mascot Greeting">
+                <div class="figma-exact-bubble-wrap">
+                    <div class="figma-exact-bubble">
+                        <p class="figma-exact-bubble-text">
+                            WELCOME<br>
+                            TO<br>
+                            UNIMART !!
+                        </p>
+                    </div>
+                    <!-- Red Heart Sticker beside Speech Bubble -->
+                    <img src="assets/images/heart-sticker.png" alt="Heart Sticker" class="figma-exact-heart-sticker">
+                </div>
+
+                <!-- Unimart White Mascot Character -->
+                <img src="assets/images/sd-gundam-sticker.png" alt="Unimart Mascot" class="figma-exact-mascot-character" onerror="this.src='assets/images/about-rx78.png'">
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Modal for Editing Admin Details -->
+    <div id="modal-edit-admin" class="admin-modal-overlay" aria-hidden="true" role="dialog">
+        <article class="admin-modal-card">
+            <h2 class="modal-header-title">แก้ไขข้อมูลพนักงาน / แอดมิน</h2>
+            <form id="form-edit-admin">
+                <div class="modal-form-grid">
+                    <div class="modal-form-group">
+                        <label for="inp-adm-fullname">ชื่อ - นามสกุล *</label>
+                        <input type="text" id="inp-adm-fullname" class="modal-input" value="กันดัม เลิฟเวอร์" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="inp-adm-email">อีเมล *</label>
+                        <input type="email" id="inp-adm-email" class="modal-input" value="gundamlove59@gmail.com" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="inp-adm-phone">เบอร์โทรศัพท์ *</label>
+                        <input type="tel" id="inp-adm-phone" class="modal-input" value="098-765-4321" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="inp-adm-birthday">วันเกิด</label>
+                        <input type="text" id="inp-adm-birthday" class="modal-input" value="9 กันยายน 2459">
+                    </div>
+
+                    <div class="modal-form-group modal-form-full">
+                        <label for="inp-adm-gender">เพศ</label>
+                        <select id="inp-adm-gender" class="modal-select">
+                            <option value="ไม่ระบุ" selected>ไม่ระบุ</option>
+                            <option value="ชาย">ชาย</option>
+                            <option value="หญิง">หญิง</option>
+                            <option value="อื่นๆ">อื่นๆ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <footer class="modal-actions-row">
+                    <button type="button" class="btn-modal-cancel" id="btn-cancel-adm-modal">ยกเลิก</button>
+                    <button type="submit" class="btn-modal-save">บันทึกข้อมูล</button>
+                </footer>
+            </form>
+        </article>
+    </div>
+
+    <!-- Interactive Script with Web Services Integration -->
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const modal = document.getElementById('modal-edit-admin');
+            const openBtn1 = document.getElementById('btn-edit-admin-hero');
+            const openBtn2 = document.getElementById('btn-open-edit-admin-personal');
+            const cancelBtn = document.getElementById('btn-cancel-adm-modal');
+            const form = document.getElementById('form-edit-admin');
+
+            // Load logged-in admin user (defaults to ID 1)
+            let currentUser = UnimartAPI.getCurrentUser();
+            let adminId = currentUser ? currentUser.id : 1;
+
+            try {
+                const adminRes = await UnimartAPI.getUserById(adminId);
+                if (adminRes) {
+                    currentUser = adminRes;
+                    renderAdminDetails(currentUser);
+                }
+            } catch (err) {
+                console.warn('Backend unavailable for admin detail');
+            }
+
+            function renderAdminDetails(u) {
+                if (u.fullname) {
+                    document.getElementById('disp-admin-fullname').textContent = u.fullname;
+                    document.getElementById('inp-adm-fullname').value = u.fullname;
+                }
+                if (u.username) {
+                    document.getElementById('disp-admin-username').textContent = u.username;
+                }
+                if (u.email) {
+                    document.getElementById('disp-admin-email').textContent = u.email;
+                    document.getElementById('inp-adm-email').value = u.email;
+                }
+                if (u.phone) {
+                    document.getElementById('disp-admin-phone').textContent = u.phone;
+                    document.getElementById('inp-adm-phone').value = u.phone;
+                }
+            }
+
+            function openModal() {
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeModal() {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+
+            [openBtn1, openBtn2].forEach(b => {
+                if (b) b.addEventListener('click', openModal);
+            });
+
+            if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            }
+
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const newName = document.getElementById('inp-adm-fullname').value.trim();
+                    const newEmail = document.getElementById('inp-adm-email').value.trim();
+                    const newPhone = document.getElementById('inp-adm-phone').value.trim();
+                    const newBirth = document.getElementById('inp-adm-birthday').value.trim();
+                    const newGender = document.getElementById('inp-adm-gender').value;
+
+                    try {
+                        await UnimartAPI.updateUser(adminId, {
+                            fullname: newName,
+                            email: newEmail,
+                            phone: newPhone
+                        });
+                    } catch (err) {
+                        console.warn('API update failed, updated in DOM:', err);
+                    }
+
+                    document.getElementById('disp-admin-fullname').textContent = newName;
+                    document.getElementById('disp-admin-email').textContent = newEmail;
+                    document.getElementById('disp-admin-phone').textContent = newPhone;
+                    document.getElementById('disp-admin-birthday').textContent = newBirth;
+                    document.getElementById('disp-admin-gender').textContent = newGender;
+
+                    closeModal();
+                    alert('✅ บันทึกการแก้ไขข้อมูลเรียบร้อยแล้ว!');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

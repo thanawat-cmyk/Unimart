@@ -1,0 +1,308 @@
+{
+  "info": {
+    "name": "UNIMART Web Services - ITDS242 Collection",
+    "_postman_id": "a91b24e6-4299-4d6d-88f1-39e248b6f381",
+    "description": "Postman Collection for ITDS242 Web Technologies Lab Task 3 Web Services (UNIMART Gunpla Store)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "POST Login - Admin Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "POST Login - Customer Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"GundamLover159\",\n  \"password\": \"customer123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "POST Login - Invalid Credentials (401)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"unknown_user\",\n  \"password\": \"wrongpass\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Products Web Services",
+      "item": [
+        {
+          "name": "GET Products - Select All (No criteria)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "GET Products - Criteria Search (Keyword)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?q=Freedom",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [{ "key": "q", "value": "Freedom" }]
+            }
+          }
+        },
+        {
+          "name": "GET Products - Multi-Criteria (Grade + Category)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?grade=MG&category=gundam",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "grade", "value": "MG" },
+                { "key": "category", "value": "gundam" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Products - Price Range & Sorting",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?minPrice=1500&maxPrice=2000&sortBy=price_asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "minPrice", "value": "1500" },
+                { "key": "maxPrice", "value": "2000" },
+                { "key": "sortBy", "value": "price_asc" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Single Product Detail",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST Insert New Product",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MG 1/100 Sazabi Ver.Ka\",\n  \"series\": \"Mobile Suit Gundam: Char's Counterattack\",\n  \"grade\": \"MG\",\n  \"category\": \"gundam\",\n  \"scale\": \"1/100\",\n  \"price\": 2800.00,\n  \"stock\": 10,\n  \"release_date\": \"2024-06-01\",\n  \"rating\": 5.0,\n  \"image_url\": \"assets/images/product-freedom.png\",\n  \"description\": \"MSN-04 Sazabi Ver.Ka โมเดลสีแดงระดับตำนาน พร้อมบีมช็อตไรเฟิลและฟันเนล 6 ตัว\",\n  \"details\": \"โครงสร้าง Full Inner Frame แข็งแรง พร้อมสติกเกอร์ดีคอลน้ำพรีเมียมจาก Katoki Hajime\",\n  \"reference_source\": \"Bandai Hobby Site - https://bandai-hobby.net\",\n  \"status\": \"In Stock\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "PUT Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 1850.00,\n  \"stock\": 25,\n  \"status\": \"In Stock\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "1"]
+            }
+          }
+        },
+        {
+          "name": "DELETE Product",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/products/16",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "16"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Users Web Services",
+      "item": [
+        {
+          "name": "GET Users - Select All",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "GET Users - Search by Keyword",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users?q=Gundam",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"],
+              "query": [{ "key": "q", "value": "Gundam" }]
+            }
+          }
+        },
+        {
+          "name": "GET Users - Filter by Role and Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users?role=Staff&status=Active",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"],
+              "query": [
+                { "key": "role", "value": "Staff" },
+                { "key": "status", "value": "Active" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Single User Detail",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST Insert New User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"somchai_staff\",\n  \"password\": \"password123\",\n  \"fullname\": \"สมชาย รักการต่อกันดั้ม\",\n  \"email\": \"somchai.gunpla@example.com\",\n  \"phone\": \"089-999-8888\",\n  \"age\": 25,\n  \"address\": \"45/2 ถ.พหลโยธิน แขวงพญาไท เขตพญาไท กรุงเทพมหานคร 10400\",\n  \"preferences\": \"ดูแลคลังสินค้าเกรด Perfect Grade และอุปกรณ์ทำสีแอร์บรัช\",\n  \"role\": \"Staff\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "PUT Update User",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"Manager\",\n  \"phone\": \"082-999-7777\",\n  \"preferences\": \"ปรับบทบาทดูแลสต็อกสินค้าพรีเมียมและประสานงานทีม\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "3"]
+            }
+          }
+        },
+        {
+          "name": "DELETE User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/users/5",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "5"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Public API & Orders",
+      "item": [
+        {
+          "name": "GET Public Currency Exchange Rate (JPY -> THB)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/public/exchange-rate?amount_jpy=5500",
+              "host": ["{{baseUrl}}"],
+              "path": ["public", "exchange-rate"],
+              "query": [{ "key": "amount_jpy", "value": "5500" }]
+            }
+          }
+        },
+        {
+          "name": "GET Customer Orders History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/orders/user/6",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "user", "6"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

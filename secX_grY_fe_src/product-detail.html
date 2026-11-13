@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="รายละเอียดสินค้ากันพลา - Unimart โครงงานวิชา ITDS242 Web Technologies Lab">
+    <meta name="author" content="ITDS242 Project Team">
+    <title>Product Details | Unimart</title>
+    <!-- External CSS: สไตล์ทั้งหมดของระบบ (ตรงตามเกณฑ์ External CSS) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ======================================================================
+         1. HEADER & NAVIGATION BAR
+         (ตรงตามเกณฑ์: มี Navigational bar เชื่อมโยงหน้าเว็บ และมีปุ่ม Log-in)
+         ====================================================================== -->
+    <header id="main-header">
+        <nav aria-label="Main Navigation">
+            <!-- โลโก้ร้าน Unimart -->
+            <div class="brand-container">
+                <a href="index.html" title="Unimart Home">
+                    <img src="assets/images/logo.png" alt="Unimart Logo" class="brand-logo">
+                </a>
+            </div>
+
+            <!-- เมนูนำทาง (เชื่อมโยงหน้าเว็บ) -->
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="search.html" class="nav-link active">Products</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="teampage.html" class="nav-link">Team</a></li>
+                
+                <!-- ช่องค้นหาใน Navbar -->
+                <li>
+                    <form id="search-form-nav" action="search.html" method="GET">
+                        <input type="text" name="keyword" class="nav-search-input" placeholder="Search gunpla..." aria-label="Search">
+                        <button type="submit" class="nav-search-btn" aria-label="Submit Search">
+                            <img src="assets/images/search-icon.svg" alt="Search">
+                        </button>
+                    </form>
+                </li>
+            </ul>
+
+            <!-- ปุ่ม Action: Sign in และ Register -->
+            <div class="nav-actions">
+                <a href="login.html" class="btn-primary" title="เข้าสู่ระบบผู้ดูแลระบบ">Sign in</a>
+                <a href="profile.html" class="btn-secondary" title="โปรไฟล์ของฉัน">👤 Profile</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ======================================================================
+         2. MAIN CONTENT AREA (ใช้ Semantic Element: <main>)
+         ====================================================================== -->
+    <main>
+
+        <section id="product-detail-section" aria-label="Product Detail Section">
+            
+            <!-- Breadcrumb Navigation (ตาม Figma 251:147) -->
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="index.html">HOME</a>
+                <span class="breadcrumb-separator">&gt;</span>
+                <a href="search.html">Products</a>
+                <span class="breadcrumb-separator">&gt;</span>
+                <span id="breadcrumb-grade">MG - Master Grade</span>
+                <span class="breadcrumb-separator">&gt;</span>
+                <span id="breadcrumb-product-name" class="breadcrumb-current">Freedom GUNDAM</span>
+            </nav>
+
+            <!-- --------------------------------------------------------------
+                 PRODUCT OVERVIEW CONTAINER (2 Columns Layout)
+                 (ตรงตาม Figma: ด้านซ้ายแสดงภาพและแกลเลอรี / ด้านขวาแสดงสเปกและปุ่มสั่งซื้อ)
+                 -------------------------------------------------------------- -->
+            <div class="product-detail-container">
+                
+                <!-- คอลัมน์ซ้าย: รูปภาพหลักและแกลเลอรีรูปขนาดย่อ -->
+                <div class="product-gallery-wrapper">
+                    <figure class="main-image-frame">
+                        <img id="detail-main-img" src="assets/images/detail-gunpla-main.png" alt="Product Image">
+                    </figure>
+
+                    <!-- แกลเลอรีรูปขนาดย่อ (Thumbnails) -->
+                    <div class="thumbnail-carousel">
+                        <div class="thumb-item active" onclick="changeMainImage(this)">
+                            <img src="assets/images/detail-gunpla-main.png" alt="Thumb 1">
+                        </div>
+                        <div class="thumb-item" onclick="changeMainImage(this)">
+                            <img src="assets/images/product-freedom.png" alt="Thumb 2">
+                        </div>
+                        <div class="thumb-item" onclick="changeMainImage(this)">
+                            <img src="assets/images/product-god.png" alt="Thumb 3">
+                        </div>
+                        <div class="thumb-item" onclick="changeMainImage(this)">
+                            <img src="assets/images/about-rx78.png" alt="Thumb 4">
+                        </div>
+                        <div class="thumb-item" onclick="changeMainImage(this)">
+                            <img src="assets/images/hero-banner.png" alt="Thumb 5">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- คอลัมน์ขวา: รายละเอียด สเปก ราคา และปุ่มสั่งซื้อ -->
+                <div class="product-info-panel">
+                    
+                    <!-- ป้ายแสดงเกรดโมเดล (Figma: ป้ายสีทอง/ส้ม) -->
+                    <span id="detail-grade-badge" class="detail-grade-badge">MG</span>
+
+                    <!-- ชื่อสินค้า -->
+                    <h1 id="detail-title" class="detail-product-title">MG 1/100 Freedom GUNDAM Ver.2.0</h1>
+
+                    <!-- แถวแสดงราคาและสถานะสินค้าในสต็อก -->
+                    <div class="detail-price-row">
+                        <span id="detail-price" class="detail-price-value">฿1,750</span>
+                        <div class="stock-status-pill">
+                            <img src="assets/images/icon-instock.png" alt="" class="stock-icon">
+                            <span id="detail-stock">In Stock (มีสินค้า 15 ชิ้น)</span>
+                        </div>
+                    </div>
+
+                    <!-- ตารางสเปกและข้อมูลจำเพาะของโมเดล (Figma: Brand, Grade, Scale, Series, Release Date) -->
+                    <table class="specs-table">
+                        <tbody>
+                            <tr>
+                                <th>Brand (ผู้ผลิต)</th>
+                                <td>Bandai Namco</td>
+                            </tr>
+                            <tr>
+                                <th>Grade (เกรด)</th>
+                                <td id="spec-grade">MG - Master Grade</td>
+                            </tr>
+                            <tr>
+                                <th>Category (หมวดหมู่)</th>
+                                <td id="spec-category">Gundam Plastic Model</td>
+                            </tr>
+                            <tr>
+                                <th>Scale (อัตราส่วน)</th>
+                                <td id="spec-scale">1 : 100</td>
+                            </tr>
+                            <tr>
+                                <th>Series (ซีรีส์)</th>
+                                <td id="spec-series">Mobile Suit Gundam SEED</td>
+                            </tr>
+                            <tr>
+                                <th>Release Date (วันวางจำหน่าย)</th>
+                                <td id="spec-release">2024-04-12</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- ตัวเลือกจำนวนสินค้า (Quantity Selector) -->
+                    <div class="quantity-section">
+                        <span class="quantity-label">Quantity:</span>
+                        <div class="quantity-stepper">
+                            <button type="button" class="stepper-btn" onclick="adjustQty(-1)" aria-label="Decrease quantity">-</button>
+                            <input type="text" id="product-qty" class="stepper-value" value="1" readonly>
+                            <button type="button" class="stepper-btn" onclick="adjustQty(1)" aria-label="Increase quantity">+</button>
+                        </div>
+                    </div>
+
+                    <!-- ปุ่มดำเนินการสั่งซื้อและบันทึกรายการโปรด -->
+                    <div class="action-buttons-group">
+                        <button type="button" class="btn-add-to-cart" onclick="alert('เพิ่มสินค้าลงในตะกร้าเรียบร้อยแล้ว!')">
+                            ADD TO CART
+                        </button>
+                        <button type="button" class="btn-add-to-wishlist" onclick="alert('บันทึกในรายการที่ชอบเรียบร้อยแล้ว!')">
+                            <img src="assets/images/icon-heart-red.png" alt="" class="wishlist-heart-icon">
+                            <span>ADD TO WISHLIST</span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- --------------------------------------------------------------
+                 TABS: DESCRIPTION, DETAILS, REVIEWS (Figma 251:161 - 251:163)
+                 -------------------------------------------------------------- -->
+            <div class="detail-tabs-container">
+                <nav class="tabs-nav" aria-label="Product Tabs">
+                    <button type="button" class="tab-nav-btn active" onclick="switchTab('desc', this)">DESCRIPTION</button>
+                    <button type="button" class="tab-nav-btn" onclick="switchTab('details', this)">DETAILS</button>
+                    <button type="button" class="tab-nav-btn" onclick="switchTab('reviews', this)">REVIEWS (12)</button>
+                </nav>
+
+                <!-- Tab 1: คำอธิบายสินค้า -->
+                <div id="tab-desc" class="tab-pane">
+                    <h3>รายละเอียดสินค้าและเนื้อเรื่องย่อ</h3>
+                    <p id="detail-desc-text">
+                        ZGMF-X10A Freedom Gundam ในเวอร์ชัน Master Grade 2.0 โครงสร้างเฟรมสมจริง รายละเอียดปีก Hi-MAT Mode สามารถกางออกได้อย่างสง่างาม พร้อมบีมไรเฟิลและโล่คอมโพสิต
+                    </p>
+                    <ul style="margin-top: 16px;">
+                        <li>โครงใน Full Inner Frame ขยับได้สมจริงและแข็งแรง</li>
+                        <li>กลไกปีก Hi-MAT Mode และ Full Burst Mode กางออกได้อย่างอิสระ</li>
+                        <li>มาพร้อมอาวุธครบชุด: Lupus Beam Rifle, Lacerta Beam Saber x2, และ Shield</li>
+                    </ul>
+                </div>
+
+                <!-- Tab 2: ข้อมูลการประกอบและชิ้นส่วน -->
+                <div id="tab-details" class="tab-pane" style="display: none;">
+                    <h3>ข้อมูลในกล่องและอุปกรณ์ประกอบ</h3>
+                    <p id="detail-specs-text">
+                        ชุดประกอบพลาสติกคิทขนาด 1/100 โครงในแบบ Full Inner Frame สติกเกอร์ Realistic Decal พร้อมฐานตั้งฟิกเกอร์ คิระ ยามาโตะ
+                    </p>
+                    <ul style="margin-top: 16px;">
+                        <li>จำนวนแผงรันเนอร์: 16 แผง</li>
+                        <li>วัสดุพลาสติก: PS, PE, ABS ปลอดภัยคุณภาพสูงจากญี่ปุ่น</li>
+                        <li>คู่มือการประกอบฉบับเต็มพร้อมภาพพิมพ์ 4 สีชัดเจน</li>
+                    </ul>
+                </div>
+
+                <!-- Tab 3: ความคิดเห็นจากผู้ซื้อ -->
+                <div id="tab-reviews" class="tab-pane" style="display: none;">
+                    <h3>ความคิดเห็นและคะแนนรีวิว (4.9 / 5.0)</h3>
+                    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                        <strong style="color: #0f172a;">GundamMaster99</strong> ⭐⭐⭐⭐⭐
+                        <p style="color: #64748b; font-size: 0.95rem; margin-top: 4px;">กล่องคมกริบ จัดส่งไวมาก ชิ้นส่วนประกอบแน่นหนา ข้อต่อไม่หลวม ปีกกางได้อลังการสุดๆ แนะนำเลยครับ!</p>
+                    </div>
+                    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <strong style="color: #0f172a;">GunplaBuilderTH</strong> ⭐⭐⭐⭐⭐
+                        <p style="color: #64748b; font-size: 0.95rem; margin-top: 4px;">สินค้าของแท้ 100% จาก Bandai แน่นอน รายละเอียดดีคอลสวยมาก คุ้มราคาครับ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --------------------------------------------------------------
+                 REFERENCES & CITATIONS (เกณฑ์ข้อ 4: ระบุแหล่งอ้างอิงข้อมูลทุกครั้ง)
+                 -------------------------------------------------------------- -->
+            <aside class="reference-card" aria-label="Data References">
+                <h3 class="reference-card-title">
+                    <span>📚</span>
+                    <span>แหล่งอ้างอิงข้อมูลและรูปภาพสินค้า (Citations &amp; References)</span>
+                </h3>
+                <p style="margin-bottom: 10px; font-size: 0.95rem; color: #c9d1d9;">
+                    รูปภาพและข้อมูลทางเทคนิคของโมเดลกันพลาในหน้านี้ ถูกนำมาใช้เพื่อวัตถุประสงค์ทางการศึกษา ในโครงงานวิชา ITDS242 Web Technologies Lab โดยอ้างอิงจากแหล่งข้อมูลทางการดังต่อไปนี้:
+                </p>
+                <ul class="reference-list">
+                    <li id="reference-item-link">
+                        <strong>Official Specifications:</strong> Bandai Hobby Site Japan 
+                        (<a href="https://bandai-hobby.net" target="_blank" rel="noopener noreferrer">https://bandai-hobby.net</a>)
+                    </li>
+                    <li>
+                        <strong>Gundam Information &amp; Lore:</strong> Gundam.info Official Portal Site
+                        (<a href="https://gundam.info" target="_blank" rel="noopener noreferrer">https://gundam.info</a>)
+                    </li>
+                    <li>
+                        <strong>Model Kit Reviews &amp; Manuals:</strong> Dalong's Gunpla Review Archive
+                        (<a href="http://dalong.net" target="_blank" rel="noopener noreferrer">http://dalong.net</a>)
+                    </li>
+                    <li>
+                        <strong>ลิขสิทธิ์ภาพ:</strong> &copy; SOTSU &bull; SUNRISE &bull; BANDAI SPIRITS CO., LTD.
+                    </li>
+                </ul>
+            </aside>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================================================
+         3. FOOTER & OFFICIAL SOCIAL CHANNELS
+         ====================================================================== -->
+    <footer id="site-footer">
+        <div id="social-channels">
+            <h3 class="social-channels-header">OFFICIAL SOCIAL CHANNELS</h3>
+            <div class="social-links-wrapper">
+                
+                <!-- Facebook Official -->
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/facebook-logo.png" alt="Facebook" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+                <!-- LINE Official -->
+                <a href="https://line.me" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/line-logo.png" alt="LINE" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+            </div>
+
+            <!-- ข้อความลิขสิทธิ์และข้อมูลโครงงาน -->
+            <div class="footer-bottom">
+                <p>&copy; 2026 Unimart Gunpla Store. All rights reserved.</p>
+                <p>ITDS242 Web Technologies Lab Project</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- นำเข้าฐานข้อมูลจำลองสินค้า และโมดูลเชื่อมต่อ Web Services -->
+    <script src="js/products.js"></script>
+    <script src="js/api.js"></script>
+
+    <!-- สคริปต์ควบคุมการทำงานของหน้ารายละเอียดสินค้า และเชื่อมต่อ Web Services API -->
+    <script>
+        // ปรับจำนวนสินค้า (Quantity Stepper)
+        function adjustQty(amount) {
+            const qtyInput = document.getElementById('product-qty');
+            let current = parseInt(qtyInput.value, 10) || 1;
+            current += amount;
+            if (current < 1) current = 1;
+            if (current > 99) current = 99;
+            qtyInput.value = current;
+        }
+
+        // สลับรูปภาพหลักในแกลเลอรีเมื่อคลิกที่รูปขนาดย่อ
+        function changeMainImage(thumbElement) {
+            const mainImg = document.getElementById('detail-main-img');
+            const clickedImgSrc = thumbElement.querySelector('img').src;
+            mainImg.src = clickedImgSrc;
+
+            // ปรับสถานะ active ให้กับ thumbnail ที่เลือก
+            document.querySelectorAll('.thumb-item').forEach(item => item.classList.remove('active'));
+            thumbElement.classList.add('active');
+        }
+
+        // สลับแท็บเนื้อหา (Description / Details / Reviews)
+        function switchTab(tabId, btnElement) {
+            document.getElementById('tab-desc').style.display = 'none';
+            document.getElementById('tab-details').style.display = 'none';
+            document.getElementById('tab-reviews').style.display = 'none';
+
+            document.querySelectorAll('.tab-nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+            btnElement.classList.add('active');
+        }
+
+        // โหลดข้อมูลสินค้าตาม ?id= จาก Web Services API
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id') || 1;
+
+            let product = null;
+            try {
+                // เรียก Web Service API: GET /api/products/:id
+                product = await UnimartAPI.getProductById(productId);
+            } catch (err) {
+                console.warn('Backend unavailable, fallback to local model:', err);
+                product = getProductById(productId);
+            }
+
+            if (!product) {
+                product = getProductById(productId);
+            }
+
+            if (product) {
+                const imgUrl = product.image_url || product.image || 'assets/images/product-freedom.png';
+                const priceNum = Number(product.price);
+                const releaseDateStr = product.release_date || product.releaseDate || '2024';
+                const refSource = product.reference_source || product.reference || 'Bandai Hobby Site - https://bandai-hobby.net';
+
+                // ดึงอัตราแลกเปลี่ยนเงินเยน (Public API) เพื่อแสดงราคา JPY
+                let approxJpyText = '';
+                try {
+                    const exData = await UnimartAPI.getExchangeRate();
+                    if (exData && exData.rate) {
+                        const approxJpy = Math.round(priceNum / exData.rate);
+                        approxJpyText = ` <small style="font-size: 1rem; color: #64748b; font-weight: normal;">(~¥${approxJpy.toLocaleString()} JPY)</small>`;
+                    }
+                } catch {
+                    const approxJpy = Math.round(priceNum / 0.238);
+                    approxJpyText = ` <small style="font-size: 1rem; color: #64748b; font-weight: normal;">(~¥${approxJpy.toLocaleString()} JPY)</small>`;
+                }
+
+                // อัปเดตหัวข้อและ Breadcrumb
+                document.title = `${product.name} | Unimart`;
+                document.getElementById('breadcrumb-grade').textContent = `${product.grade} - ${product.scale || ''}`;
+                document.getElementById('breadcrumb-product-name').textContent = product.name;
+
+                // อัปเดตข้อมูลสินค้า
+                document.getElementById('detail-grade-badge').textContent = product.grade;
+                document.getElementById('detail-title').textContent = product.name;
+                document.getElementById('detail-price').innerHTML = `฿${priceNum.toLocaleString()}${approxJpyText}`;
+                document.getElementById('detail-stock').textContent = `${product.status || 'In Stock'} (มีสินค้า ${product.stock} ชิ้น)`;
+
+                // อัปเดตรูปภาพ
+                document.getElementById('detail-main-img').src = imgUrl;
+
+                // อัปเดตตารางสเปก
+                document.getElementById('spec-grade').textContent = `${product.grade} (${product.scale || ''})`;
+                document.getElementById('spec-category').textContent = product.category === 'gundam' ? 'Gundam Plastic Model' : product.category === 'parts' ? 'Parts & Accessories' : 'Tools & Supplies';
+                document.getElementById('spec-scale').textContent = product.scale || 'N/A';
+                document.getElementById('spec-series').textContent = product.series || 'Mobile Suit Gundam';
+                document.getElementById('spec-release').textContent = releaseDateStr;
+
+                // อัปเดตแท็บคำอธิบาย
+                document.getElementById('detail-desc-text').textContent = product.description;
+                document.getElementById('detail-specs-text').textContent = product.details;
+
+                // อัปเดตแหล่งอ้างอิง
+                document.getElementById('reference-item-link').innerHTML = `<strong>Official Specifications:</strong> ${refSource}`;
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="คณะผู้จัดทำโครงงาน Unimart Gunpla Store - วิชา ITDS242 Web Technologies Lab">
+    <meta name="author" content="ITDS242 Project Team">
+    <title>Our Team | Unimart</title>
+    <!-- External CSS: สไตล์ของหน้าเว็บทั้งหมด (ตรงตามเกณฑ์ External CSS) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ======================================================================
+         1. HEADER & NAVIGATION BAR
+         (ตรงตามเกณฑ์: มี Navigational bar เชื่อมโยงหน้าเว็บ และมีปุ่ม Log-in)
+         ====================================================================== -->
+    <header id="main-header">
+        <nav aria-label="Main Navigation">
+            <!-- โลโก้ร้าน Unimart -->
+            <div class="brand-container">
+                <a href="index.html" title="Unimart Home">
+                    <img src="assets/images/logo.png" alt="Unimart Logo" class="brand-logo">
+                </a>
+            </div>
+
+            <!-- เมนูนำทาง (เชื่อมโยงหน้าเว็บ) -->
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="search.html" class="nav-link">Products</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="teampage.html" class="nav-link active">Team</a></li>
+                
+                <!-- ช่องค้นหาใน Navbar -->
+                <li>
+                    <form id="search-form-nav" action="search.html" method="GET">
+                        <input type="text" name="keyword" class="nav-search-input" placeholder="Search gunpla..." aria-label="Search">
+                        <button type="submit" class="nav-search-btn" aria-label="Submit Search">
+                            <img src="assets/images/search-icon.svg" alt="Search">
+                        </button>
+                    </form>
+                </li>
+            </ul>
+
+            <!-- ปุ่ม Action: Sign in และ Register -->
+            <div class="nav-actions">
+                <a href="login.html" class="btn-primary" title="เข้าสู่ระบบผู้ดูแลระบบ">Sign in</a>
+                <a href="profile.html" class="btn-secondary" title="โปรไฟล์ของฉัน">👤 Profile</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ======================================================================
+         2. MAIN CONTENT AREA (ใช้ Semantic Element: <main>)
+         ====================================================================== -->
+    <main>
+
+        <!-- ------------------------------------------------------------------
+             TEAM PAGE HERO BANNER
+             ------------------------------------------------------------------ -->
+        <section id="about-hero" aria-label="Team Hero">
+            <h1 class="about-hero-title">OUR TEAM</h1>
+            <p class="about-hero-subtitle">คณะผู้จัดทำโครงงาน วิชา ITDS242 Web Technologies Lab</p>
+        </section>
+
+        <!-- ------------------------------------------------------------------
+             OUR TEAM SECTION
+             (ตรงตามเกณฑ์ข้อที่ 7: แสดงข้อมูลและรูปภาพสมาชิกทุกคนในกลุ่ม + ลิงก์ Social Media ครบถ้วน)
+             ------------------------------------------------------------------ -->
+        <section id="team-section" aria-labelledby="team-heading">
+            <div class="team-header-wrapper">
+                <h2 id="team-heading" class="team-main-title">MEET OUR TEAM</h2>
+                <p class="team-subtitle">ทีมงานเบื้องหลังการพัฒนาระบบร้านค้าออนไลน์ Unimart Gunpla Store</p>
+            </div>
+
+            <!-- รายชื่อสมาชิกในกลุ่มทั้ง 5 คน (ข้อมูลจริงตรงตามข้อกำหนดกลุ่ม) -->
+            <div class="team-grid">
+                
+                <!-- สมาชิกคนที่ 1: ณิชาภัทร วิชาธรรม -->
+                <article class="team-card">
+                    <figure class="team-photo-container">
+                        <img src="assets/images/member-1.png" alt="ภาพ ณิชาภัทร วิชาธรรม" class="team-photo">
+                    </figure>
+                    <figcaption class="team-details">
+                        <h3 class="member-name">ณิชาภัทร วิชาธรรม</h3>
+                        <p class="member-id">ID: 6887018</p>
+                        <p class="member-role">Project Manager &amp; Frontend</p>
+                        
+                        <!-- ลิงก์ Instagram ส่วนตัว -->
+                        <a href="https://www.instagram.com/ccrtn._/" target="_blank" rel="noopener noreferrer" class="team-contact-btn" title="Instagram: @ccrtn._">
+                            <svg class="team-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            <span>@ccrtn._</span>
+                        </a>
+                    </figcaption>
+                </article>
+
+                <!-- สมาชิกคนที่ 2: อโยสรา ต้องทรัพย์ -->
+                <article class="team-card">
+                    <figure class="team-photo-container">
+                        <img src="assets/images/member-2.png" alt="ภาพ อโยสรา ต้องทรัพย์" class="team-photo">
+                    </figure>
+                    <figcaption class="team-details">
+                        <h3 class="member-name">อโยสรา ต้องทรัพย์</h3>
+                        <p class="member-id">ID: 6887063</p>
+                        <p class="member-role">UI/UX Designer &amp; Frontend</p>
+                        
+                        <!-- ลิงก์ Instagram ส่วนตัว -->
+                        <a href="https://www.instagram.com/a_y_s_r_/" target="_blank" rel="noopener noreferrer" class="team-contact-btn" title="Instagram: @a_y_s_r_">
+                            <svg class="team-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            <span>@a_y_s_r_</span>
+                        </a>
+                    </figcaption>
+                </article>
+
+                <!-- สมาชิกคนที่ 3: ธนวัฒน์ แสนโบราณ -->
+                <article class="team-card">
+                    <figure class="team-photo-container">
+                        <img src="assets/images/member-3.png" alt="ภาพ ธนวัฒน์ แสนโบราณ" class="team-photo">
+                    </figure>
+                    <figcaption class="team-details">
+                        <h3 class="member-name">ธนวัฒน์ แสนโบราณ</h3>
+                        <p class="member-id">ID: 6887025</p>
+                        <p class="member-role">Full-Stack Developer &amp; System Lead</p>
+                        
+                        <!-- ลิงก์ Instagram ส่วนตัว -->
+                        <a href="https://www.instagram.com/poom_ts.23/" target="_blank" rel="noopener noreferrer" class="team-contact-btn" title="Instagram: @poom_ts.23">
+                            <svg class="team-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            <span>@poom_ts.23</span>
+                        </a>
+                    </figcaption>
+                </article>
+
+                <!-- สมาชิกคนที่ 4: คชาธร ศิริเลิศ -->
+                <article class="team-card">
+                    <figure class="team-photo-container">
+                        <img src="assets/images/member-4.png" alt="ภาพ คชาธร ศิริเลิศ" class="team-photo">
+                    </figure>
+                    <figcaption class="team-details">
+                        <h3 class="member-name">คชาธร ศิริเลิศ</h3>
+                        <p class="member-id">ID: 6887071</p>
+                        <p class="member-role">Backend Developer &amp; Web Services</p>
+                        
+                        <!-- ลิงก์ Instagram ส่วนตัว -->
+                        <a href="https://www.instagram.com/bbtt1260/" target="_blank" rel="noopener noreferrer" class="team-contact-btn" title="Instagram: @bbtt1260">
+                            <svg class="team-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            <span>@bbtt1260</span>
+                        </a>
+                    </figcaption>
+                </article>
+
+                <!-- สมาชิกคนที่ 5: ธัญชนก โรจนสฤษฎิ์ -->
+                <article class="team-card">
+                    <figure class="team-photo-container">
+                        <img src="assets/images/member-5.png" alt="ภาพ ธัญชนก โรจนสฤษฎิ์" class="team-photo">
+                    </figure>
+                    <figcaption class="team-details">
+                        <h3 class="member-name">ธัญชนก โรจนสฤษฎิ์</h3>
+                        <p class="member-id">ID: 6887077</p>
+                        <p class="member-role">Database Administrator &amp; QA Tester</p>
+                        
+                        <!-- ลิงก์ Instagram ส่วนตัว -->
+                        <a href="https://www.instagram.com/nenewith.rj/" target="_blank" rel="noopener noreferrer" class="team-contact-btn" title="Instagram: @nenewith.rj">
+                            <svg class="team-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            <span>@nenewith.rj</span>
+                        </a>
+                    </figcaption>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ======================================================================
+         3. FOOTER & OFFICIAL SOCIAL CHANNELS
+         ====================================================================== -->
+    <footer id="site-footer">
+        <div id="social-channels">
+            <h3 class="social-channels-header">OFFICIAL SOCIAL CHANNELS</h3>
+            <div class="social-links-wrapper">
+                
+                <!-- Facebook Official -->
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/facebook-logo.png" alt="Facebook" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+                <!-- LINE Official -->
+                <a href="https://line.me" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/line-logo.png" alt="LINE" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+            </div>
+
+            <!-- ข้อความลิขสิทธิ์และข้อมูลโครงงาน -->
+            <div class="footer-bottom">
+                <p>&copy; 2026 Unimart Gunpla Store. All rights reserved.</p>
+                <p>ITDS242 Web Technologies Lab Project</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

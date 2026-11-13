@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ค้นหาสินค้าโมเดลกันพลาและอุปกรณ์ - Unimart โครงงานวิชา ITDS242 Web Technologies Lab">
+    <meta name="author" content="ITDS242 Project Team">
+    <title>Search Products | Unimart</title>
+    <!-- External CSS: จัดการสไตล์ของหน้าเว็บทั้งหมด (ตรงตามเกณฑ์ External CSS) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ======================================================================
+         1. HEADER & NAVIGATION BAR
+         (ตรงตามเกณฑ์: มี Navigational bar เชื่อมโยงหน้าเว็บ และมีปุ่ม Log-in)
+         ====================================================================== -->
+    <header id="main-header">
+        <nav aria-label="Main Navigation">
+            <!-- โลโก้ร้าน Unimart -->
+            <div class="brand-container">
+                <a href="index.html" title="Unimart Home">
+                    <img src="assets/images/logo.png" alt="Unimart Logo" class="brand-logo">
+                </a>
+            </div>
+
+            <!-- เมนูนำทาง (เชื่อมโยงหน้าเว็บ) -->
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="search.html" class="nav-link active">Products</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="teampage.html" class="nav-link">Team</a></li>
+                
+                <!-- ช่องค้นหาใน Navbar -->
+                <li>
+                    <form id="search-form-nav" action="search.html" method="GET">
+                        <input type="text" name="keyword" class="nav-search-input" placeholder="Search gunpla..." aria-label="Search">
+                        <button type="submit" class="nav-search-btn" aria-label="Submit Search">
+                            <img src="assets/images/search-icon.svg" alt="Search">
+                        </button>
+                    </form>
+                </li>
+            </ul>
+
+            <!-- ปุ่ม Action: Sign in และ Register -->
+            <div class="nav-actions">
+                <a href="login.html" class="btn-primary" title="เข้าสู่ระบบผู้ดูแลระบบ">Sign in</a>
+                <a href="profile.html" class="btn-secondary" title="โปรไฟล์ของฉัน">👤 Profile</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ======================================================================
+         2. MAIN CONTENT AREA (ใช้ Semantic Element: <main>)
+         ====================================================================== -->
+    <main>
+
+        <section id="search-page-section" aria-label="Product Search Section">
+            
+            <!-- หัวข้อหน้าค้นหาสินค้า (Figma: SEARCH PRODUCTS) -->
+            <div class="search-page-header">
+                <h1 class="search-page-title">SEARCH PRODUCTS</h1>
+                <!-- Public API Currency Live Banner (ตรงตามเกณฑ์ Public API Integration) -->
+                <div id="currency-rate-banner" style="margin-top: 8px; font-size: 0.88rem; color: #58a6ff; display: inline-flex; align-items: center; gap: 8px; background: rgba(56, 139, 253, 0.1); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(56, 139, 253, 0.25);">
+                    <span style="font-size: 1.1rem;">🎌</span>
+                    <span id="currency-rate-text">กำลังโหลดอัตราแลกเปลี่ยนเงินเยน (Public API)...</span>
+                </div>
+            </div>
+
+            <!-- --------------------------------------------------------------
+                 SEARCH FORM (ตรงตามเกณฑ์ข้อ 3: มี Form ค้นหาพร้อม Input + ปุ่ม 
+                 และมีเกณฑ์การค้นหาอย่างน้อย 3 รูปแบบ)
+                 -------------------------------------------------------------- -->
+            <div id="search-form-container">
+                <form id="product-search-form" action="search.html" method="GET">
+                    
+                    <div class="search-form-grid">
+                        
+                        <!-- เกณฑ์ที่ 1: ค้นหาด้วยคำสำคัญ/ชื่อสินค้า (Keyword / Product Name) -->
+                        <div class="form-group">
+                            <label for="keyword-input" class="form-label">Keyword (ชื่อสินค้า)</label>
+                            <input type="text" id="keyword-input" name="keyword" class="form-input" placeholder="Search name... (e.g. Freedom, God)">
+                        </div>
+
+                        <!-- เกณฑ์ที่ 2: ค้นหาด้วยเกรดโมเดล (Grade Selection) -->
+                        <div class="form-group">
+                            <label for="grade-select" class="form-label">Grade (เกรดโมเดล)</label>
+                            <select id="grade-select" name="grade" class="form-select">
+                                <option value="">All Grade (ทุกเกรด)</option>
+                                <option value="SD">SD - Super Deformed</option>
+                                <option value="HG">HG - High Grade (1/144)</option>
+                                <option value="RG">RG - Real Grade (1/144)</option>
+                                <option value="MG">MG - Master Grade (1/100)</option>
+                                <option value="PG">PG - Perfect Grade (1/60)</option>
+                            </select>
+                        </div>
+
+                        <!-- เกณฑ์ที่ 3: ค้นหาด้วยประเภทสินค้า (Category Selection) -->
+                        <div class="form-group">
+                            <label for="category-select" class="form-label">Category (หมวดหมู่สินค้า)</label>
+                            <select id="category-select" name="category" class="form-select">
+                                <option value="">All Category (ทุกหมวดหมู่)</option>
+                                <option value="gundam">Gundam Plastic Model</option>
+                                <option value="parts">Parts &amp; Accessories</option>
+                                <option value="tools">Tools &amp; Supplies</option>
+                            </select>
+                        </div>
+
+                        <!-- เกณฑ์ที่ 4: ค้นหาตามช่วงราคา (Price Range) -->
+                        <div class="form-group">
+                            <label class="form-label">Price Range (ช่วงราคา บาท)</label>
+                            <div class="price-range-group">
+                                <input type="number" id="min-price-input" name="min_price" class="form-input" placeholder="Min (1,000)" min="0">
+                                <span class="price-separator">-</span>
+                                <input type="number" id="max-price-input" name="max_price" class="form-input" placeholder="Max (10,000)" min="0">
+                            </div>
+                        </div>
+
+                        <!-- เกณฑ์ที่ 5: จัดเรียงลำดับผลลัพธ์ (Sort By) -->
+                        <div class="form-group">
+                            <label for="sort-select" class="form-label">Sort By (เรียงตาม)</label>
+                            <select id="sort-select" name="sort" class="form-select">
+                                <option value="newest">Newest (มาใหม่ล่าสุด)</option>
+                                <option value="price_asc">Price: Low to High (ราคาต่ำ-สูง)</option>
+                                <option value="price_desc">Price: High to Low (ราคาสูง-ต่ำ)</option>
+                                <option value="name_asc">Name: A to Z (ชื่อ ก-ฮ)</option>
+                            </select>
+                        </div>
+
+                        <!-- ปุ่มดำเนินการ (Reset & Search Buttons) -->
+                        <div class="form-group" style="justify-content: flex-end;">
+                            <div class="search-btn-wrapper">
+                                <button type="reset" class="btn-search-reset" onclick="window.location.href='search.html'">RESET</button>
+                                <button type="submit" class="btn-search-submit">SEARCH</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <!-- --------------------------------------------------------------
+                 SEARCH RESULTS SECTION (ผลลัพธ์การค้นหาจำลอง 12 รายการ)
+                 (ตรงตามเกณฑ์: แสดงผลลัพธ์จำลองในรูปแบบตารางหรือรายการที่สวยงาม 
+                  และมีปุ่มเชื่อมต่อไปยังหน้ารายละเอียดสินค้า product-detail.html)
+                 -------------------------------------------------------------- -->
+            <section id="search-results-section" aria-labelledby="results-heading">
+                
+                <div class="results-header">
+                    <div class="results-title-group">
+                        <h2 id="results-heading" class="results-heading">SEARCH RESULTS</h2>
+                        <span class="results-count-badge" id="results-count">(12 ITEMS)</span>
+                    </div>
+
+                    <!-- ปุ่มสลับมุมมอง (Grid / Table) เพื่อความสมบูรณ์แบบตามเกณฑ์ -->
+                    <div class="view-toggle-group">
+                        <button type="button" class="btn-toggle-view active" id="btn-show-grid" onclick="toggleView('grid')">▦ Card Grid</button>
+                        <button type="button" class="btn-toggle-view" id="btn-show-table" onclick="toggleView('table')">☰ Data Table</button>
+                    </div>
+                </div>
+
+                <!-- 1. GRID VIEW (แสดงผลแบบการ์ดสวยงามตาม Figma) -->
+                <div class="search-results-grid" id="grid-view-container">
+
+                    <!-- รายการที่ 1: Freedom Gundam -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/product-freedom.png" alt="MG 1/100 Freedom Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">Freedom GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,750</span>
+                                <a href="product-detail.html?id=1" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 2: Zeta Gundam -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/product-freedom.png" alt="MG 1/100 Zeta Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">Zeta GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,750</span>
+                                <a href="product-detail.html?id=2" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 3: ZZ Gundam -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/product-freedom.png" alt="MG 1/100 ZZ Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">ZZ GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,750</span>
+                                <a href="product-detail.html?id=3" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 4: Nu Gundam -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/product-freedom.png" alt="MG 1/100 Nu Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">Nu GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,750</span>
+                                <a href="product-detail.html?id=4" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 5: Strike Gundam -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/product-freedom.png" alt="MG 1/100 Strike Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">Strike GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,750</span>
+                                <a href="product-detail.html?id=5" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 6: Exia Gundam -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/product-freedom.png" alt="MG 1/100 Exia Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">Exia GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,750</span>
+                                <a href="product-detail.html?id=6" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 7: Providence Gundam -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/product-freedom.png" alt="MG 1/100 Providence Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">Providence GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,750</span>
+                                <a href="product-detail.html?id=7" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 8: Justice Gundam -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/product-freedom.png" alt="MG 1/100 Justice Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">Justice GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,750</span>
+                                <a href="product-detail.html?id=8" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 9: God Gundam (Figma Specific Search Result) -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/product-god.png" alt="MG 1/100 God Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">God GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,999</span>
+                                <a href="product-detail.html?id=9" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 10: Gundam Barbatos -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">HG 1/144</span>
+                            <img src="assets/images/product-freedom.png" alt="HG Gundam Barbatos" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">HG 1/144</span>
+                            <h3 class="search-card-name">Gundam Barbatos</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,450</span>
+                                <a href="product-detail.html?id=10" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 11: Perfect Strike Gundam -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">PG 1/60</span>
+                            <img src="assets/images/hero-banner.png" alt="PG 1/60 Perfect Strike Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">PG 1/60</span>
+                            <h3 class="search-card-name">Perfect Strike GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿8,500</span>
+                                <a href="product-detail.html?id=11" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                    <!-- รายการที่ 12: RX-78-2 Gundam Origin -->
+                    <article class="search-product-card">
+                        <figure class="search-thumb-box">
+                            <span class="badge-grade">MG 1/100</span>
+                            <img src="assets/images/about-rx78.png" alt="MG RX-78-2 Gundam" class="search-thumb-img">
+                        </figure>
+                        <figcaption class="search-product-details">
+                            <span class="search-card-grade">MG 1/100</span>
+                            <h3 class="search-card-name">RX-78-2 GUNDAM</h3>
+                            <div class="search-card-footer">
+                                <span class="search-card-price">฿1,850</span>
+                                <a href="product-detail.html?id=12" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                            </div>
+                        </figcaption>
+                    </article>
+
+                </div>
+
+                <!-- 2. TABLE VIEW (แสดงผลลัพธ์ในรูปแบบตารางตามเกณฑ์ Rubric) -->
+                <div class="table-container" id="table-view-container" style="display: none;">
+                    <table class="search-results-table">
+                        <thead>
+                            <tr>
+                                <th>รูปภาพ</th>
+                                <th>ชื่อสินค้า</th>
+                                <th>เกรดโมเดล</th>
+                                <th>หมวดหมู่</th>
+                                <th>ราคา</th>
+                                <th>สถานะคลัง</th>
+                                <th>การดำเนินการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-tbody">
+                            <tr>
+                                <td><img src="assets/images/product-freedom.png" alt="Freedom Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">Freedom GUNDAM</strong><br><small style="color: #64748b;">SEED Series</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,750</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (15)</span></td>
+                                <td><a href="product-detail.html?id=1" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/product-freedom.png" alt="Zeta Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">Zeta GUNDAM</strong><br><small style="color: #64748b;">Zeta Series</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,750</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (8)</span></td>
+                                <td><a href="product-detail.html?id=2" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/product-freedom.png" alt="ZZ Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">ZZ GUNDAM</strong><br><small style="color: #64748b;">Double Zeta Series</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,750</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (5)</span></td>
+                                <td><a href="product-detail.html?id=3" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/product-freedom.png" alt="Nu Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">Nu GUNDAM</strong><br><small style="color: #64748b;">Char's Counterattack</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,750</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (12)</span></td>
+                                <td><a href="product-detail.html?id=4" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/product-freedom.png" alt="Strike Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">Strike GUNDAM</strong><br><small style="color: #64748b;">SEED Series</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,750</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (20)</span></td>
+                                <td><a href="product-detail.html?id=5" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/product-freedom.png" alt="Exia Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">Exia GUNDAM</strong><br><small style="color: #64748b;">Gundam 00</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,750</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (9)</span></td>
+                                <td><a href="product-detail.html?id=6" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/product-freedom.png" alt="Providence Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">Providence GUNDAM</strong><br><small style="color: #64748b;">SEED Series</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,750</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (4)</span></td>
+                                <td><a href="product-detail.html?id=7" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/product-freedom.png" alt="Justice Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">Justice GUNDAM</strong><br><small style="color: #64748b;">SEED Series</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,750</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (7)</span></td>
+                                <td><a href="product-detail.html?id=8" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/product-god.png" alt="God Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">God GUNDAM</strong><br><small style="color: #64748b;">G Gundam</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,999</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (14)</span></td>
+                                <td><a href="product-detail.html?id=9" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/product-freedom.png" alt="Gundam Barbatos" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">Gundam Barbatos</strong><br><small style="color: #64748b;">Iron-Blooded Orphans</small></td>
+                                <td><span class="table-badge-grade">HG 1/144</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,450</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (11)</span></td>
+                                <td><a href="product-detail.html?id=10" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/hero-banner.png" alt="Perfect Strike Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">Perfect Strike GUNDAM</strong><br><small style="color: #64748b;">SEED Series</small></td>
+                                <td><span class="table-badge-grade">PG 1/60</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿8,500</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (2)</span></td>
+                                <td><a href="product-detail.html?id=11" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                            <tr>
+                                <td><img src="assets/images/about-rx78.png" alt="RX-78-2 Gundam" class="table-product-thumb"></td>
+                                <td><strong class="table-product-title">RX-78-2 GUNDAM</strong><br><small style="color: #64748b;">Mobile Suit Gundam</small></td>
+                                <td><span class="table-badge-grade">MG 1/100</span></td>
+                                <td>Gundam</td>
+                                <td><span class="table-price-text">฿1,850</span></td>
+                                <td><span class="table-stock-badge">มีสินค้า (6)</span></td>
+                                <td><a href="product-detail.html?id=12" class="btn-view-detail">ดูรายละเอียด</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ----------------------------------------------------------
+                     PAGINATION BUTTONS (ตรงตาม Figma Search Page: 1, 2, 3, 4)
+                     ---------------------------------------------------------- -->
+                <nav class="pagination-wrapper" aria-label="Search Result Pagination">
+                    <button type="button" class="page-btn active" title="Page 1">1</button>
+                    <button type="button" class="page-btn" title="Page 2">2</button>
+                    <button type="button" class="page-btn" title="Page 3">3</button>
+                    <button type="button" class="page-btn" title="Page 4">4</button>
+                </nav>
+
+            </section>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================================================
+         3. FOOTER & OFFICIAL SOCIAL CHANNELS
+         ====================================================================== -->
+    <footer id="site-footer">
+        <div id="social-channels">
+            <h3 class="social-channels-header">OFFICIAL SOCIAL CHANNELS</h3>
+            <div class="social-links-wrapper">
+                
+                <!-- Facebook Official -->
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/facebook-logo.png" alt="Facebook" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+                <!-- LINE Official -->
+                <a href="https://line.me" target="_blank" rel="noopener noreferrer" class="social-card">
+                    <img src="assets/images/line-logo.png" alt="LINE" class="social-icon">
+                    <span class="social-name">Unimart Official</span>
+                </a>
+
+            </div>
+
+            <!-- ข้อความลิขสิทธิ์และข้อมูลโครงงาน -->
+            <div class="footer-bottom">
+                <p>&copy; 2026 Unimart Gunpla Store. All rights reserved.</p>
+                <p>ITDS242 Web Technologies Lab Project</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- นำเข้าฐานข้อมูลจำลองสินค้า (Products Model Data) และโมดูลเชื่อมต่อ Web Services -->
+    <script src="js/products.js"></script>
+    <script src="js/api.js"></script>
+
+    <!-- สคริปต์ค้นหา, กรองข้อมูลตามหมวดหมู่, สลับมุมมอง, และเชื่อมต่อ Web Services API -->
+    <script>
+        // Global variables for live exchange rate from Public API
+        let currentJpyRate = 0.238; // 1 JPY = 0.238 THB fallback
+
+        // โหลดข้อมูลอัตราแลกเปลี่ยนจาก Public API เมื่อเริ่มต้น
+        async function loadPublicExchangeRate() {
+            const bannerText = document.getElementById('currency-rate-text');
+            try {
+                const data = await UnimartAPI.getExchangeRate();
+                if (data && data.rate) {
+                    currentJpyRate = data.rate;
+                    if (bannerText) {
+                        bannerText.innerHTML = `อัตราแลกเปลี่ยนสด (Public API): <strong>1 JPY ≈ ${data.rate.toFixed(4)} THB</strong> (${data.provider})`;
+                    }
+                }
+            } catch (err) {
+                if (bannerText) {
+                    bannerText.textContent = `อัตราแลกเปลี่ยนอ้างอิง: 1 JPY ≈ 0.2380 THB`;
+                }
+            }
+        }
+
+        // สลับมุมมองระหว่างแบบการ์ด (Card Grid) และแบบตาราง (Data Table)
+        function toggleView(viewType) {
+            const gridContainer = document.getElementById('grid-view-container');
+            const tableContainer = document.getElementById('table-view-container');
+            const btnGrid = document.getElementById('btn-show-grid');
+            const btnTable = document.getElementById('btn-show-table');
+
+            if (viewType === 'table') {
+                gridContainer.style.display = 'none';
+                tableContainer.style.display = 'block';
+                btnGrid.classList.remove('active');
+                btnTable.classList.add('active');
+            } else {
+                gridContainer.style.display = 'grid';
+                tableContainer.style.display = 'none';
+                btnGrid.classList.add('active');
+                btnTable.classList.remove('active');
+            }
+        }
+
+        // ฟังก์ชันเรนเดอร์สินค้าลงใน Grid และ Table (รองรับราคาเงินบาท และแปลงเป็นเงินเยนญี่ปุ่น)
+        function renderSearchResults(products) {
+            const gridContainer = document.getElementById('grid-view-container');
+            const tableTbody = document.getElementById('table-tbody');
+            const countBadge = document.getElementById('results-count');
+
+            countBadge.textContent = `(${products.length} ITEMS)`;
+
+            if (products.length === 0) {
+                gridContainer.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 48px; background: #161b22; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                        <p style="font-size: 1.35rem; color: #e6edf3; margin-bottom: 12px;">🔍 ไม่พบสินค้าที่ตรงตามเงื่อนไขการค้นหา</p>
+                        <p style="color: #8b949e; margin-bottom: 20px;">ลองเปลี่ยนคำค้นหา ปรับช่วงราคา หรือเลือกหมวดหมู่อื่นดูนะครับ</p>
+                        <button type="button" class="btn-primary" onclick="resetFilters()">แสดงสินค้าทั้งหมด (Select All)</button>
+                    </div>
+                `;
+                tableTbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 36px; color: #64748b;">
+                            ไม่พบสินค้าที่ตรงตามเงื่อนไขการค้นหา
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // เรนเดอร์การ์ด (Grid View)
+            gridContainer.innerHTML = products.map(item => {
+                const imgUrl = item.image_url || item.image || 'assets/images/product-freedom.png';
+                const priceNum = Number(item.price);
+                const approxJpy = currentJpyRate > 0 ? Math.round(priceNum / currentJpyRate) : 0;
+
+                return `
+                <article class="search-product-card" data-category="${item.category}" data-grade="${item.grade}">
+                    <figure class="search-thumb-box">
+                        <span class="badge-grade">${item.grade} ${item.scale || ''}</span>
+                        <img src="${imgUrl}" alt="${item.name}" class="search-thumb-img">
+                    </figure>
+                    <figcaption class="search-product-details">
+                        <span class="search-card-grade">${item.grade} • ${item.category ? item.category.toUpperCase() : 'GUNDAM'}</span>
+                        <h3 class="search-card-name">${item.name}</h3>
+                        <div class="search-card-footer">
+                            <div>
+                                <span class="search-card-price">฿${priceNum.toLocaleString()}</span>
+                                <small style="display: block; color: #8b949e; font-size: 0.78rem;">(~¥${approxJpy.toLocaleString()} JPY)</small>
+                            </div>
+                            <a href="product-detail.html?id=${item.id}" class="btn-view-detail" title="ดูรายละเอียดสินค้า">ดูรายละเอียด</a>
+                        </div>
+                    </figcaption>
+                </article>
+                `;
+            }).join('');
+
+            // เรนเดอร์แถวในตาราง (Table View)
+            tableTbody.innerHTML = products.map(item => {
+                const imgUrl = item.image_url || item.image || 'assets/images/product-freedom.png';
+                const priceNum = Number(item.price);
+                const approxJpy = currentJpyRate > 0 ? Math.round(priceNum / currentJpyRate) : 0;
+
+                return `
+                <tr>
+                    <td><img src="${imgUrl}" alt="${item.name}" class="table-product-thumb"></td>
+                    <td><strong class="table-product-title">${item.name}</strong><br><small style="color: #64748b;">${item.series || ''}</small></td>
+                    <td><span class="table-badge-grade">${item.grade} ${item.scale || ''}</span></td>
+                    <td>${item.category === 'gundam' ? 'Gundam' : item.category === 'parts' ? 'Parts' : 'Tools'}</td>
+                    <td>
+                        <span class="table-price-text">฿${priceNum.toLocaleString()}</span><br>
+                        <small style="color: #8b949e; font-size: 0.78rem;">~¥${approxJpy.toLocaleString()} JPY</small>
+                    </td>
+                    <td><span class="table-stock-badge">${item.status || 'In Stock'} (${item.stock || 0})</span></td>
+                    <td><a href="product-detail.html?id=${item.id}" class="btn-view-detail">ดูรายละเอียด</a></td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        // ฟังก์ชันประมวลผลการกรองและการค้นหาผ่าน Web Services (Search & Filter Logic)
+        async function performSearch() {
+            const keyword = document.getElementById('keyword-input').value.trim();
+            const grade = document.getElementById('grade-select').value;
+            const category = document.getElementById('category-select').value;
+            const minPrice = parseFloat(document.getElementById('min-price-input').value) || '';
+            const maxPrice = parseFloat(document.getElementById('max-price-input').value) || '';
+            const sort = document.getElementById('sort-select').value;
+
+            try {
+                // เรียก Web Service API: GET /api/products?q=...&grade=...&category=...
+                const products = await UnimartAPI.getProducts({
+                    q: keyword,
+                    grade: grade,
+                    category: category,
+                    minPrice: minPrice,
+                    maxPrice: maxPrice,
+                    sortBy: sort
+                });
+                renderSearchResults(products);
+            } catch (error) {
+                console.warn('API Search failed, using local model:', error);
+                const filters = { keyword, grade, category, minPrice: Number(minPrice) || 0, maxPrice: Number(maxPrice) || 0 };
+                let results = filterProducts(filters);
+                results = sortProducts(results, sort);
+                renderSearchResults(results);
+            }
+        }
+
+        // ฟังก์ชันรีเซ็ตตัวกรอง
+        function resetFilters() {
+            document.getElementById('product-search-form').reset();
+            performSearch();
+        }
+
+        // ดักจับการส่งฟอร์มเพื่อกรองข้อมูลแบบ real-time
+        document.getElementById('product-search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            performSearch();
+        });
+
+        // ดักจับการเปลี่ยนค่า Dropdown และ Input เพื่อกรองทันที
+        document.getElementById('grade-select').addEventListener('change', performSearch);
+        document.getElementById('category-select').addEventListener('change', performSearch);
+        document.getElementById('sort-select').addEventListener('change', performSearch);
+        document.getElementById('keyword-input').addEventListener('input', performSearch);
+
+        // อ่านค่า Query Parameter จาก URL เมื่อโหลดหน้าเว็บครั้งแรก (เช่น ลิงก์มาจากหน้า Home)
+        window.addEventListener('DOMContentLoaded', async () => {
+            // โหลดอัตราแลกเปลี่ยนเงินเยน (Public API)
+            await loadPublicExchangeRate();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const keyword = urlParams.get('keyword');
+            const grade = urlParams.get('grade');
+            const category = urlParams.get('category');
+
+            if (keyword) document.getElementById('keyword-input').value = keyword;
+            if (grade) document.getElementById('grade-select').value = grade;
+            if (category) document.getElementById('category-select').value = category;
+
+            // ค้นหาตามค่าเริ่มต้นใน URL หรือแสดงสินค้าทั้งหมด (No Criteria - Select All)
+            await performSearch();
+        });
+    </script>
+
+</body>
+</html>

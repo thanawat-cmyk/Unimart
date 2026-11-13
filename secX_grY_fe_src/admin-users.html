@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Account Management - Unimart Backoffice</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Unified External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+</head>
+<body id="admin-body">
+
+    <div id="admin-layout">
+        <!-- Sidebar Navigation (Figma node 277:260) -->
+        <aside id="admin-sidebar" aria-label="Admin Navigation Sidebar">
+            <header class="admin-sidebar-logo">
+                <a href="index.html" title="Unimart Storefront">
+                    <img src="assets/images/logo.png" alt="Unimart Logo" width="160" height="60">
+                </a>
+            </header>
+
+            <nav aria-label="Backoffice Menu">
+                <ul class="admin-nav-list">
+                    <li class="admin-nav-item">
+                        <a href="admin-products.html">
+                            <span class="admin-nav-icon">📦</span>
+                            <span>Product Management</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item active">
+                        <a href="admin-users.html" aria-current="page">
+                            <span class="admin-nav-icon">👥</span>
+                            <span>User Management</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="index.html" target="_blank" title="เปิดหน้าร้านค้าในแท็บใหม่">
+                            <span class="admin-nav-icon">🌐</span>
+                            <span>View Storefront</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <footer class="admin-sidebar-footer">
+                <a href="admin-profile.html" class="admin-user-profile" style="text-decoration: none;" title="ดูข้อมูลโปรไฟล์แอดมิน">
+                    <div class="admin-avatar">A</div>
+                    <div class="admin-user-info">
+                        <div class="admin-user-name">Admin Manager</div>
+                        <div class="admin-user-role">Super Admin &bull; Profile</div>
+                    </div>
+                </a>
+                <a href="login.html" class="btn-sidebar-logout" title="ออกจากระบบ">
+                    <span>🚪 Log out</span>
+                </a>
+            </footer>
+        </aside>
+
+        <!-- Main User Management Content Area (Figma node 277:258) -->
+        <main id="admin-main">
+            <!-- Header Row with Page Title and Add User Button -->
+            <header class="admin-header-row">
+                <h1 class="admin-page-title">User Account Management</h1>
+                <button type="button" id="btn-open-add-user-modal" class="btn-add-primary">
+                    <span>➕</span>
+                    <span>ADD USER</span>
+                </button>
+            </header>
+
+            <!-- Search & Filter Card -->
+            <section class="admin-toolbar-card" aria-label="User Search and Filter Controls">
+                <div class="admin-search-wrapper">
+                    <span class="admin-search-icon-inside">🔍</span>
+                    <input 
+                        type="text" 
+                        id="admin-user-search" 
+                        class="admin-search-input" 
+                        placeholder="Search user by username, name, or email..."
+                        aria-label="ค้นหาผู้ใช้งาน"
+                    >
+                </div>
+
+                <div class="admin-filter-group">
+                    <select id="admin-filter-role" class="admin-select" aria-label="Filter by Role">
+                        <option value="all">All Roles</option>
+                        <option value="Super Admin">Super Admin</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Staff">Staff</option>
+                        <option value="Customer">Customer</option>
+                    </select>
+
+                    <select id="admin-filter-status" class="admin-select" aria-label="Filter by Status">
+                        <option value="all">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- User Data Table (Figma node 277:262) -->
+            <section class="admin-table-card" aria-label="User Data Table">
+                <table class="admin-table" id="admin-user-table">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 70px;">ID</th>
+                            <th scope="col" style="width: 140px;">Username</th>
+                            <th scope="col">Name - Surname</th>
+                            <th scope="col">Email</th>
+                            <th scope="col" style="width: 120px;">Role</th>
+                            <th scope="col" style="width: 110px;">Status</th>
+                            <th scope="col" style="width: 120px; text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-user-tbody">
+                        <!-- Populated by JavaScript with Initial Mock Dataset -->
+                    </tbody>
+                </table>
+
+                <!-- Pagination Footer (Figma node 277:302) -->
+                <footer class="admin-table-footer">
+                    <div class="admin-counts-text" id="admin-user-pagination-info">
+                        Showing <strong id="admin-user-showing-count">1-5</strong> of <strong id="admin-user-total-count">5</strong> users
+                    </div>
+                    <div class="admin-pagination">
+                        <button class="page-btn" title="หน้าก่อนหน้า">&lt;</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn" title="หน้าถัดไป">&gt;</button>
+                    </div>
+                </footer>
+            </section>
+        </main>
+    </div>
+
+    <!-- =====================================================================
+         Modal 1: Add New User Modal (Figma node 277:317)
+         ===================================================================== -->
+    <div id="add-user-modal" class="admin-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="add-user-modal-title">
+        <article class="admin-modal-card">
+            <h2 id="add-user-modal-title" class="modal-header-title">Add New User</h2>
+            <form id="add-user-form">
+                <div class="modal-form-grid">
+                    <div class="modal-form-group">
+                        <label for="add-user-username">Username *</label>
+                        <input type="text" id="add-user-username" class="modal-input" placeholder="e.g. gunpla_master" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-user-fullname">Name - Surname *</label>
+                        <input type="text" id="add-user-fullname" class="modal-input" placeholder="e.g. สมชาย รักโมเดล" required>
+                    </div>
+
+                    <div class="modal-form-group modal-form-full">
+                        <label for="add-user-email">Email *</label>
+                        <input type="email" id="add-user-email" class="modal-input" placeholder="e.g. somchai@example.com" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-user-role">Role *</label>
+                        <select id="add-user-role" class="modal-select" required>
+                            <option value="Staff">Staff</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Super Admin">Super Admin</option>
+                            <option value="Customer">Customer</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-user-status">Status *</label>
+                        <select id="add-user-status" class="modal-select" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-user-password">Password *</label>
+                        <input type="password" id="add-user-password" class="modal-input" placeholder="Enter password" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-user-confirm-pwd">Confirm Password *</label>
+                        <input type="password" id="add-user-confirm-pwd" class="modal-input" placeholder="Confirm password" required>
+                    </div>
+                </div>
+
+                <footer class="modal-actions-row">
+                    <button type="button" class="btn-modal-cancel" id="btn-cancel-add-user">CANCLE</button>
+                    <button type="submit" class="btn-modal-save">SAVE</button>
+                </footer>
+            </form>
+        </article>
+    </div>
+
+    <!-- =====================================================================
+         Modal 2: Edit User Modal (Figma node 277:342)
+         ===================================================================== -->
+    <div id="edit-user-modal" class="admin-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="edit-user-modal-title">
+        <article class="admin-modal-card">
+            <h2 id="edit-user-modal-title" class="modal-header-title">Edit User Account</h2>
+            <form id="edit-user-form">
+                <input type="hidden" id="edit-user-id">
+                <div class="modal-form-grid">
+                    <div class="modal-form-group">
+                        <label for="edit-user-username">Username *</label>
+                        <input type="text" id="edit-user-username" class="modal-input" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="edit-user-fullname">Name - Surname *</label>
+                        <input type="text" id="edit-user-fullname" class="modal-input" required>
+                    </div>
+
+                    <div class="modal-form-group modal-form-full">
+                        <label for="edit-user-email">Email *</label>
+                        <input type="email" id="edit-user-email" class="modal-input" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="edit-user-role">Role *</label>
+                        <select id="edit-user-role" class="modal-select" required>
+                            <option value="Super Admin">Super Admin</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Customer">Customer</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="edit-user-status">Status *</label>
+                        <select id="edit-user-status" class="modal-select" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <footer class="modal-actions-row">
+                    <button type="button" class="btn-modal-cancel" id="btn-cancel-edit-user">CANCLE</button>
+                    <button type="submit" class="btn-modal-save">SAVE CHANGES</button>
+                </footer>
+            </form>
+        </article>
+    </div>
+
+    <!-- =====================================================================
+         Modal 3: Delete User Confirmation Modal (Figma node 339:257)
+         ===================================================================== -->
+    <div id="delete-user-modal" class="admin-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="delete-user-modal-title">
+        <article class="delete-modal-card">
+            <h2 id="delete-user-modal-title" class="delete-modal-title">Confirm User Delete</h2>
+            
+            <div class="delete-modal-body">
+                <div class="admin-avatar" style="width: 72px; height: 72px; font-size: 1.8rem; flex-shrink: 0;" id="delete-user-avatar">U</div>
+                <div class="delete-product-info">
+                    <p style="margin: 0 0 6px;"><strong>Username :</strong> <span id="delete-user-username-txt">admin</span></p>
+                    <p style="margin: 0 0 6px;"><strong>Full Name :</strong> <span id="delete-user-fullname-txt">Thanawat Saenboran</span></p>
+                    <p style="margin: 0 0 6px;"><strong>Email :</strong> <span id="delete-user-email-txt">thanawat@unimart.com</span></p>
+                    <p style="margin: 0 0 6px;"><strong>Role :</strong> <span id="delete-user-role-txt">Super Admin</span></p>
+                    <p style="margin: 0;"><strong>Status :</strong> <span id="delete-user-status-txt">Active</span></p>
+                </div>
+            </div>
+
+            <footer class="delete-modal-actions">
+                <button type="button" class="btn-delete-cancel" id="btn-cancel-delete-user">Cancel</button>
+                <button type="button" class="btn-delete-confirm" id="btn-confirm-delete-user">Delete</button>
+            </footer>
+        </article>
+    </div>
+
+    <!-- User Management Operations Script with Web Services Integration -->
+    <script src="js/api.js"></script>
+    <script>
+        // Array of admin users loaded via Web Services API
+        let adminUsers = [];
+        let pendingDeleteUserId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await reloadUsers();
+            setupUserEventListeners();
+        });
+
+        // Load or reload users from Web Services API
+        async function reloadUsers() {
+            try {
+                adminUsers = await UnimartAPI.getUsers();
+            } catch (err) {
+                console.warn('Backend unavailable, fallback to local users:', err);
+                adminUsers = [
+                    { id: 1, username: 'admin', fullname: 'ธนวัฒน์ แสนโบราณ (Admin RakGundam)', email: 'adminrakgundam01@gmail.com', role: 'Super Admin', status: 'Active' },
+                    { id: 2, username: 'nichaphat', fullname: 'ณิชาภัทร วิชาธรรม', email: 'nichaphat.wic@student.mahidol.ac.th', role: 'Manager', status: 'Active' },
+                    { id: 3, username: 'ayosara', fullname: 'อโยสรา ต้องทรัพย์', email: 'ayosara.ton@student.mahidol.ac.th', role: 'Staff', status: 'Active' },
+                    { id: 4, username: 'khachatorn', fullname: 'คชาธร ศิริเลิศ', email: 'khachatorn.sir@student.mahidol.ac.th', role: 'Staff', status: 'Active' },
+                    { id: 5, username: 'thanchanok', fullname: 'ธัญชนก โรจนสฤษฎิ์', email: 'thanchanok.roj@student.mahidol.ac.th', role: 'Staff', status: 'Inactive' },
+                    { id: 6, username: 'GundamLover159', fullname: 'กันดัม เลิฟเวอร์', email: 'gundamlover159@gmail.com', role: 'Customer', status: 'Active' }
+                ];
+            }
+            renderUserTable(adminUsers);
+        }
+
+        // Render User Rows into the table
+        function renderUserTable(items) {
+            const tbody = document.getElementById('admin-user-tbody');
+            const showingCount = document.getElementById('admin-user-showing-count');
+            const totalCount = document.getElementById('admin-user-total-count');
+
+            if (!tbody) return;
+
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: #64748b;">ไม่พบข้อมูลผู้ใช้งานที่ตรงกับคำค้นหา</td></tr>`;
+                if (showingCount) showingCount.textContent = '0';
+                if (totalCount) totalCount.textContent = '0';
+                return;
+            }
+
+            let html = '';
+            items.forEach((u) => {
+                const statusClass = u.status === 'Active' ? 'instock' : 'outofstock';
+                const displayName = u.fullname || u.name || u.username;
+                html += `
+                    <tr data-id="${u.id}">
+                        <td><strong>#${u.id}</strong></td>
+                        <td><code>${u.username}</code></td>
+                        <td><strong>${displayName}</strong></td>
+                        <td>${u.email}</td>
+                        <td><span class="badge-grade">${u.role}</span></td>
+                        <td><span class="badge-status ${statusClass}">${u.status}</span></td>
+                        <td>
+                            <div class="admin-actions-cell" style="justify-content: center;">
+                                <button type="button" class="btn-action-icon edit" title="แก้ไขผู้ใช้" onclick="openEditUserModal(${u.id})">
+                                    <img src="assets/images/icon-edit.png" alt="Edit">
+                                </button>
+                                <button type="button" class="btn-action-icon delete" title="ลบผู้ใช้" onclick="openDeleteUserModal(${u.id})">
+                                    <img src="assets/images/icon-delete.png" alt="Delete">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            if (showingCount) showingCount.textContent = `1-${items.length}`;
+            if (totalCount) totalCount.textContent = items.length;
+        }
+
+        // Filter Users via Web Services API
+        async function applyUserFilters() {
+            const query = document.getElementById('admin-user-search').value.toLowerCase().trim();
+            const role = document.getElementById('admin-filter-role').value;
+            const status = document.getElementById('admin-filter-status').value;
+
+            try {
+                const results = await UnimartAPI.getUsers({
+                    q: query,
+                    role: role === 'all' ? '' : role,
+                    status: status === 'all' ? '' : status
+                });
+                adminUsers = results;
+                renderUserTable(results);
+            } catch (err) {
+                const filtered = adminUsers.filter(u => {
+                    const displayName = (u.fullname || u.name || '').toLowerCase();
+                    const matchQuery = !query || 
+                        u.username.toLowerCase().includes(query) || 
+                        displayName.includes(query) || 
+                        u.email.toLowerCase().includes(query) ||
+                        String(u.id).includes(query);
+                    const matchRole = (role === 'all') || (u.role === role);
+                    const matchStatus = (status === 'all') || (u.status === status);
+                    return matchQuery && matchRole && matchStatus;
+                });
+                renderUserTable(filtered);
+            }
+        }
+
+        // Setup Event Listeners
+        function setupUserEventListeners() {
+            document.getElementById('admin-user-search').addEventListener('input', applyUserFilters);
+            document.getElementById('admin-filter-role').addEventListener('change', applyUserFilters);
+            document.getElementById('admin-filter-status').addEventListener('change', applyUserFilters);
+
+            // Add Modal Handlers
+            const addModal = document.getElementById('add-user-modal');
+            const openAddBtn = document.getElementById('btn-open-add-user-modal');
+            const cancelAddBtn = document.getElementById('btn-cancel-add-user');
+            const addForm = document.getElementById('add-user-form');
+
+            openAddBtn.addEventListener('click', () => {
+                addForm.reset();
+                addModal.classList.add('open');
+                addModal.setAttribute('aria-hidden', 'false');
+            });
+
+            cancelAddBtn.addEventListener('click', () => {
+                addModal.classList.remove('open');
+                addModal.setAttribute('aria-hidden', 'true');
+            });
+
+            // Insert User Web Service Submit (POST /api/users)
+            addForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const pwd = document.getElementById('add-user-password').value;
+                const confirmPwd = document.getElementById('add-user-confirm-pwd').value;
+
+                if (pwd !== confirmPwd) {
+                    alert('⚠️ รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง');
+                    return;
+                }
+
+                const newUser = {
+                    username: document.getElementById('add-user-username').value.trim(),
+                    password: pwd,
+                    fullname: document.getElementById('add-user-fullname').value.trim(),
+                    email: document.getElementById('add-user-email').value.trim(),
+                    role: document.getElementById('add-user-role').value,
+                    status: document.getElementById('add-user-status').value
+                };
+
+                try {
+                    await UnimartAPI.createUser(newUser);
+                    alert(`✅ เพิ่มผู้ใช้งาน "${newUser.username}" เรียบร้อยแล้ว!`);
+                    await reloadUsers();
+                } catch (err) {
+                    alert(`เกิดข้อผิดพลาดในการเพิ่มผู้ใช้: ${err.message}`);
+                }
+
+                addModal.classList.remove('open');
+                addModal.setAttribute('aria-hidden', 'true');
+            });
+
+            // Edit Modal Handlers
+            const editModal = document.getElementById('edit-user-modal');
+            document.getElementById('btn-cancel-edit-user').addEventListener('click', () => {
+                editModal.classList.remove('open');
+                editModal.setAttribute('aria-hidden', 'true');
+            });
+
+            // Update User Web Service Submit (PUT /api/users/:id)
+            document.getElementById('edit-user-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = Number(document.getElementById('edit-user-id').value);
+                const updatedData = {
+                    fullname: document.getElementById('edit-user-fullname').value.trim(),
+                    email: document.getElementById('edit-user-email').value.trim(),
+                    role: document.getElementById('edit-user-role').value,
+                    status: document.getElementById('edit-user-status').value
+                };
+
+                try {
+                    await UnimartAPI.updateUser(id, updatedData);
+                    alert(`✅ บันทึกการแก้ไขข้อมูลผู้ใช้ ID #${id} เรียบร้อยแล้ว!`);
+                    await reloadUsers();
+                } catch (err) {
+                    alert(`เกิดข้อผิดพลาดในการแก้ไขข้อมูลผู้ใช้: ${err.message}`);
+                }
+
+                editModal.classList.remove('open');
+                editModal.setAttribute('aria-hidden', 'true');
+            });
+
+            // Delete User Web Service Submit (DELETE /api/users/:id)
+            const deleteModal = document.getElementById('delete-user-modal');
+            document.getElementById('btn-cancel-delete-user').addEventListener('click', () => {
+                deleteModal.classList.remove('open');
+                deleteModal.setAttribute('aria-hidden', 'true');
+                pendingDeleteUserId = null;
+            });
+
+            document.getElementById('btn-confirm-delete-user').addEventListener('click', async () => {
+                if (pendingDeleteUserId !== null) {
+                    try {
+                        await UnimartAPI.deleteUser(pendingDeleteUserId);
+                        alert(`🗑️ ลบบัญชีผู้ใช้ ID #${pendingDeleteUserId} ออกจากระบบเรียบร้อยแล้ว`);
+                        await reloadUsers();
+                    } catch (err) {
+                        alert(`เกิดข้อผิดพลาดในการลบผู้ใช้: ${err.message}`);
+                    }
+                    deleteModal.classList.remove('open');
+                    deleteModal.setAttribute('aria-hidden', 'true');
+                    pendingDeleteUserId = null;
+                }
+            });
+
+            // Close modals when clicking overlay
+            [addModal, editModal, deleteModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('open');
+                        modal.setAttribute('aria-hidden', 'true');
+                    }
+                });
+            });
+        }
+
+        // Global Edit / Delete Modal Openers
+        window.openEditUserModal = function(id) {
+            const user = adminUsers.find(u => u.id === id);
+            if (!user) return;
+
+            document.getElementById('edit-user-id').value = user.id;
+            document.getElementById('edit-user-username').value = user.username;
+            document.getElementById('edit-user-fullname').value = user.fullname || user.name || '';
+            document.getElementById('edit-user-email').value = user.email;
+            document.getElementById('edit-user-role').value = user.role;
+            document.getElementById('edit-user-status').value = user.status;
+
+            const editModal = document.getElementById('edit-user-modal');
+            editModal.classList.add('open');
+            editModal.setAttribute('aria-hidden', 'false');
+        };
+
+        window.openDeleteUserModal = function(id) {
+            const user = adminUsers.find(u => u.id === id);
+            if (!user) return;
+
+            pendingDeleteUserId = id;
+            document.getElementById('delete-user-avatar').textContent = user.username.charAt(0).toUpperCase();
+            document.getElementById('delete-user-username-txt').textContent = user.username;
+            document.getElementById('delete-user-fullname-txt').textContent = user.fullname || user.name || '';
+            document.getElementById('delete-user-email-txt').textContent = user.email;
+            document.getElementById('delete-user-role-txt').textContent = user.role;
+            document.getElementById('delete-user-status-txt').textContent = user.status;
+
+            const deleteModal = document.getElementById('delete-user-modal');
+            deleteModal.classList.add('open');
+            deleteModal.setAttribute('aria-hidden', 'false');
+        };
+    </script>
+</body>
+</html>
