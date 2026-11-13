@@ -160,19 +160,34 @@ const UnimartAPI = {
       const res = await fetchApi(`/products${queryString}`);
       return res.data || [];
     } catch (err) {
-      // Fallback: ดึงข้อมูลจากไฟล์ products.js หากเซิร์ฟเวอร์ยังไม่เปิด
-      console.warn('เซิร์ฟเวอร์ Backend ยังไม่พร้อม ใช้งานโมเดลสำรองจาก products.js');
-      if (typeof window !== 'undefined' && Array.isArray(window.UNIMART_PRODUCTS)) {
-        let list = [...window.UNIMART_PRODUCTS];
-        if (params.q) {
-          const t = params.q.toLowerCase();
-          list = list.filter(p => p.name.toLowerCase().includes(t) || p.series.toLowerCase().includes(t));
+      // Fallback: ดึงข้อมูลจาก localStorage หรือไฟล์ products.js หากเซิร์ฟเวอร์ยังไม่เปิด (Offline / Cloudflare Pages Mode)
+      console.warn('เซิร์ฟเวอร์ Backend ยังไม่พร้อม ใช้งานโมเดลสำรองจาก localStorage / products.js');
+      let list = [];
+      try {
+        const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_local_products') : null;
+        if (stored) {
+          list = JSON.parse(stored);
         }
-        if (params.grade) list = list.filter(p => p.grade.toLowerCase() === params.grade.toLowerCase());
-        if (params.category) list = list.filter(p => p.category.toLowerCase() === params.category.toLowerCase());
-        return list;
+      } catch (e) {
+        list = [];
       }
-      return [];
+
+      if (!list || list.length === 0) {
+        if (typeof window !== 'undefined' && Array.isArray(window.UNIMART_PRODUCTS)) {
+          list = JSON.parse(JSON.stringify(window.UNIMART_PRODUCTS));
+          try {
+            localStorage.setItem('unimart_local_products', JSON.stringify(list));
+          } catch (e) {}
+        }
+      }
+
+      if (params.q) {
+        const t = params.q.toLowerCase();
+        list = list.filter(p => (p.name && p.name.toLowerCase().includes(t)) || (p.series && p.series.toLowerCase().includes(t)));
+      }
+      if (params.grade) list = list.filter(p => p.grade && p.grade.toLowerCase() === params.grade.toLowerCase());
+      if (params.category) list = list.filter(p => p.category && p.category.toLowerCase() === params.category.toLowerCase());
+      return list;
     }
   },
 
@@ -188,8 +203,18 @@ const UnimartAPI = {
       const res = await fetchApi(`/products/${id}`);
       return res.data;
     } catch (err) {
+      const numId = parseInt(id, 10);
+      try {
+        const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_local_products') : null;
+        if (stored) {
+          const list = JSON.parse(stored);
+          const found = list.find(p => p.id === numId);
+          if (found) return found;
+        }
+      } catch (e) {}
+
       if (typeof window !== 'undefined' && Array.isArray(window.UNIMART_PRODUCTS)) {
-        return window.UNIMART_PRODUCTS.find(p => p.id === parseInt(id, 10)) || null;
+        return window.UNIMART_PRODUCTS.find(p => p.id === numId) || null;
       }
       return null;
     }
@@ -202,10 +227,37 @@ const UnimartAPI = {
    * @param {object} productData - ข้อมูลสินค้าใหม่
    */
   async createProduct(productData) {
-    return await fetchApi('/products', {
-      method: 'POST',
-      body: JSON.stringify(productData)
-    });
+    try {
+      return await fetchApi('/products', {
+        method: 'POST',
+        body: JSON.stringify(productData)
+      });
+    } catch (err) {
+      console.warn('บันทึกลง Backend ไม่สำเร็จ สลับไปบันทึกลง localStorage (Offline / Cloudflare Pages Mode):', err.message);
+      let list = [];
+      try {
+        const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_local_products') : null;
+        if (stored) list = JSON.parse(stored);
+      } catch (e) { list = []; }
+
+      if (!list || list.length === 0) {
+        if (typeof window !== 'undefined' && Array.isArray(window.UNIMART_PRODUCTS)) {
+          list = JSON.parse(JSON.stringify(window.UNIMART_PRODUCTS));
+        }
+      }
+
+      const newId = list.length > 0 ? Math.max(...list.map(p => Number(p.id) || 0)) + 1 : 1;
+      const createdItem = { id: newId, ...productData };
+      list.unshift(createdItem);
+
+      try {
+        localStorage.setItem('unimart_local_products', JSON.stringify(list));
+      } catch (e) {
+        console.warn('ไม่สามารถบันทึกรูปภาพขนาดใหญ่ลงใน localStorage ได้:', e);
+      }
+
+      return { success: true, message: 'เพิ่มสินค้าสำเร็จ (Offline / Cloudflare Mode)', data: createdItem };
+    }
   },
 
   /**
@@ -216,10 +268,38 @@ const UnimartAPI = {
    * @param {object} productData - ข้อมูลที่ต้องการอัปเดต
    */
   async updateProduct(id, productData) {
-    return await fetchApi(`/products/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(productData)
-    });
+    try {
+      return await fetchApi(`/products/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(productData)
+      });
+    } catch (err) {
+      console.warn('อัปเดตลง Backend ไม่สำเร็จ สลับไปอัปเดตลง localStorage (Offline / Cloudflare Pages Mode):', err.message);
+      let list = [];
+      try {
+        const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_local_products') : null;
+        if (stored) list = JSON.parse(stored);
+      } catch (e) { list = []; }
+
+      if (!list || list.length === 0) {
+        if (typeof window !== 'undefined' && Array.isArray(window.UNIMART_PRODUCTS)) {
+          list = JSON.parse(JSON.stringify(window.UNIMART_PRODUCTS));
+        }
+      }
+
+      const numId = parseInt(id, 10);
+      const index = list.findIndex(p => p.id === numId);
+      if (index !== -1) {
+        list[index] = { ...list[index], ...productData };
+        try {
+          localStorage.setItem('unimart_local_products', JSON.stringify(list));
+        } catch (e) {
+          console.warn('ไม่สามารถบันทึกขนาดใหญ่ลงใน localStorage ได้:', e);
+        }
+        return { success: true, message: 'แก้ไขสินค้าสำเร็จ (Offline / Cloudflare Mode)', data: list[index] };
+      }
+      throw new Error(`ไม่พบสินค้ารหัส ID ${id}`);
+    }
   },
 
   /**
@@ -229,9 +309,32 @@ const UnimartAPI = {
    * @param {number|string} id - รหัสสินค้าที่ต้องการลบ
    */
   async deleteProduct(id) {
-    return await fetchApi(`/products/${id}`, {
-      method: 'DELETE'
-    });
+    try {
+      return await fetchApi(`/products/${id}`, {
+        method: 'DELETE'
+      });
+    } catch (err) {
+      console.warn('ลบข้อมูลบน Backend ไม่สำเร็จ สลับไปลบใน localStorage (Offline / Cloudflare Pages Mode):', err.message);
+      let list = [];
+      try {
+        const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_local_products') : null;
+        if (stored) list = JSON.parse(stored);
+      } catch (e) { list = []; }
+
+      if (!list || list.length === 0) {
+        if (typeof window !== 'undefined' && Array.isArray(window.UNIMART_PRODUCTS)) {
+          list = JSON.parse(JSON.stringify(window.UNIMART_PRODUCTS));
+        }
+      }
+
+      const numId = parseInt(id, 10);
+      list = list.filter(p => p.id !== numId);
+      try {
+        localStorage.setItem('unimart_local_products', JSON.stringify(list));
+      } catch (e) {}
+
+      return { success: true, message: 'ลบสินค้าสำเร็จ (Offline / Cloudflare Mode)' };
+    }
   },
 
   // ============================================================================

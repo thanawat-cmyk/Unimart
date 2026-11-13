@@ -38,11 +38,11 @@ const PORT = process.env.PORT || 3000;
 // 3.1 เปิดให้ Frontend ทุก Origin สามารถเรียก API ได้โดยไม่ติดปัญหา CORS
 app.use(cors());
 
-// 3.2 แปลงข้อมูลใน Body ของ HTTP Request ที่เป็น JSON ให้อยู่ในรูป req.body โดยอัตโนมัติ
-app.use(express.json());
+// 3.2 แปลงข้อมูลใน Body ของ HTTP Request ที่เป็น JSON ให้อยู่ในรูป req.body (ขยาย limit เป็น 15mb เพื่อรองรับการอัปโหลดรูปภาพ Base64)
+app.use(express.json({ limit: '15mb' }));
 
-// 3.3 รองรับการแปลงข้อมูล Form Data จาก HTML ให้อยู่ใน req.body
-app.use(express.urlencoded({ extended: true }));
+// 3.3 รองรับการแปลงข้อมูล Form Data จาก HTML (ขยาย limit เป็น 15mb)
+app.use(express.urlencoded({ limit: '15mb', extended: true }));
 
 // 3.4 ให้เซิร์ฟเวอร์ Express ให้บริการไฟล์สถิต (Static Files) เช่น HTML, CSS, รูปภาพ จากโฟลเดอร์ secX_grY_fe_src
 // ทำให้เวลาเปิด http://localhost:3000 จะสามารถเข้าใช้งานหน้าเว็บ Frontend ได้ทันทีใน Port เดียว

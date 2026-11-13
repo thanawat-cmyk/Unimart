@@ -101,7 +101,7 @@ CREATE TABLE `products` (
   `stock` INT(11) NOT NULL DEFAULT 0 COMMENT 'จำนวนสินค้าคงคลัง',
   `release_date` DATE DEFAULT NULL COMMENT 'วันวางจำหน่ายอย่างเป็นทางการ',
   `rating` DECIMAL(2,1) DEFAULT 4.5 COMMENT 'คะแนนรีวิวเฉลี่ย (1.0 - 5.0)',
-  `image_url` VARCHAR(255) NOT NULL DEFAULT 'assets/images/product-freedom.png' COMMENT 'ที่อยู่ไฟล์รูปภาพสินค้า',
+  `image_url` LONGTEXT NOT NULL COMMENT 'ที่อยู่ไฟล์รูปภาพสินค้า (รองรับ Path, URL ภายนอก หรือ Base64 Data URL)',
   `description` TEXT DEFAULT NULL COMMENT 'คำอธิบายสินค้าจุดเด่น',
   `details` TEXT DEFAULT NULL COMMENT 'รายละเอียดอุปกรณ์ในกล่องและโครงสร้าง',
   `reference_source` VARCHAR(255) DEFAULT NULL COMMENT 'แหล่งอ้างอิงข้อมูลลิขสิทธิ์แท้ (Citations)',

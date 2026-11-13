@@ -3014,11 +3014,75 @@ footer {
     background-color: #eff6ff;
 }
 
+.modal-upload-zone.dragover {
+    border-color: #2563eb;
+    background-color: #dbeafe;
+    transform: scale(1.01);
+}
+
 .modal-upload-zone img {
     width: 50px;
     height: 50px;
     object-fit: contain;
     opacity: 0.7;
+}
+
+.modal-image-preview-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    margin-top: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.modal-image-preview-thumb {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+}
+
+.modal-image-preview-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.modal-image-preview-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.modal-image-preview-meta {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.btn-remove-preview {
+    background: #fee2e2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.15s ease;
+}
+
+.btn-remove-preview:hover {
+    background: #fecaca;
+    color: #dc2626;
 }
 
 .modal-actions-row {
