@@ -101,9 +101,9 @@ const loginLogsSeed = [
 ];
 
 const categoriesSeed = [
-  { category_id: 'gundam', category_name: 'Gundam Model Kits', description: 'โมเดลกันพลาพลาสติกคิทแท้มาตรฐาน Bandai ทั้งเกรด RG, MG, HG, PG' },
-  { category_id: 'parts', category_name: 'Custom & Option Parts', description: 'พาร์ทเสริม ฐานตั้งโมเดล Action Base สติกเกอร์ดีคอลน้ำ และอุปกรณ์ตกแต่ง' },
-  { category_id: 'tools', category_name: 'Modelling & Craft Tools', description: 'เครื่องมือและอุปกรณ์ประกอบโมเดล คีมตัด ปากกาตัดเส้น และแผ่นรองตัด' }
+  { category_id: 'gundam', category_name: 'Gundam Plastic Model', description: 'โมเดลกันพลาพลาสติกคิทแท้มาตรฐาน Bandai ทั้งเกรด RG, MG, HG, PG' },
+  { category_id: 'parts', category_name: 'Parts & Accessories', description: 'พาร์ทเสริม ฐานตั้งโมเดล Action Base สติกเกอร์ดีคอลน้ำ และอุปกรณ์ตกแต่ง' },
+  { category_id: 'tools', category_name: 'Tools & Supplies', description: 'เครื่องมือและอุปกรณ์ประกอบโมเดล คีมตัด ปากกาตัดเส้น และแผ่นรองตัด' }
 ];
 
 const productsSeed = [

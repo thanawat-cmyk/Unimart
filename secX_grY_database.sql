@@ -151,9 +151,9 @@ CREATE TABLE `order_items` (
 
 -- 8.1 ข้อมูลหมวดหมู่ (Categories)
 INSERT INTO `categories` (`category_id`, `category_name`, `description`) VALUES
-('gundam', 'Gundam Model Kits', 'โมเดลกันพลาพลาสติกคิทแท้มาตรฐาน Bandai ทั้งเกรด RG, MG, HG, PG'),
-('parts', 'Custom & Option Parts', 'พาร์ทเสริม ฐานตั้งโมเดล Action Base สติกเกอร์ดีคอลน้ำ และอุปกรณ์ตกแต่ง'),
-('tools', 'Modelling & Craft Tools', 'เครื่องมือและอุปกรณ์ประกอบโมเดล คีมตัด ปากกาตัดเส้น และแผ่นรองตัด');
+('gundam', 'Gundam Plastic Model', 'โมเดลกันพลาพลาสติกคิทแท้มาตรฐาน Bandai ทั้งเกรด RG, MG, HG, PG'),
+('parts', 'Parts & Accessories', 'พาร์ทเสริม ฐานตั้งโมเดล Action Base สติกเกอร์ดีคอลน้ำ และอุปกรณ์ตกแต่ง'),
+('tools', 'Tools & Supplies', 'เครื่องมือและอุปกรณ์ประกอบโมเดล คีมตัด ปากกาตัดเส้น และแผ่นรองตัด');
 
 -- 8.2 ข้อมูลผู้ดูแลระบบและผู้ใช้งาน (Users)
 -- ประกอบด้วยสมาชิกกลุ่มทั้ง 5 คน, บัญชีแอดมินกลาง, และบัญชีลูกค้า GundamLover159
