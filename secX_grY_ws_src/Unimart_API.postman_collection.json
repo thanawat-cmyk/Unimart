@@ -63,6 +63,18 @@
               "path": ["auth", "login"]
             }
           }
+        },
+        {
+          "name": "GET Current User Session (/auth/me)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/auth/me?username=admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"],
+              "query": [{ "key": "username", "value": "admin" }]
+            }
+          }
         }
       ]
     },
@@ -158,6 +170,22 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"price\": 1850.00,\n  \"stock\": 25,\n  \"status\": \"In Stock\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "1"]
+            }
+          }
+        },
+        {
+          "name": "PUT Restock Product (Quick Stock Update)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock\": 35,\n  \"status\": \"In Stock\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/products/1",
@@ -299,6 +327,17 @@
               "raw": "{{baseUrl}}/orders/user/6",
               "host": ["{{baseUrl}}"],
               "path": ["orders", "user", "6"]
+            }
+          }
+        },
+        {
+          "name": "GET Login History Logs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/logs",
+              "host": ["{{baseUrl}}"],
+              "path": ["logs"]
             }
           }
         }
