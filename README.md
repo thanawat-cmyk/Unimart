@@ -41,8 +41,6 @@ unimart-web/
 └── secX_grY_ws_src/                     # [งานที่ 3] RESTful Web Services Backend (Node.js & Express)
     ├── config/
     │   └── db.js                        # กำหนดค่าการเชื่อมต่อ MySQL Connection Pool
-    ├── data/
-    │   └── seedData.js                  # ชุดข้อมูลตั้งต้นและระบบ In-Memory Fallback
     ├── routes/
     │   ├── auth.js                      # เซอร์วิส Authentication (Login & Session)
     │   ├── products.js                  # เซอร์วิสจัดการสินค้า (CRUD & Multi-Criteria Search)
@@ -51,8 +49,7 @@ unimart-web/
     │   ├── logs.js                      # เซอร์วิสดึงประวัติการเข้าสู่ระบบ (Login Logs)
     │   └── publicApi.js                 # เซอร์วิสเชื่อมต่อ Public API อัตราแลกเปลี่ยน JPY/THB
     ├── server.js                        # จุดเริ่มต้นเซิร์ฟเวอร์ Express (Port 3000)
-    ├── test-apis.js                     # สคริปต์ทดสอบ Web Services อัตโนมัติ (18/18 ผ่าน 100%)
-    ├── Unimart_API.postman_collection.json # ไฟล์ Postman Collection สำหรับนำเข้าและทดสอบทันที
+    ├── Unimart_API.postman_collection.json # ไฟล์ Postman Collection สำหรับนำเข้าและทดสอบผ่าน Postman
     ├── package.json                     # รายการ Dependencies และ Scripts
     └── .env                             # การตั้งค่า Environment Variables
 ```
@@ -141,10 +138,10 @@ unimart-web/
 
 ---
 
-## 🧪 การทดสอบระบบอัตโนมัติ (Automated Test Verification)
+## 🧪 การทดสอบ Web Services ด้วย Postman (Postman Verification)
 
-รันคำสั่งตรวจสอบ Web Services ทุกฟังก์ชันในโฟลเดอร์ `secX_grY_ws_src`:
-```bash
-node test-apis.js
-```
-ผลการทดสอบ: **18 / 18 Tests Passed (100% ผ่านฉลุยทุกเกณฑ์)**
+สามารถนำเข้าไฟล์ **`secX_grY_ws_src/Unimart_API.postman_collection.json`** เข้าสู่โปรแกรม Postman เพื่อทดสอบ API ทุก Endpoint ได้อย่างครบถ้วนตามเกณฑ์อาจารย์ผู้สอน:
+1. เปิดโปรแกรม **Postman** แล้วกดปุ่ม **Import**
+2. เลือกไฟล์ `secX_grY_ws_src/Unimart_API.postman_collection.json`
+3. สตาร์ตเซิร์ฟเวอร์ด้วยคำสั่ง `npm start` ในโฟลเดอร์ `secX_grY_ws_src`
+4. รันคำขอเพื่อทดสอบการทำงานของ CRUD, Search, Filter, Restock, และ Authentication ได้ทันที
