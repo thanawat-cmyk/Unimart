@@ -278,9 +278,30 @@
                     </div>
 
                     <div class="modal-form-group modal-form-full">
-                        <label for="add-prod-image">Product Image (ที่อยู่รูปภาพสินค้า)</label>
-                        <input type="text" id="add-prod-image" class="modal-input" placeholder="assets/images/product-freedom.png">
-                        <small style="color: #64748b; font-size: 0.82rem; margin-top: 4px; display: block;">ระบุที่อยู่ไฟล์รูปภาพ เช่น assets/images/product-freedom.png หรือ URL รูปภาพจากเว็บ</small>
+                        <label>Product Image (รูปภาพสินค้า)</label>
+                        
+                        <!-- โซนคลิกเลือกไฟล์หรือลากไฟล์รูปภาพมาวาง (HTML5 File Input + Drag & Drop) -->
+                        <label for="add-prod-file" class="modal-upload-zone" id="add-upload-zone" title="คลิกเพื่อเลือกไฟล์รูปภาพ หรือลากรูปมาวางที่นี่">
+                            <img src="assets/images/icon-upload.png" alt="Upload Icon" style="pointer-events: none;">
+                            <p style="margin: 0; font-weight: 600; color: #3b82f6; pointer-events: none;">Click to upload or drag &amp; drop</p>
+                            <span style="display: inline-flex; align-items: center; gap: 6px; background: #2563eb; color: #ffffff; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; margin: 4px 0; cursor: pointer; pointer-events: none;">📁 เลือกไฟล์รูปภาพจากเครื่อง</span>
+                            <small style="color: #64748b; pointer-events: none;">PNG, JPG, WebP (หรือระบุ Path ด้านล่าง)</small>
+                            <input type="file" id="add-prod-file" accept="image/*" style="position: absolute; opacity: 0; width: 0.1px; height: 0.1px; pointer-events: none;">
+                        </label>
+
+                        <!-- การ์ดแสดงพรีวิวรูปภาพตัวอย่าง -->
+                        <div id="add-preview-wrap" class="modal-image-preview-card" style="display: none; margin-top: 8px;">
+                            <img id="add-preview-img" src="" alt="Product Preview" class="modal-image-preview-thumb">
+                            <div class="modal-image-preview-info">
+                                <div id="add-preview-name" class="modal-image-preview-name">filename.png</div>
+                                <div id="add-preview-meta" class="modal-image-preview-meta">0 KB</div>
+                            </div>
+                            <button type="button" id="btn-remove-add-preview" class="btn-remove-preview" title="ยกเลิกรูปนี้">Remove</button>
+                        </div>
+
+                        <!-- ช่อง Path/URL ทางเลือก -->
+                        <input type="text" id="add-prod-image" class="modal-input" placeholder="assets/images/product-freedom.png หรือ URL รูปภาพ" style="margin-top: 8px;">
+                        <small style="color: #64748b; font-size: 0.82rem; margin-top: 4px; display: block;">สามารถเลือกไฟล์จากเครื่อง หรือพิมพ์ Path รูปภาพเช่น assets/images/product-freedom.png</small>
                     </div>
                 </div>
 
@@ -351,9 +372,30 @@
                     </div>
 
                     <div class="modal-form-group modal-form-full">
-                        <label for="edit-prod-image">Product Image (ที่อยู่รูปภาพสินค้า)</label>
-                        <input type="text" id="edit-prod-image" class="modal-input" placeholder="assets/images/product-freedom.png">
-                        <small style="color: #64748b; font-size: 0.82rem; margin-top: 4px; display: block;">ระบุที่อยู่ไฟล์รูปภาพ เช่น assets/images/product-freedom.png หรือ URL รูปภาพจากเว็บ</small>
+                        <label>Product Image (รูปภาพสินค้า)</label>
+                        
+                        <!-- โซนคลิกเลือกไฟล์หรือลากไฟล์รูปภาพมาวาง (HTML5 File Input + Drag & Drop) -->
+                        <label for="edit-prod-file" class="modal-upload-zone" id="edit-upload-zone" title="คลิกเพื่อเลือกไฟล์รูปภาพ หรือลากรูปมาวางที่นี่">
+                            <img src="assets/images/icon-upload.png" alt="Upload Icon" style="pointer-events: none;">
+                            <p style="margin: 0; font-weight: 600; color: #3b82f6; pointer-events: none;">Click to change image or drag &amp; drop</p>
+                            <span style="display: inline-flex; align-items: center; gap: 6px; background: #2563eb; color: #ffffff; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; margin: 4px 0; cursor: pointer; pointer-events: none;">📁 เลือกไฟล์รูปภาพใหม่</span>
+                            <small style="color: #64748b; pointer-events: none;">PNG, JPG, WebP (หรือระบุ Path ด้านล่าง)</small>
+                            <input type="file" id="edit-prod-file" accept="image/*" style="position: absolute; opacity: 0; width: 0.1px; height: 0.1px; pointer-events: none;">
+                        </label>
+
+                        <!-- การ์ดแสดงพรีวิวรูปภาพตัวอย่าง -->
+                        <div id="edit-preview-wrap" class="modal-image-preview-card" style="display: none; margin-top: 8px;">
+                            <img id="edit-preview-img" src="" alt="Product Preview" class="modal-image-preview-thumb">
+                            <div class="modal-image-preview-info">
+                                <div id="edit-preview-name" class="modal-image-preview-name">Current Image</div>
+                                <div id="edit-preview-meta" class="modal-image-preview-meta">0 KB</div>
+                            </div>
+                            <button type="button" id="btn-remove-edit-preview" class="btn-remove-preview" title="รีเซ็ต">Reset</button>
+                        </div>
+
+                        <!-- ช่อง Path/URL ทางเลือก -->
+                        <input type="text" id="edit-prod-image" class="modal-input" placeholder="assets/images/product-freedom.png หรือ URL รูปภาพ" style="margin-top: 8px;">
+                        <small style="color: #64748b; font-size: 0.82rem; margin-top: 4px; display: block;">สามารถเลือกไฟล์จากเครื่อง หรือพิมพ์ Path รูปภาพเช่น assets/images/product-freedom.png</small>
                     </div>
                 </div>
 
@@ -558,11 +600,128 @@
             }
         }
 
+        /**
+         * ฟังก์ชันช่วยติดตั้งตัวเลือกไฟล์รูปภาพ (HTML5 File API + FileReader มาตรฐานเบราว์เซอร์)
+         * ทำงานบน Vanilla JS 100% โดยอ่านไฟล์รูปจากเครื่องแล้วแสดง Preview พร้อมแปลงเป็น Data URL ส่งไปใน JSON ได้ทันที
+         */
+        function setupImagePicker({ zoneId, fileInputId, urlInputId, wrapId, imgId, nameId, metaId, removeBtnId, defaultImage }) {
+            const zone = document.getElementById(zoneId);
+            const fileInput = document.getElementById(fileInputId);
+            const urlInput = document.getElementById(urlInputId);
+            const wrap = document.getElementById(wrapId);
+            const img = document.getElementById(imgId);
+            const nameEl = document.getElementById(nameId);
+            const metaEl = document.getElementById(metaId);
+            const removeBtn = document.getElementById(removeBtnId);
+
+            if (!zone || !fileInput) return;
+
+            // เมื่อเลือกไฟล์จาก File Dialog
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    processFile(this.files[0]);
+                }
+            });
+
+            // รองรับการ Drag and Drop ไฟล์รูปภาพลงในกล่อง
+            ['dragenter', 'dragover'].forEach(eventName => {
+                zone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    zone.classList.add('dragover');
+                });
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                zone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('dragover');
+                });
+            });
+            zone.addEventListener('drop', (e) => {
+                if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    processFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            // ใช้ FileReader (Native Web API) อ่านไฟล์ภาพ
+            function processFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('⚠️ กรุณาเลือกไฟล์ที่เป็นรูปภาพเท่านั้น (PNG, JPG, WebP)');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const result = e.target.result;
+                    if (urlInput) urlInput.value = result;
+                    if (img) img.src = result;
+                    if (nameEl) nameEl.textContent = file.name;
+                    if (metaEl) metaEl.textContent = `${(file.size / 1024).toFixed(1)} KB • ${file.type.replace('image/', '').toUpperCase()}`;
+                    if (wrap) wrap.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // ปุ่มลบ / รีเซ็ตรูปภาพ
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => {
+                    fileInput.value = '';
+                    if (defaultImage) {
+                        if (urlInput) urlInput.value = defaultImage;
+                        if (img) img.src = defaultImage;
+                        if (nameEl) nameEl.textContent = 'Default Image';
+                        if (metaEl) metaEl.textContent = 'รูปภาพเริ่มต้น';
+                    } else {
+                        if (urlInput) urlInput.value = '';
+                        if (wrap) wrap.style.display = 'none';
+                    }
+                });
+            }
+
+            // ถ้าผู้ใช้พิมพ์ในช่อง URL Input โดยตรง ก็ให้อัปเดต Preview ด้วย
+            if (urlInput) {
+                urlInput.addEventListener('input', function() {
+                    if (this.value.trim()) {
+                        if (img) img.src = this.value.trim();
+                        if (nameEl) nameEl.textContent = 'Image URL / Path';
+                        if (metaEl) metaEl.textContent = this.value.trim();
+                        if (wrap) wrap.style.display = 'flex';
+                    } else {
+                        if (wrap) wrap.style.display = 'none';
+                    }
+                });
+            }
+        }
+
         // Setup Event Listeners
         function setupAdminEventListeners() {
             document.getElementById('admin-product-search').addEventListener('input', applyFilters);
             document.getElementById('admin-filter-grade').addEventListener('change', applyFilters);
             document.getElementById('admin-filter-category').addEventListener('change', applyFilters);
+
+            // ติดตั้ง Image Picker สำหรับ Modal เพิ่มสินค้า
+            setupImagePicker({
+                zoneId: 'add-upload-zone',
+                fileInputId: 'add-prod-file',
+                urlInputId: 'add-prod-image',
+                wrapId: 'add-preview-wrap',
+                imgId: 'add-preview-img',
+                nameId: 'add-preview-name',
+                metaId: 'add-preview-meta',
+                removeBtnId: 'btn-remove-add-preview',
+                defaultImage: ''
+            });
+
+            // ติดตั้ง Image Picker สำหรับ Modal แก้ไขสินค้า
+            setupImagePicker({
+                zoneId: 'edit-upload-zone',
+                fileInputId: 'edit-prod-file',
+                urlInputId: 'edit-prod-image',
+                wrapId: 'edit-preview-wrap',
+                imgId: 'edit-preview-img',
+                nameId: 'edit-preview-name',
+                metaId: 'edit-preview-meta',
+                removeBtnId: 'btn-remove-edit-preview',
+                defaultImage: 'assets/images/product-freedom.png'
+            });
 
             // Add Modal Trigger
             const addModal = document.getElementById('add-product-modal');
@@ -574,6 +733,8 @@
                 addForm.reset();
                 const addInput = document.getElementById('add-prod-image');
                 if (addInput) addInput.value = '';
+                const addWrap = document.getElementById('add-preview-wrap');
+                if (addWrap) addWrap.style.display = 'none';
                 addModal.classList.add('open');
                 addModal.setAttribute('aria-hidden', 'false');
             });
@@ -844,6 +1005,18 @@
             document.getElementById('edit-prod-stock').value = product.stock;
             document.getElementById('edit-prod-desc').value = product.description || '';
             document.getElementById('edit-prod-image').value = product.image_url || product.image || '';
+
+            // แสดงพรีวิวรูปภาพเดิมของสินค้า
+            const editWrap = document.getElementById('edit-preview-wrap');
+            const editImg = document.getElementById('edit-preview-img');
+            const editName = document.getElementById('edit-preview-name');
+            const editMeta = document.getElementById('edit-preview-meta');
+            if (editWrap && editImg) {
+                editImg.src = product.image_url || product.image || 'assets/images/product-freedom.png';
+                if (editName) editName.textContent = product.name || 'Current Image';
+                if (editMeta) editMeta.textContent = 'รูปภาพปัจจุบันของสินค้า';
+                editWrap.style.display = 'flex';
+            }
 
             const editModal = document.getElementById('edit-product-modal');
             editModal.classList.add('open');
