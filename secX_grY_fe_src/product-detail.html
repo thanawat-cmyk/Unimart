@@ -80,24 +80,8 @@
                         <img id="detail-main-img" src="assets/images/detail-gunpla-main.png" alt="Product Image">
                     </figure>
 
-                    <!-- แกลเลอรีรูปขนาดย่อ (Thumbnails) -->
-                    <div class="thumbnail-carousel">
-                        <div class="thumb-item active" onclick="changeMainImage(this)">
-                            <img src="assets/images/detail-gunpla-main.png" alt="Thumb 1">
-                        </div>
-                        <div class="thumb-item" onclick="changeMainImage(this)">
-                            <img src="assets/images/product-freedom.png" alt="Thumb 2">
-                        </div>
-                        <div class="thumb-item" onclick="changeMainImage(this)">
-                            <img src="assets/images/product-god.png" alt="Thumb 3">
-                        </div>
-                        <div class="thumb-item" onclick="changeMainImage(this)">
-                            <img src="assets/images/about-rx78.png" alt="Thumb 4">
-                        </div>
-                        <div class="thumb-item" onclick="changeMainImage(this)">
-                            <img src="assets/images/hero-banner.png" alt="Thumb 5">
-                        </div>
-                    </div>
+                    <!-- แกลเลอรีรูปขนาดย่อ (Thumbnails) โหลดแบบ Dynamic ตามรูปจริงของสินค้า -->
+                    <div class="thumbnail-carousel" id="detail-thumbnail-carousel" style="display: none;"></div>
                 </div>
 
                 <!-- คอลัมน์ขวา: รายละเอียด สเปก ราคา และปุ่มสั่งซื้อ -->
@@ -374,8 +358,32 @@
                 document.getElementById('detail-price').innerHTML = `฿${priceNum.toLocaleString()}${approxJpyText}`;
                 document.getElementById('detail-stock').textContent = `${product.status || 'In Stock'} (มีสินค้า ${product.stock} ชิ้น)`;
 
-                // อัปเดตรูปภาพ
+                // อัปเดตรูปภาพหลัก
                 document.getElementById('detail-main-img').src = imgUrl;
+
+                // อัปเดตแกลเลอรีรูปขนาดย่อ (Thumbnails) ให้แสดงเฉพาะรูปจริงของสินค้านั้น
+                const carousel = document.querySelector('.thumbnail-carousel');
+                if (carousel) {
+                    const galleryImages = (product.gallery && Array.isArray(product.gallery) && product.gallery.length > 0)
+                        ? product.gallery
+                        : (product.images && Array.isArray(product.images) && product.images.length > 0)
+                        ? product.images
+                        : [];
+
+                    if (galleryImages.length > 1) {
+                        // หากมีหลายรูป ให้สร้าง Thumbnail ตามรายการรูปจริง
+                        carousel.innerHTML = galleryImages.map((src, idx) => `
+                            <div class="thumb-item ${idx === 0 ? 'active' : ''}" onclick="changeMainImage(this)">
+                                <img src="${src}" alt="Thumb ${idx + 1}">
+                            </div>
+                        `).join('');
+                        carousel.style.display = 'flex';
+                    } else {
+                        // หากสินค้ามีรูปเดียว (ตามที่อัปโหลด) ซ่อนแถบ Thumbnail ไว้ เพื่อไม่ให้มีรูปสินค้าอื่นโผล่มาปน
+                        carousel.innerHTML = '';
+                        carousel.style.display = 'none';
+                    }
+                }
 
                 // อัปเดตตารางสเปก
                 document.getElementById('spec-grade').textContent = `${product.grade} (${product.scale || ''})`;
