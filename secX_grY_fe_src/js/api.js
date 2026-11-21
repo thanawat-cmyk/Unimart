@@ -333,29 +333,6 @@ const UnimartAPI = {
       return { success: true, message: 'บันทึกการแก้ไขสินค้าสำเร็จ (Offline / Cloudflare Mode)' };
     }
   },
-        if (stored) list = JSON.parse(stored);
-      } catch (e) { list = []; }
-
-      if (!list || list.length === 0) {
-        if (typeof window !== 'undefined' && Array.isArray(window.UNIMART_PRODUCTS)) {
-          list = JSON.parse(JSON.stringify(window.UNIMART_PRODUCTS));
-        }
-      }
-
-      const numId = parseInt(id, 10);
-      const index = list.findIndex(p => p.id === numId);
-      if (index !== -1) {
-        list[index] = { ...list[index], ...productData };
-        try {
-          localStorage.setItem('unimart_local_products', JSON.stringify(list));
-        } catch (e) {
-          console.warn('ไม่สามารถบันทึกขนาดใหญ่ลงใน localStorage ได้:', e);
-        }
-        return { success: true, message: 'แก้ไขสินค้าสำเร็จ (Offline / Cloudflare Mode)', data: list[index] };
-      }
-      throw new Error(`ไม่พบสินค้ารหัส ID ${id}`);
-    }
-  },
 
   /**
    * ลบสินค้าออกจากระบบ (Delete Product)
