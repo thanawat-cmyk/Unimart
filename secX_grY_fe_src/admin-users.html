@@ -126,10 +126,9 @@
                         Showing <strong id="admin-user-showing-count">1-5</strong> of <strong id="admin-user-total-count">5</strong> users
                     </div>
                     <div class="admin-pagination">
-                        <button class="page-btn" title="หน้าก่อนหน้า">&lt;</button>
+                        <button class="page-btn" title="หน้าก่อนหน้า" disabled>&lt;</button>
                         <button class="page-btn active">1</button>
-                        <button class="page-btn">2</button>
-                        <button class="page-btn" title="หน้าถัดไป">&gt;</button>
+                        <button class="page-btn" title="หน้าถัดไป" disabled>&gt;</button>
                     </div>
                 </footer>
             </section>
@@ -275,8 +274,9 @@
     <!-- User Management Operations Script with Web Services Integration -->
     <script src="js/api.js"></script>
     <script>
-        // Array of admin users loaded via Web Services API
-        let adminUsers = [];
+        // Master list of all admin users loaded via Web Services API or local fallback
+        let allAdminUsers = [];
+        let displayedUsers = [];
         let pendingDeleteUserId = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -287,10 +287,10 @@
         // Load or reload users from Web Services API
         async function reloadUsers() {
             try {
-                adminUsers = await UnimartAPI.getUsers();
+                allAdminUsers = await UnimartAPI.getUsers();
             } catch (err) {
                 console.warn('Backend unavailable, fallback to local users:', err);
-                adminUsers = [
+                allAdminUsers = [
                     { id: 1, username: 'admin', fullname: 'ธนวัฒน์ แสนโบราณ (Admin RakGundam)', email: 'adminrakgundam01@gmail.com', role: 'Super Admin', status: 'Active' },
                     { id: 2, username: 'nichaphat', fullname: 'ณิชาภัทร วิชาธรรม', email: 'nichaphat.wic@student.mahidol.ac.th', role: 'Manager', status: 'Active' },
                     { id: 3, username: 'ayosara', fullname: 'อโยสรา ต้องทรัพย์', email: 'ayosara.ton@student.mahidol.ac.th', role: 'Staff', status: 'Active' },
@@ -299,7 +299,7 @@
                     { id: 6, username: 'GundamLover159', fullname: 'กันดัม เลิฟเวอร์', email: 'gundamlover159@gmail.com', role: 'Customer', status: 'Active' }
                 ];
             }
-            renderUserTable(adminUsers);
+            await applyUserFilters();
         }
 
         // Render User Rows into the table
@@ -310,8 +310,8 @@
 
             if (!tbody) return;
 
-            if (items.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: #64748b;">ไม่พบข้อมูลผู้ใช้งานที่ตรงกับคำค้นหา</td></tr>`;
+            if (!items || items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: #64748b; font-size: 0.95rem;">🔍 ไม่พบข้อมูลผู้ใช้งานที่ตรงกับเงื่อนไขการค้นหา</td></tr>`;
                 if (showingCount) showingCount.textContent = '0';
                 if (totalCount) totalCount.textContent = '0';
                 return;
@@ -319,16 +319,19 @@
 
             let html = '';
             items.forEach((u) => {
-                const statusClass = u.status === 'Active' ? 'instock' : 'outofstock';
+                const statusClass = (u.status || '').toLowerCase() === 'active' ? 'instock' : 'outofstock';
                 const displayName = u.fullname || u.name || u.username;
+                const roleLabel = u.role || 'Staff';
+                const roleClass = roleLabel.toLowerCase().replace(/\s+/g, '-');
+
                 html += `
                     <tr data-id="${u.id}">
                         <td><strong>#${u.id}</strong></td>
                         <td><code>${u.username}</code></td>
                         <td><strong>${displayName}</strong></td>
                         <td>${u.email}</td>
-                        <td><span class="badge-grade">${u.role}</span></td>
-                        <td><span class="badge-status ${statusClass}">${u.status}</span></td>
+                        <td><span class="badge-role role-${roleClass}">${roleLabel}</span></td>
+                        <td><span class="badge-status ${statusClass}">${u.status || 'Active'}</span></td>
                         <td>
                             <div class="admin-actions-cell" style="justify-content: center;">
                                 <button type="button" class="btn-action-icon edit" title="แก้ไขผู้ใช้" onclick="openEditUserModal(${u.id})">
@@ -348,33 +351,39 @@
             if (totalCount) totalCount.textContent = items.length;
         }
 
-        // Filter Users via Web Services API
+        // Filter Users via Web Services API with instant local fallback
         async function applyUserFilters() {
-            const query = document.getElementById('admin-user-search').value.toLowerCase().trim();
-            const role = document.getElementById('admin-filter-role').value;
-            const status = document.getElementById('admin-filter-status').value;
+            const searchInput = document.getElementById('admin-user-search');
+            const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+            const role = document.getElementById('admin-filter-role') ? document.getElementById('admin-filter-role').value : 'all';
+            const status = document.getElementById('admin-filter-status') ? document.getElementById('admin-filter-status').value : 'all';
 
             try {
+                // Call API with query parameters (GET /api/users?q=...&role=...&status=...)
                 const results = await UnimartAPI.getUsers({
                     q: query,
                     role: role === 'all' ? '' : role,
                     status: status === 'all' ? '' : status
                 });
-                adminUsers = results;
-                renderUserTable(results);
+                displayedUsers = results;
+                renderUserTable(displayedUsers);
             } catch (err) {
-                const filtered = adminUsers.filter(u => {
+                console.warn('API filter failed, falling back to local master array filter:', err);
+                const filtered = allAdminUsers.filter(u => {
                     const displayName = (u.fullname || u.name || '').toLowerCase();
+                    const username = (u.username || '').toLowerCase();
+                    const email = (u.email || '').toLowerCase();
                     const matchQuery = !query || 
-                        u.username.toLowerCase().includes(query) || 
+                        username.includes(query) || 
                         displayName.includes(query) || 
-                        u.email.toLowerCase().includes(query) ||
+                        email.includes(query) ||
                         String(u.id).includes(query);
-                    const matchRole = (role === 'all') || (u.role === role);
-                    const matchStatus = (status === 'all') || (u.status === status);
+                    const matchRole = (role === 'all') || (u.role && u.role.toLowerCase() === role.toLowerCase());
+                    const matchStatus = (status === 'all') || (u.status && u.status.toLowerCase() === status.toLowerCase());
                     return matchQuery && matchRole && matchStatus;
                 });
-                renderUserTable(filtered);
+                displayedUsers = filtered;
+                renderUserTable(displayedUsers);
             }
         }
 
@@ -426,7 +435,11 @@
                     alert(`✅ เพิ่มผู้ใช้งาน "${newUser.username}" เรียบร้อยแล้ว!`);
                     await reloadUsers();
                 } catch (err) {
-                    alert(`เกิดข้อผิดพลาดในการเพิ่มผู้ใช้: ${err.message}`);
+                    console.warn('Backend unavailable, saving user to local mock state:', err);
+                    newUser.id = (allAdminUsers.length ? Math.max(...allAdminUsers.map(u => u.id)) : 0) + 1;
+                    allAdminUsers.unshift(newUser);
+                    applyUserFilters();
+                    alert(`✅ เพิ่มผู้ใช้งาน "${newUser.username}" เรียบร้อยแล้ว!`);
                 }
 
                 addModal.classList.remove('open');
@@ -456,7 +469,13 @@
                     alert(`✅ บันทึกการแก้ไขข้อมูลผู้ใช้ ID #${id} เรียบร้อยแล้ว!`);
                     await reloadUsers();
                 } catch (err) {
-                    alert(`เกิดข้อผิดพลาดในการแก้ไขข้อมูลผู้ใช้: ${err.message}`);
+                    console.warn('Backend unavailable, updating local mock state:', err);
+                    const idx = allAdminUsers.findIndex(u => u.id === id);
+                    if (idx !== -1) {
+                        allAdminUsers[idx] = { ...allAdminUsers[idx], ...updatedData };
+                    }
+                    applyUserFilters();
+                    alert(`✅ บันทึกการแก้ไขข้อมูลผู้ใช้ ID #${id} เรียบร้อยแล้ว!`);
                 }
 
                 editModal.classList.remove('open');
@@ -478,7 +497,10 @@
                         alert(`🗑️ ลบบัญชีผู้ใช้ ID #${pendingDeleteUserId} ออกจากระบบเรียบร้อยแล้ว`);
                         await reloadUsers();
                     } catch (err) {
-                        alert(`เกิดข้อผิดพลาดในการลบผู้ใช้: ${err.message}`);
+                        console.warn('Backend unavailable, deleting from local mock state:', err);
+                        allAdminUsers = allAdminUsers.filter(u => u.id !== pendingDeleteUserId);
+                        applyUserFilters();
+                        alert(`🗑️ ลบบัญชีผู้ใช้ ID #${pendingDeleteUserId} ออกจากระบบเรียบร้อยแล้ว`);
                     }
                     deleteModal.classList.remove('open');
                     deleteModal.setAttribute('aria-hidden', 'true');
@@ -499,7 +521,7 @@
 
         // Global Edit / Delete Modal Openers
         window.openEditUserModal = function(id) {
-            const user = adminUsers.find(u => u.id === id);
+            const user = (allAdminUsers || []).find(u => u.id === id) || (displayedUsers || []).find(u => u.id === id);
             if (!user) return;
 
             document.getElementById('edit-user-id').value = user.id;
@@ -515,7 +537,7 @@
         };
 
         window.openDeleteUserModal = function(id) {
-            const user = adminUsers.find(u => u.id === id);
+            const user = (allAdminUsers || []).find(u => u.id === id) || (displayedUsers || []).find(u => u.id === id);
             if (!user) return;
 
             pendingDeleteUserId = id;

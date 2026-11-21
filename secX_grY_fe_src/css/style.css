@@ -2866,12 +2866,50 @@ footer {
 
 .badge-grade {
     display: inline-block;
+    position: static;
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 0.8rem;
     font-weight: 700;
     background-color: #e2e8f0;
     color: #334155;
+}
+
+/* Admin Users Table - Role Badges */
+.badge-role {
+    display: inline-block;
+    position: static;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.badge-role.role-super-admin {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.badge-role.role-manager {
+    background-color: #ffedd5;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+}
+
+.badge-role.role-staff {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #dbeafe;
+}
+
+.badge-role.role-customer {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
 }
 
 .admin-actions-cell {

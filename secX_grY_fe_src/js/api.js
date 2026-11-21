@@ -359,14 +359,26 @@ const UnimartAPI = {
       return res.data || [];
     } catch (err) {
       console.warn('เซิร์ฟเวอร์ยังไม่พร้อม สลับไปใช้ข้อมูลผู้ใช้จำลอง');
-      return [
+      const mockUsers = [
         { id: 1, fullname: 'ธนวัฒน์ แสนโบราณ (Admin RakGundam)', username: 'admin', email: 'adminrakgundam01@gmail.com', phone: '095-125-1834', role: 'Super Admin', status: 'Active' },
         { id: 2, fullname: 'ณิชาภัทร วิชาธรรม', username: 'nichaphat', email: 'nichaphat.wic@student.mahidol.ac.th', phone: '081-234-5678', role: 'Manager', status: 'Active' },
         { id: 3, fullname: 'อโยสรา ต้องทรัพย์', username: 'ayosara', email: 'ayosara.ton@student.mahidol.ac.th', phone: '082-345-6789', role: 'Staff', status: 'Active' },
         { id: 4, fullname: 'คชาธร ศิริเลิศ', username: 'khachatorn', email: 'khachatorn.sir@student.mahidol.ac.th', phone: '083-456-7890', role: 'Staff', status: 'Active' },
-        { id: 5, fullname: 'ธัญชนก โรจนสฤษฎิ์', username: 'thanchanok', email: 'thanchanok.roj@student.mahidol.ac.th', phone: '084-567-8901', role: 'Staff', status: 'Active' },
+        { id: 5, fullname: 'ธัญชนก โรจนสฤษฎิ์', username: 'thanchanok', email: 'thanchanok.roj@student.mahidol.ac.th', phone: '084-567-8901', role: 'Staff', status: 'Inactive' },
         { id: 6, fullname: 'กันดัม เลิฟเวอร์', username: 'GundamLover159', email: 'gundamlover159@gmail.com', phone: '098-159-1594', role: 'Customer', status: 'Active' }
       ];
+
+      return mockUsers.filter(u => {
+        const q = (params.q || '').toLowerCase().trim();
+        const matchQ = !q ||
+          (u.username && u.username.toLowerCase().includes(q)) ||
+          (u.fullname && u.fullname.toLowerCase().includes(q)) ||
+          (u.email && u.email.toLowerCase().includes(q)) ||
+          String(u.id).includes(q);
+        const matchRole = !params.role || params.role === 'all' || u.role.toLowerCase() === params.role.toLowerCase();
+        const matchStatus = !params.status || params.status === 'all' || u.status.toLowerCase() === params.status.toLowerCase();
+        return matchQ && matchRole && matchStatus;
+      });
     }
   },
 
