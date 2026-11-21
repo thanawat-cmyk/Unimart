@@ -158,7 +158,7 @@ function executeInMemoryQuery(sql, params = []) {
   // ----------------------------------------------------------------------------
   // A. ตาราง users
   // ----------------------------------------------------------------------------
-  if (upperSql.includes('FROM USERS')) {
+  if (upperSql.startsWith('SELECT') && upperSql.includes('FROM USERS')) {
     // 1. SELECT ... FROM users WHERE username = ? OR email = ?
     if (upperSql.includes('WHERE USERNAME = ? OR EMAIL = ?')) {
       const u = String(params[0] || '').toLowerCase();
@@ -264,7 +264,7 @@ function executeInMemoryQuery(sql, params = []) {
   // ----------------------------------------------------------------------------
   // B. ตาราง products
   // ----------------------------------------------------------------------------
-  if (upperSql.includes('FROM PRODUCTS')) {
+  if (upperSql.startsWith('SELECT') && upperSql.includes('FROM PRODUCTS')) {
     if (upperSql.includes('WHERE ID = ?')) {
       const targetId = Number(params[0]);
       const rows = memoryDB.products.filter(p => Number(p.id) === targetId);
@@ -347,6 +347,15 @@ function executeInMemoryQuery(sql, params = []) {
   }
 
   if (upperSql.startsWith('UPDATE PRODUCTS SET')) {
+    if (params.length === 2 && upperSql.includes('SET IMAGE_URL = ? WHERE ID = ?')) {
+      const targetId = Number(params[1]);
+      const idx = memoryDB.products.findIndex(p => Number(p.id) === targetId);
+      if (idx !== -1) {
+        memoryDB.products[idx].image_url = params[0];
+        return [{ affectedRows: 1 }, []];
+      }
+      return [{ affectedRows: 0 }, []];
+    }
     const targetId = Number(params[14]);
     const idx = memoryDB.products.findIndex(p => Number(p.id) === targetId);
     if (idx !== -1) {
@@ -396,7 +405,7 @@ function executeInMemoryQuery(sql, params = []) {
     return [{ insertId: nextLogId, affectedRows: 1 }, []];
   }
 
-  if (upperSql.includes('FROM LOGIN_LOGS')) {
+  if (upperSql.startsWith('SELECT') && upperSql.includes('FROM LOGIN_LOGS')) {
     let rows = memoryDB.login_logs.map(r => ({ ...r }));
     let idx = 0;
     if (upperSql.includes('AND STATUS = ?')) {
