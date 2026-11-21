@@ -607,11 +607,15 @@
                 const imgUrl = item.image_url || item.image || 'assets/images/product-freedom.png';
                 const priceNum = Number(item.price);
                 const approxJpy = currentJpyRate > 0 ? Math.round(priceNum / currentJpyRate) : 0;
+                const normalizedScale = (item.grade === 'HG' || item.grade === 'RG' || item.grade === 'EG') && (!item.scale || item.scale === '1/100')
+                    ? '1/144'
+                    : (item.scale || '');
+                const badgeLabel = `${item.grade || 'Gunpla'}${normalizedScale ? ' ' + normalizedScale : ''}`;
 
                 return `
                 <article class="search-product-card" data-category="${item.category}" data-grade="${item.grade}">
                     <figure class="search-thumb-box">
-                        <span class="badge-grade">${item.grade} ${item.scale || ''}</span>
+                        <span class="badge-grade">${badgeLabel}</span>
                         <img src="${imgUrl}" alt="${item.name}" class="search-thumb-img">
                     </figure>
                     <figcaption class="search-product-details">
@@ -634,12 +638,16 @@
                 const imgUrl = item.image_url || item.image || 'assets/images/product-freedom.png';
                 const priceNum = Number(item.price);
                 const approxJpy = currentJpyRate > 0 ? Math.round(priceNum / currentJpyRate) : 0;
+                const normalizedScale = (item.grade === 'HG' || item.grade === 'RG' || item.grade === 'EG') && (!item.scale || item.scale === '1/100')
+                    ? '1/144'
+                    : (item.scale || '');
+                const badgeLabel = `${item.grade || 'Gunpla'}${normalizedScale ? ' ' + normalizedScale : ''}`;
 
                 return `
                 <tr>
                     <td><img src="${imgUrl}" alt="${item.name}" class="table-product-thumb"></td>
                     <td><strong class="table-product-title">${item.name}</strong><br><small style="color: #64748b;">${item.series || ''}</small></td>
-                    <td><span class="table-badge-grade">${item.grade} ${item.scale || ''}</span></td>
+                    <td><span class="table-badge-grade">${badgeLabel}</span></td>
                     <td>${item.category === 'gundam' ? 'Gundam Plastic Model' : item.category === 'parts' ? 'Parts & Accessories' : 'Tools & Supplies'}</td>
                     <td>
                         <span class="table-price-text">฿${priceNum.toLocaleString()}</span><br>

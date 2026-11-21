@@ -354,7 +354,10 @@
         // สร้าง HTML การ์ดสินค้าให้ตรงตาม Figma Design System
         function createProductCardHTML(item) {
             const imgUrl = item.image_url || item.image || 'assets/images/product-freedom.png';
-            const gradeBadge = `${item.grade || 'Gunpla'}${item.scale ? ' ' + item.scale : ''}`;
+            const normalizedScale = (item.grade === 'HG' || item.grade === 'RG' || item.grade === 'EG') && (!item.scale || item.scale === '1/100')
+                ? '1/144'
+                : (item.scale || '');
+            const gradeBadge = `${item.grade || 'Gunpla'}${normalizedScale ? ' ' + normalizedScale : ''}`;
             const price = Number(item.price || 0).toLocaleString();
             const series = item.series || 'Bandai Gunpla';
 

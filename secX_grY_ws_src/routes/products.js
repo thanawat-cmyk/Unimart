@@ -83,11 +83,20 @@ router.get('/', async (req, res) => {
     }
 
     const [rows] = await pool.query(sql, params);
+    // ตรวจสอบความถูกต้องของสเกลตามมาตรฐานกันพลา Bandai (HG, RG ต้องเป็น 1/144 เสมอ ไม่ใช่ 1/100)
+    const normalizedRows = rows.map(p => {
+      const g = (p.grade || '').toUpperCase().trim();
+      if ((g === 'HG' || g === 'RG' || g === 'EG') && (!p.scale || p.scale === '1/100')) {
+        p.scale = '1/144';
+      }
+      return p;
+    });
+
     return res.status(200).json({
       success: true,
-      count: rows.length,
+      count: normalizedRows.length,
       criteria: { q, grade, category, minPrice, maxPrice, status, sortBy },
-      data: rows
+      data: normalizedRows
     });
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -118,9 +127,15 @@ router.get('/:id', async (req, res) => {
       });
     }
 
+    const p = rows[0];
+    const g = (p.grade || '').toUpperCase().trim();
+    if ((g === 'HG' || g === 'RG' || g === 'EG') && (!p.scale || p.scale === '1/100')) {
+      p.scale = '1/144';
+    }
+
     return res.status(200).json({
       success: true,
-      data: rows[0]
+      data: p
     });
   } catch (error) {
     console.error(`Error fetching product ${id}:`, error);
@@ -170,6 +185,17 @@ router.post('/', async (req, res) => {
     status = 'In Stock'
   } = req.body;
 
+  // กำหนดสเกลให้สอดคล้องกับเกรดของกันพลา (HG และ RG ต้องเป็น 1/144 เท่านั้น)
+  let effectiveScale = scale;
+  const upperGrade = (grade || '').toUpperCase().trim();
+  if ((upperGrade === 'HG' || upperGrade === 'RG' || upperGrade === 'EG') && (!effectiveScale || effectiveScale === '1/100')) {
+    effectiveScale = '1/144';
+  } else if (upperGrade === 'MG' && (!effectiveScale || effectiveScale === 'N/A')) {
+    effectiveScale = '1/100';
+  } else if (upperGrade === 'PG' && (!effectiveScale || effectiveScale === 'N/A')) {
+    effectiveScale = '1/60';
+  }
+
   // Validation ตรวจสอบข้อมูลบังคับ
   if (!name || price === undefined || price === null || isNaN(price)) {
     return res.status(400).json({
@@ -191,7 +217,7 @@ router.post('/', async (req, res) => {
       series.trim(),
       grade.trim(),
       category.trim(),
-      scale.trim(),
+      effectiveScale.trim(),
       parseFloat(price),
       parseInt(stock, 10) || 0,
       release_date || new Date().toISOString().slice(0, 10),
@@ -248,12 +274,19 @@ router.put('/:id', async (req, res) => {
     }
 
     const current = existing[0];
+    const targetGrade = req.body.grade !== undefined ? req.body.grade.trim() : current.grade;
+    let targetScale = req.body.scale !== undefined ? req.body.scale.trim() : current.scale;
+    const upperG = (targetGrade || '').toUpperCase().trim();
+    if ((upperG === 'HG' || upperG === 'RG' || upperG === 'EG') && (!targetScale || targetScale === '1/100')) {
+      targetScale = '1/144';
+    }
+
     const updateData = {
       name: req.body.name !== undefined ? req.body.name.trim() : current.name,
       series: req.body.series !== undefined ? req.body.series.trim() : current.series,
-      grade: req.body.grade !== undefined ? req.body.grade.trim() : current.grade,
+      grade: targetGrade,
       category: req.body.category !== undefined ? req.body.category.trim() : current.category,
-      scale: req.body.scale !== undefined ? req.body.scale.trim() : current.scale,
+      scale: targetScale,
       price: req.body.price !== undefined ? parseFloat(req.body.price) : current.price,
       stock: req.body.stock !== undefined ? parseInt(req.body.stock, 10) : current.stock,
       release_date: req.body.release_date !== undefined ? req.body.release_date : current.release_date,

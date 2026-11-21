@@ -384,6 +384,11 @@ footer {
     padding: 4px 10px;
     border-radius: 6px;
     letter-spacing: 0.05em;
+    z-index: 10;
+    line-height: 1.2;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 .product-info {
@@ -2864,16 +2869,7 @@ footer {
     color: #1d4ed8;
 }
 
-.badge-grade {
-    display: inline-block;
-    position: static;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    background-color: #e2e8f0;
-    color: #334155;
-}
+
 
 /* Admin Users Table - Role Badges */
 .badge-role {

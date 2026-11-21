@@ -132,7 +132,7 @@
                                 <strong>ZGMF-X20A Strike Freedom Gundam</strong>
                                 <div style="font-size: 0.8rem; color: #64748b;">Mobile Suit Gundam SEED Destiny</div>
                             </td>
-                            <td><span class="badge-grade">MG</span></td>
+                            <td><span class="table-badge-grade">MG</span></td>
                             <td><strong>฿2,450</strong></td>
                             <td>15 ชิ้น</td>
                             <td><span class="badge-status instock">In Stock</span></td>
@@ -157,7 +157,7 @@
                                 <strong>GF13-017NJII God Gundam</strong>
                                 <div style="font-size: 0.8rem; color: #64748b;">Mobile Fighter G Gundam</div>
                             </td>
-                            <td><span class="badge-grade">RG</span></td>
+                            <td><span class="table-badge-grade">RG</span></td>
                             <td><strong>฿1,850</strong></td>
                             <td>8 ชิ้น</td>
                             <td><span class="badge-status instock">In Stock</span></td>
@@ -182,7 +182,7 @@
                                 <strong>RX-78-2 Gundam Perfect Grade Unleashed</strong>
                                 <div style="font-size: 0.8rem; color: #64748b;">Mobile Suit Gundam 0079</div>
                             </td>
-                            <td><span class="badge-grade">PG</span></td>
+                            <td><span class="table-badge-grade">PG</span></td>
                             <td><strong>฿8,900</strong></td>
                             <td>3 ชิ้น</td>
                             <td><span class="badge-status lowstock">Low Stock</span></td>
@@ -235,12 +235,22 @@
 
                     <div class="modal-form-group">
                         <label for="add-prod-grade">Grade *</label>
-                        <select id="add-prod-grade" class="modal-select" required>
+                        <select id="add-prod-grade" class="modal-select" required onchange="autoUpdateScale('add')">
+                            <option value="HG">HG (High Grade)</option>
                             <option value="RG">RG (Real Grade)</option>
                             <option value="MG">MG (Master Grade)</option>
-                            <option value="HG">HG (High Grade)</option>
                             <option value="PG">PG (Perfect Grade)</option>
                             <option value="Non-Grade">Non-Grade</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="add-prod-scale">Scale (อัตราส่วน) *</label>
+                        <select id="add-prod-scale" class="modal-select" required>
+                            <option value="1/144">1/144 (HG, RG, EG)</option>
+                            <option value="1/100">1/100 (MG, Full Mechanics)</option>
+                            <option value="1/60">1/60 (PG)</option>
+                            <option value="Non-scale">Non-scale (SD)</option>
                         </select>
                     </div>
 
@@ -329,12 +339,22 @@
 
                     <div class="modal-form-group">
                         <label for="edit-prod-grade">Grade *</label>
-                        <select id="edit-prod-grade" class="modal-select" required>
+                        <select id="edit-prod-grade" class="modal-select" required onchange="autoUpdateScale('edit')">
+                            <option value="HG">HG (High Grade)</option>
                             <option value="RG">RG (Real Grade)</option>
                             <option value="MG">MG (Master Grade)</option>
-                            <option value="HG">HG (High Grade)</option>
                             <option value="PG">PG (Perfect Grade)</option>
                             <option value="Non-Grade">Non-Grade</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label for="edit-prod-scale">Scale (อัตราส่วน) *</label>
+                        <select id="edit-prod-scale" class="modal-select" required>
+                            <option value="1/144">1/144 (HG, RG, EG)</option>
+                            <option value="1/100">1/100 (MG, Full Mechanics)</option>
+                            <option value="1/60">1/60 (PG)</option>
+                            <option value="Non-scale">Non-scale (SD)</option>
                         </select>
                     </div>
 
@@ -549,7 +569,7 @@
                             <strong>${p.name}</strong>
                             <div style="font-size: 0.8rem; color: #64748b;">${p.series || 'Bandai Gunpla Original'}</div>
                         </td>
-                        <td><span class="badge-grade">${p.grade || 'N/A'}</span></td>
+                        <td><span class="table-badge-grade">${p.grade || 'N/A'}</span></td>
                         <td><strong>฿${Number(p.price).toLocaleString()}</strong></td>
                         <td>${p.stock} ชิ้น</td>
                         <td><span class="badge-status ${statusClass}">${statusText}</span></td>
@@ -762,15 +782,19 @@
                     return;
                 }
 
+                const gradeVal = document.getElementById('add-prod-grade').value;
+                const scaleEl = document.getElementById('add-prod-scale');
+                const scaleVal = scaleEl ? scaleEl.value : (gradeVal === 'HG' || gradeVal === 'RG' ? '1/144' : (gradeVal === 'MG' ? '1/100' : (gradeVal === 'PG' ? '1/60' : '1/144')));
+
                 const newProduct = {
                     name: name,
-                    grade: document.getElementById('add-prod-grade').value,
+                    grade: gradeVal,
+                    scale: scaleVal,
                     category: document.getElementById('add-prod-category').value,
                     price: price,
                     stock: isNaN(stock) ? 0 : stock,
                     status: document.getElementById('add-prod-status').value,
                     series: 'Universal Century',
-                    scale: '1/100',
                     image_url: document.getElementById('add-prod-image').value.trim() || 'assets/images/product-freedom.png',
                     description: document.getElementById('add-prod-desc').value.trim()
                 };
@@ -808,9 +832,14 @@
             document.getElementById('edit-product-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const id = Number(document.getElementById('edit-prod-id').value);
+                const gradeVal = document.getElementById('edit-prod-grade').value;
+                const scaleEl = document.getElementById('edit-prod-scale');
+                const scaleVal = scaleEl ? scaleEl.value : (gradeVal === 'HG' || gradeVal === 'RG' ? '1/144' : (gradeVal === 'MG' ? '1/100' : '1/144'));
+
                 const updatedData = {
                     name: document.getElementById('edit-prod-name').value.trim(),
-                    grade: document.getElementById('edit-prod-grade').value,
+                    grade: gradeVal,
+                    scale: scaleVal,
                     category: document.getElementById('edit-prod-category').value,
                     price: Number(document.getElementById('edit-prod-price').value),
                     stock: Number(document.getElementById('edit-prod-stock').value),
@@ -992,6 +1021,23 @@
             }
         }
 
+        // Global function to auto-sync standard scale when grade is selected
+        window.autoUpdateScale = function(type) {
+            const gradeSelect = document.getElementById(`${type}-prod-grade`);
+            const scaleSelect = document.getElementById(`${type}-prod-scale`);
+            if (!gradeSelect || !scaleSelect) return;
+            const g = (gradeSelect.value || '').toUpperCase();
+            if (g === 'HG' || g === 'RG') {
+                scaleSelect.value = '1/144';
+            } else if (g === 'MG') {
+                scaleSelect.value = '1/100';
+            } else if (g === 'PG') {
+                scaleSelect.value = '1/60';
+            } else if (g === 'SD') {
+                scaleSelect.value = 'Non-scale';
+            }
+        };
+
         // Global functions called from inline onclick buttons
         window.openEditModal = function(id) {
             const product = adminProducts.find(p => p.id === id);
@@ -999,7 +1045,14 @@
 
             document.getElementById('edit-prod-id').value = product.id;
             document.getElementById('edit-prod-name').value = product.name;
-            document.getElementById('edit-prod-grade').value = product.grade || 'HG';
+            const editGrade = product.grade || 'HG';
+            document.getElementById('edit-prod-grade').value = editGrade;
+            
+            // Auto-correct scale: HG & RG are 1/144, not 1/100!
+            const editScale = (editGrade === 'HG' || editGrade === 'RG') && product.scale === '1/100' ? '1/144' : (product.scale || (editGrade === 'HG' || editGrade === 'RG' ? '1/144' : (editGrade === 'MG' ? '1/100' : '1/144')));
+            const scaleEl = document.getElementById('edit-prod-scale');
+            if (scaleEl) scaleEl.value = editScale;
+
             document.getElementById('edit-prod-category').value = product.category || 'gundam';
             document.getElementById('edit-prod-price').value = product.price;
             document.getElementById('edit-prod-stock').value = product.stock;

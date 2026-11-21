@@ -347,9 +347,13 @@
                     approxJpyText = ` <small style="font-size: 1rem; color: #64748b; font-weight: normal;">(~¥${approxJpy.toLocaleString()} JPY)</small>`;
                 }
 
+                const normalizedScale = (product.grade === 'HG' || product.grade === 'RG' || product.grade === 'EG') && (!product.scale || product.scale === '1/100')
+                    ? '1/144'
+                    : (product.scale || (product.grade === 'MG' ? '1/100' : (product.grade === 'PG' ? '1/60' : '')));
+
                 // อัปเดตหัวข้อและ Breadcrumb
                 document.title = `${product.name} | Unimart`;
-                document.getElementById('breadcrumb-grade').textContent = `${product.grade} - ${product.scale || ''}`;
+                document.getElementById('breadcrumb-grade').textContent = `${product.grade} - ${normalizedScale}`;
                 document.getElementById('breadcrumb-product-name').textContent = product.name;
 
                 // อัปเดตข้อมูลสินค้า
@@ -386,9 +390,9 @@
                 }
 
                 // อัปเดตตารางสเปก
-                document.getElementById('spec-grade').textContent = `${product.grade} (${product.scale || ''})`;
+                document.getElementById('spec-grade').textContent = `${product.grade} (${normalizedScale})`;
                 document.getElementById('spec-category').textContent = product.category === 'gundam' ? 'Gundam Plastic Model' : product.category === 'parts' ? 'Parts & Accessories' : 'Tools & Supplies';
-                document.getElementById('spec-scale').textContent = product.scale || 'N/A';
+                document.getElementById('spec-scale').textContent = normalizedScale || 'N/A';
                 document.getElementById('spec-series').textContent = product.series || 'Mobile Suit Gundam';
                 document.getElementById('spec-release').textContent = releaseDateStr;
 
