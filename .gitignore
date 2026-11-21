@@ -7,6 +7,8 @@ yarn-debug.log*
 # Environment files
 .env.local
 .env.*.local
+local_db_state.json
+*/config/local_db_state.json
 
 # Operating System files
 Thumbs.db

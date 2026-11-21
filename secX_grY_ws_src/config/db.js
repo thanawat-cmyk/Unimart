@@ -150,6 +150,37 @@ const memoryDB = {
   ]
 };
 
+// ไฟล์บันทึกสถานะฐานข้อมูลสำรองลงดิสก์ เพื่อให้เวลาปิดเซิร์ฟเวอร์แล้วเปิดใหม่ ข้อมูลที่เพิ่ม/ลบ/แก้ไขยังคงอยู่ถาวร
+const STATE_FILE_PATH = path.join(__dirname, 'local_db_state.json');
+
+function loadPersistedMemoryDB() {
+  try {
+    if (fs.existsSync(STATE_FILE_PATH)) {
+      const saved = JSON.parse(fs.readFileSync(STATE_FILE_PATH, 'utf8'));
+      if (saved && Array.isArray(saved.products) && Array.isArray(saved.users)) {
+        memoryDB.users = saved.users;
+        memoryDB.products = saved.products;
+        if (Array.isArray(saved.login_logs)) memoryDB.login_logs = saved.login_logs;
+        if (Array.isArray(saved.orders)) memoryDB.orders = saved.orders;
+        if (Array.isArray(saved.order_items)) memoryDB.order_items = saved.order_items;
+      }
+    }
+  } catch (err) {
+    console.warn('[Fallback DB] ไม่สามารถอ่านไฟล์สถานะสำรองได้:', err.message);
+  }
+}
+
+function savePersistedMemoryDB() {
+  try {
+    fs.writeFileSync(STATE_FILE_PATH, JSON.stringify(memoryDB, null, 2), 'utf8');
+  } catch (err) {
+    console.warn('[Fallback DB] ไม่สามารถบันทึกไฟล์สถานะสำรองได้:', err.message);
+  }
+}
+
+// โหลดข้อมูลล่าสุดจากดิสก์ทันทีที่เริ่มระบบ
+loadPersistedMemoryDB();
+
 // ประมวลผลคำสั่ง SQL บน In-Memory DB กรณีเครื่องไม่ได้รัน MySQL Server
 function executeInMemoryQuery(sql, params = []) {
   const cleanSql = sql.replace(/\s+/g, ' ').trim();
@@ -229,6 +260,7 @@ function executeInMemoryQuery(sql, params = []) {
       updated_at: now
     };
     memoryDB.users.push(newUser);
+    savePersistedMemoryDB();
     return [{ insertId: nextId, affectedRows: 1 }, []];
   }
 
@@ -249,6 +281,7 @@ function executeInMemoryQuery(sql, params = []) {
         password: params[8],
         updated_at: new Date().toISOString()
       };
+      savePersistedMemoryDB();
       return [{ affectedRows: 1 }, []];
     }
     return [{ affectedRows: 0 }, []];
@@ -258,6 +291,7 @@ function executeInMemoryQuery(sql, params = []) {
     const targetId = Number(params[0]);
     const before = memoryDB.users.length;
     memoryDB.users = memoryDB.users.filter(u => Number(u.id) !== targetId);
+    savePersistedMemoryDB();
     return [{ affectedRows: before - memoryDB.users.length }, []];
   }
 
@@ -343,6 +377,7 @@ function executeInMemoryQuery(sql, params = []) {
       status: params[13]
     };
     memoryDB.products.push(newProd);
+    savePersistedMemoryDB();
     return [{ insertId: nextId, affectedRows: 1 }, []];
   }
 
@@ -352,6 +387,7 @@ function executeInMemoryQuery(sql, params = []) {
       const idx = memoryDB.products.findIndex(p => Number(p.id) === targetId);
       if (idx !== -1) {
         memoryDB.products[idx].image_url = params[0];
+        savePersistedMemoryDB();
         return [{ affectedRows: 1 }, []];
       }
       return [{ affectedRows: 0 }, []];
@@ -376,6 +412,7 @@ function executeInMemoryQuery(sql, params = []) {
         reference_source: params[12],
         status: params[13]
       };
+      savePersistedMemoryDB();
       return [{ affectedRows: 1 }, []];
     }
     return [{ affectedRows: 0 }, []];
@@ -385,6 +422,7 @@ function executeInMemoryQuery(sql, params = []) {
     const targetId = Number(params[0]);
     const before = memoryDB.products.length;
     memoryDB.products = memoryDB.products.filter(p => Number(p.id) !== targetId);
+    savePersistedMemoryDB();
     return [{ affectedRows: before - memoryDB.products.length }, []];
   }
 
@@ -402,6 +440,7 @@ function executeInMemoryQuery(sql, params = []) {
       user_agent: params[3],
       status: params[4]
     });
+    savePersistedMemoryDB();
     return [{ insertId: nextLogId, affectedRows: 1 }, []];
   }
 
