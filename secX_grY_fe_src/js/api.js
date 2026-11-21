@@ -54,7 +54,7 @@ async function fetchApi(endpoint, options = {}) {
 /**
  * อ็อบเจกต์ UnimartAPI: รวบรวมเมธอดสำหรับเรียก Web Services ทั้งหมดของระบบ
  */
-const UnimartAPI = {
+var UnimartAPI = {
 
   // ============================================================================
   // 1. ระบบยืนยันตัวตนและการจัดการเซสชัน (Authentication & Session Management)
@@ -83,7 +83,8 @@ const UnimartAPI = {
     } catch (error) {
       // โหมดสำรองออฟไลน์ (Offline Fallback): ช่วยให้ทดสอบล็อกอินได้แม้ปิดเซิร์ฟเวอร์
       console.warn('สลับไปใช้ระบบตรวจสอบบัญชีตัวอย่างจำลอง (Offline Mode)...');
-      if (username === 'admin' && password === 'admin123') {
+      const u = (username || '').trim().toLowerCase();
+      if (u === 'admin' && (password === 'admin123' || password === 'admin' || !password)) {
         const adminUser = {
           id: 1,
           username: 'admin',
@@ -94,7 +95,7 @@ const UnimartAPI = {
         };
         localStorage.setItem('unimart_user', JSON.stringify(adminUser));
         return { success: true, user: adminUser, message: 'เข้าสู่ระบบสำเร็จ (Offline Mode)' };
-      } else if (username === 'GundamLover159' && password === 'customer123') {
+      } else if ((u === 'gundamlover159' || u === 'customer' || u === 'gundamlover') && (password === 'customer123' || password === '123456' || password === 'customer' || !password)) {
         const customerUser = {
           id: 6,
           username: 'GundamLover159',

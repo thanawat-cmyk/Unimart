@@ -216,7 +216,11 @@
                     submitBtn.disabled = true;
 
                     try {
-                        const result = await UnimartAPI.login(username, password);
+                        const api = (typeof window !== 'undefined' && window.UnimartAPI) ? window.UnimartAPI : (typeof UnimartAPI !== 'undefined' ? UnimartAPI : null);
+                        if (!api) {
+                            throw new Error('ระบบ UnimartAPI กำลังเตรียมความพร้อม กรุณาลองใหม่อีกครั้ง');
+                        }
+                        const result = await api.login(username, password);
                         if (result.success && result.user) {
                             sessionStorage.setItem('unimart_admin_logged', 'true');
                             sessionStorage.setItem('unimart_admin_user', username);
