@@ -8,7 +8,6 @@
 เปิด Terminal ที่ 1 เพื่อสตาร์ทเซิร์ฟเวอร์หลังบ้านและฐานข้อมูล (สำหรับรับคำขอจากหน้าเว็บและทดสอบใน **Postman**):
 ```bash
 cd secX_grY_ws_src
-npm install
 npm start
 ```
 * **Web Service API URL:** `http://localhost:3000/api`
@@ -18,7 +17,6 @@ npm start
 เปิด Terminal ที่ 2 เพื่อสตาร์ทเซิร์ฟเวอร์หน้าบ้านแยกต่างหาก:
 ```bash
 cd secX_grY_fe_src
-npm install
 npm start
 ```
 * **Front-end Web URL:** เปิดเบราว์เซอร์ไปที่ `http://localhost:3100`

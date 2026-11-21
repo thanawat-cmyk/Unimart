@@ -20,22 +20,25 @@ function shortenImageUrl(rawUrl, itemId = null) {
     return 'assets/images/product-freedom.png';
   }
   const trimmed = rawUrl.trim();
-  if (!trimmed.startsWith('data:image/')) {
+  const base64Marker = ';base64,';
+  const markerIdx = trimmed.indexOf(base64Marker);
+
+  if (!trimmed.startsWith('data:') || markerIdx === -1) {
+    if (trimmed.length > 500) {
+      return 'assets/images/product-freedom.png';
+    }
     return trimmed;
   }
 
   try {
-    const match = trimmed.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
-    if (!match) {
-      return 'assets/images/product-freedom.png';
-    }
-    let ext = match[1].toLowerCase();
-    if (ext === 'jpeg') ext = 'jpg';
-    if (ext !== 'jpg' && ext !== 'png' && ext !== 'webp' && ext !== 'gif') {
-      ext = 'jpg';
-    }
+    const header = trimmed.slice(0, markerIdx).toLowerCase();
+    let ext = 'jpg';
+    if (header.includes('png')) ext = 'png';
+    else if (header.includes('webp')) ext = 'webp';
+    else if (header.includes('gif')) ext = 'gif';
 
-    const buffer = Buffer.from(match[2], 'base64');
+    const base64Data = trimmed.slice(markerIdx + base64Marker.length).replace(/\s+/g, '');
+    const buffer = Buffer.from(base64Data, 'base64');
     const suffix = itemId ? String(itemId) : String(Date.now()).slice(-6);
     const fileName = `img-${suffix}.${ext}`;
     const imagesDir = path.join(__dirname, '..', '..', 'secX_grY_fe_src', 'assets', 'images');
@@ -133,7 +136,7 @@ router.get('/', async (req, res) => {
       if ((g === 'HG' || g === 'RG' || g === 'EG') && (!p.scale || p.scale === '1/100')) {
         p.scale = '1/144';
       }
-      if (p.image_url && typeof p.image_url === 'string' && p.image_url.startsWith('data:image/')) {
+      if (p.image_url && typeof p.image_url === 'string' && (p.image_url.startsWith('data:') || p.image_url.length > 500)) {
         const shortPath = shortenImageUrl(p.image_url, p.id);
         p.image_url = shortPath;
         try {

@@ -88,21 +88,26 @@ app.listen(PORT, async () => {
       // แปลง image_url ที่เป็น Base64 ยาวๆ ใน MySQL ให้เป็นไฟล์รูปสั้นๆ (assets/images/img-<id>.jpg) ทันทีที่สตาร์ทเซิร์ฟเวอร์
       try {
         const fs = require('fs');
-        const [rows] = await pool.query("SELECT id, image_url FROM products WHERE image_url LIKE 'data:image/%'");
+        const [rows] = await pool.query("SELECT id, image_url FROM products WHERE image_url LIKE 'data:%' OR LENGTH(image_url) > 500");
         if (rows && rows.length > 0) {
           const imagesDir = path.join(__dirname, '..', 'secX_grY_fe_src', 'assets', 'images');
           if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
           for (const row of rows) {
-            const match = String(row.image_url).match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
-            if (match) {
-              let ext = match[1].toLowerCase();
-              if (ext === 'jpeg') ext = 'jpg';
-              if (!['jpg', 'png', 'webp', 'gif'].includes(ext)) ext = 'jpg';
+            const raw = String(row.image_url || '').trim();
+            const markerIdx = raw.indexOf(';base64,');
+            let shortPath = 'assets/images/product-freedom.png';
+            if (raw.startsWith('data:') && markerIdx !== -1) {
+              const header = raw.slice(0, markerIdx).toLowerCase();
+              let ext = 'jpg';
+              if (header.includes('png')) ext = 'png';
+              else if (header.includes('webp')) ext = 'webp';
+              else if (header.includes('gif')) ext = 'gif';
               const fileName = `img-${row.id}.${ext}`;
-              fs.writeFileSync(path.join(imagesDir, fileName), Buffer.from(match[2], 'base64'));
-              const shortPath = `assets/images/${fileName}`;
-              await pool.query('UPDATE products SET image_url = ? WHERE id = ?', [shortPath, row.id]);
+              const b64 = raw.slice(markerIdx + 8).replace(/\s+/g, '');
+              fs.writeFileSync(path.join(imagesDir, fileName), Buffer.from(b64, 'base64'));
+              shortPath = `assets/images/${fileName}`;
             }
+            await pool.query('UPDATE products SET image_url = ? WHERE id = ?', [shortPath, row.id]);
           }
           console.log(`✨ [MySQL Cleanup] ย่อลิงก์ image_url ใน MySQL ให้เป็นไฟล์สั้น (assets/images/img-...) จำนวน ${rows.length} รายการสำเร็จ!`);
         }
