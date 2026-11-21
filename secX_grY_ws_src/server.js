@@ -2,13 +2,14 @@
 // Faculty of Information and Communication Technology, Mahidol University
 // ITDS242 Web Technologies Lab - Task 3: RESTful Web Services
 // File: server.js
-// Description: Main Server Entrypoint (Express Framework)
+// Description: Main Web Service Server Entrypoint (Express Framework + CORS + MySQL)
 // ==============================================================================
 
+const path = require('path');
+module.paths.push(path.join(__dirname, '..', 'secX_grY_fe_src', 'node_modules'));
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
-require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const pool = require('./config/db');
 
@@ -23,14 +24,13 @@ const publicApiRoutes = require('./routes/publicApi');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares (ตามสไลด์ Lecture 10 & 13)
-app.use(cors());
+// Middlewares & CORS (อนุญาตให้ Front-end Server บน Port 3100 และ Postman เรียกใช้ Web Services ได้ ตามสไลด์ Lecture 13)
+app.use(cors({
+  origin: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
-// Serve Static Frontend Files (ตามสไลด์ Lecture 10)
-const fePath = path.join(__dirname, '..', 'secX_grY_fe_src');
-app.use(express.static(fePath));
 
 // Mount Web Services API Routes
 app.use('/api/auth', authRoutes);
@@ -56,20 +56,28 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Start Server & Test Database Connection
+// Serve Static Frontend Files as convenience fallback if someone opens http://localhost:3000 directly
+const fePath = path.join(__dirname, '..', 'secX_grY_fe_src');
+app.use(express.static(fePath));
+
+// Start Web Service Server & Verify Database Connection
 app.listen(PORT, async () => {
   console.log('==============================================================================');
-  console.log(`🚀 Unimart Web Services Server running at: http://localhost:${PORT}`);
-  console.log(`🌐 Frontend Web: http://localhost:${PORT}/index.html`);
-  console.log(`📡 API Directory: http://localhost:${PORT}/api`);
+  console.log(`🚀 Unimart Web Service Server running at: http://localhost:${PORT}`);
+  console.log(`📡 Postman API Base URL: http://localhost:${PORT}/api`);
+  console.log(`🌐 Separate Front-end Server URL: http://localhost:3100`);
   console.log('==============================================================================');
 
   try {
     const connection = await pool.getConnection();
-    console.log('[MySQL] เชื่อมต่อกับฐานข้อมูล unimart_db สำเร็จแล้ว');
-    connection.release();
+    if (connection && connection.isFallback) {
+      console.log('⚡ [Database Ready] ไม่พบ MySQL Server ที่เปิดอยู่ -> เปิดโหมด In-Memory SQL Database อัตโนมัติ!');
+      console.log('✅ สามารถยิงทดสอบ API ทุกเส้นใน Postman (GET / POST / PUT / DELETE) ได้ทันที 100%');
+    } else {
+      console.log('✅ [MySQL Connected] เชื่อมต่อและเตรียมฐานข้อมูล unimart_db สำเร็จเรียบร้อยแล้ว!');
+    }
+    if (connection && connection.release) connection.release();
   } catch (err) {
-    console.warn('[MySQL แจ้งเตือน] ไม่สามารถเชื่อมต่อกับ MySQL ได้:', err.message);
-    console.warn('กรุณาเปิดโปรแกรม XAMPP และกด Start โมดูล MySQL เพื่อใช้งานฐานข้อมูลจริง');
+    console.warn('[MySQL แจ้งเตือน]:', err.message);
   }
 });
