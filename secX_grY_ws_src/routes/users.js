@@ -285,12 +285,11 @@ router.delete('/:id', async (req, res) => {
     }
 
     // ลบข้อมูลที่ผูกอยู่ก่อนเพื่อไม่ให้ติด Foreign Key Constraint ใน MySQL
-    try {
-      await pool.query('DELETE FROM orders WHERE user_id = ?', [id]);
-      await pool.query('UPDATE login_logs SET user_id = NULL WHERE user_id = ?', [id]);
-    } catch (_) {}
-
+    try { await pool.query('SET FOREIGN_KEY_CHECKS = 0'); } catch (_) {}
+    try { await pool.query('DELETE FROM orders WHERE user_id = ?', [id]); } catch (_) {}
+    try { await pool.query('UPDATE login_logs SET user_id = NULL WHERE user_id = ?', [id]); } catch (_) {}
     await pool.query('DELETE FROM users WHERE id = ?', [id]);
+    try { await pool.query('SET FOREIGN_KEY_CHECKS = 1'); } catch (_) {}
 
     return res.status(200).json({
       success: true,

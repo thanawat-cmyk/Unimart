@@ -24,7 +24,17 @@ const publicApiRoutes = require('./routes/publicApi');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares & CORS (อนุญาตให้ Front-end Server บน Port 3100 และ Postman เรียกใช้ Web Services ได้ ตามสไลด์ Lecture 13)
+// Middlewares & CORS (อนุญาตให้ Front-end Server บน Port 3100, Cloudflare Pages และ Postman เรียกใช้ Web Services ได้)
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 app.use(cors({
   origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
@@ -75,6 +85,30 @@ app.listen(PORT, async () => {
       console.log('✅ สามารถยิงทดสอบ API ทุกเส้นใน Postman (GET / POST / PUT / DELETE) ได้ทันที 100%');
     } else {
       console.log('✅ [MySQL Connected] เชื่อมต่อและเตรียมฐานข้อมูล unimart_db สำเร็จเรียบร้อยแล้ว!');
+      // แปลง image_url ที่เป็น Base64 ยาวๆ ใน MySQL ให้เป็นไฟล์รูปสั้นๆ (assets/images/img-<id>.jpg) ทันทีที่สตาร์ทเซิร์ฟเวอร์
+      try {
+        const fs = require('fs');
+        const [rows] = await pool.query("SELECT id, image_url FROM products WHERE image_url LIKE 'data:image/%'");
+        if (rows && rows.length > 0) {
+          const imagesDir = path.join(__dirname, '..', 'secX_grY_fe_src', 'assets', 'images');
+          if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
+          for (const row of rows) {
+            const match = String(row.image_url).match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
+            if (match) {
+              let ext = match[1].toLowerCase();
+              if (ext === 'jpeg') ext = 'jpg';
+              if (!['jpg', 'png', 'webp', 'gif'].includes(ext)) ext = 'jpg';
+              const fileName = `img-${row.id}.${ext}`;
+              fs.writeFileSync(path.join(imagesDir, fileName), Buffer.from(match[2], 'base64'));
+              const shortPath = `assets/images/${fileName}`;
+              await pool.query('UPDATE products SET image_url = ? WHERE id = ?', [shortPath, row.id]);
+            }
+          }
+          console.log(`✨ [MySQL Cleanup] ย่อลิงก์ image_url ใน MySQL ให้เป็นไฟล์สั้น (assets/images/img-...) จำนวน ${rows.length} รายการสำเร็จ!`);
+        }
+      } catch (cleanErr) {
+        console.warn('[MySQL Image Cleanup Warning]:', cleanErr.message);
+      }
     }
     if (connection && connection.release) connection.release();
   } catch (err) {

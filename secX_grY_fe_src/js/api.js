@@ -33,9 +33,11 @@ const DEFAULT_SEED_USERS = [
 async function fetchApi(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   const defaultHeaders = {
-    'Content-Type': 'application/json',
     'Accept': 'application/json'
   };
+  if (options.body) {
+    defaultHeaders['Content-Type'] = 'application/json';
+  }
 
   const config = {
     ...options,
@@ -316,15 +318,30 @@ var UnimartAPI = {
     try {
       const res = await fetchApi(`/products${queryString}`);
       let items = (res.data || []).map(p => this.normalizeGunplaItem(p));
+
+      // หากมีรายการที่เคยกดลบไว้ในเว็บตอนเซิร์ฟเวอร์ยังไม่ตอบสนอง ให้ซิงก์ส่งคำสั่งลบเข้า MySQL ทันที
       try {
         const deletedRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_deleted_product_ids') : null;
         if (deletedRaw) {
           const deletedIds = JSON.parse(deletedRaw);
           if (Array.isArray(deletedIds) && deletedIds.length > 0) {
+            for (const dId of deletedIds) {
+              if (items.some(p => Number(p.id) === Number(dId) || String(p.id) === String(dId))) {
+                try {
+                  await fetchApi(`/products/${dId}`, { method: 'DELETE' });
+                } catch (_) {}
+              }
+            }
             items = items.filter(p => !deletedIds.some(dId => Number(dId) === Number(p.id) || String(dId) === String(p.id)));
+            localStorage.removeItem('unimart_deleted_product_ids');
           }
         }
       } catch (e) {}
+
+      // ซิงก์รายการล่าสุดจาก MySQL ลง localStorage
+      if (!queryString) {
+        this._saveLocalProducts(items);
+      }
       return items;
     } catch (err) {
       console.warn('เซิร์ฟเวอร์ Backend ยังไม่พร้อม ใช้งานโมเดลสำรองจาก localStorage / products.js');
@@ -462,30 +479,30 @@ var UnimartAPI = {
    * ลบสินค้าออกจากระบบ (Delete Product)
    */
   async deleteProduct(id) {
-    // 1. ลบออกจากรายการสินค้าใน localStorage ก่อน (เพื่อคืนพื้นที่โควตาหากมีรูปภาพขนาดใหญ่)
+    // 1. ลบออกจากรายการสินค้าใน localStorage ก่อน
     const list = this._getLocalProducts().filter(
       p => Number(p.id) !== Number(id) && String(p.id) !== String(id)
     );
     this._saveLocalProducts(list);
 
-    // 2. บันทึกรหัสสินค้าที่ถูกลบลงใน unimart_deleted_product_ids
+    // 2. ส่งคำขอลบไปยัง Web Service Server เพื่อลบออกจากฐานข้อมูล MySQL จริง
     try {
-      const deletedRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_deleted_product_ids') : null;
-      const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
-      if (!deletedIds.some(dId => Number(dId) === Number(id) || String(dId) === String(id))) {
-        deletedIds.push(Number(id) || id);
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('unimart_deleted_product_ids', JSON.stringify(deletedIds));
-        }
-      }
-    } catch (e) {}
-
-    // 3. ส่งคำขอลบไปยัง Web Service Server (หากเปิดรันอยู่)
-    try {
-      return await fetchApi(`/products/${id}`, {
+      const res = await fetchApi(`/products/${id}`, {
         method: 'DELETE'
       });
+      return res;
     } catch (err) {
+      // หากเซิร์ฟเวอร์ยังไม่เปิด ให้เก็บ ID ที่ลบไว้เพื่อซิงก์ลบใน MySQL ทันทีที่เซิร์ฟเวอร์เปิด
+      try {
+        const deletedRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_deleted_product_ids') : null;
+        const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
+        if (!deletedIds.some(dId => Number(dId) === Number(id) || String(dId) === String(id))) {
+          deletedIds.push(Number(id) || id);
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('unimart_deleted_product_ids', JSON.stringify(deletedIds));
+          }
+        }
+      } catch (e) {}
       console.warn('ลบข้อมูลใน localStorage เรียบร้อยแล้ว (Offline / Cloudflare Mode):', err.message);
       return { success: true, message: 'ลบสินค้าสำเร็จ', deletedId: Number(id) || id };
     }
@@ -508,15 +525,29 @@ var UnimartAPI = {
     try {
       const res = await fetchApi(`/users${queryString}`);
       let items = res.data || [];
+
+      // ซิงก์รายการผู้ใช้ที่เคยกดลบไว้ให้ลบออกจาก MySQL จริงทันที
       try {
         const deletedRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_deleted_user_ids') : null;
         if (deletedRaw) {
           const deletedIds = JSON.parse(deletedRaw);
           if (Array.isArray(deletedIds) && deletedIds.length > 0) {
+            for (const dId of deletedIds) {
+              if (items.some(u => Number(u.id) === Number(dId) || String(u.id) === String(dId))) {
+                try {
+                  await fetchApi(`/users/${dId}`, { method: 'DELETE' });
+                } catch (_) {}
+              }
+            }
             items = items.filter(u => !deletedIds.some(dId => Number(dId) === Number(u.id) || String(dId) === String(u.id)));
+            localStorage.removeItem('unimart_deleted_user_ids');
           }
         }
       } catch (e) {}
+
+      if (!queryString) {
+        this._saveLocalUsers(items);
+      }
       return items;
     } catch (err) {
       console.warn('เซิร์ฟเวอร์ยังไม่พร้อม สลับไปใช้ข้อมูลผู้ใช้จาก localStorage');
@@ -633,29 +664,28 @@ var UnimartAPI = {
    * ลบผู้ใช้ออกจากระบบ (Delete User)
    */
   async deleteUser(id) {
-    // 1. ลบออกจาก localStorage เสมอ
-    try {
-      const deletedRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_deleted_user_ids') : null;
-      const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
-      if (!deletedIds.some(dId => Number(dId) === Number(id) || String(dId) === String(id))) {
-        deletedIds.push(Number(id) || id);
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('unimart_deleted_user_ids', JSON.stringify(deletedIds));
-        }
-      }
-    } catch (e) {}
-
+    // 1. ลบออกจาก localStorage
     const list = this._getLocalUsers().filter(
       u => Number(u.id) !== Number(id) && String(u.id) !== String(id)
     );
     this._saveLocalUsers(list);
 
-    // 2. ส่งคำขอลบไปยัง Web Service Server (หากเปิดรันอยู่)
+    // 2. ส่งคำขอลบไปยัง Web Service Server เพื่อลบใน MySQL จริง
     try {
       return await fetchApi(`/users/${id}`, {
         method: 'DELETE'
       });
     } catch (err) {
+      try {
+        const deletedRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_deleted_user_ids') : null;
+        const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
+        if (!deletedIds.some(dId => Number(dId) === Number(id) || String(dId) === String(id))) {
+          deletedIds.push(Number(id) || id);
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('unimart_deleted_user_ids', JSON.stringify(deletedIds));
+          }
+        }
+      } catch (e) {}
       console.warn('ลบข้อมูลผู้ใช้ใน localStorage เรียบร้อยแล้ว (Offline / Cloudflare Mode):', err.message);
       return { success: true, message: 'ลบผู้ใช้งานสำเร็จ', deletedId: Number(id) || id };
     }

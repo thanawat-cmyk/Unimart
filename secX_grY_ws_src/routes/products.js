@@ -6,8 +6,50 @@
 // ==============================================================================
 
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const router = express.Router();
 const pool = require('../config/db');
+
+/**
+ * แปลงรูปภาพ Base64 Data URL ยาวๆ (data:image/...;base64,...) ให้บันทึกเป็นไฟล์รูปจริงใน assets/images/
+ * แล้วคืนค่าเป็น Path สั้นๆ เช่น "assets/images/img-17.jpg" (ยาวเพียง ~24 ตัวอักษร)
+ */
+function shortenImageUrl(rawUrl, itemId = null) {
+  if (!rawUrl || typeof rawUrl !== 'string') {
+    return 'assets/images/product-freedom.png';
+  }
+  const trimmed = rawUrl.trim();
+  if (!trimmed.startsWith('data:image/')) {
+    return trimmed;
+  }
+
+  try {
+    const match = trimmed.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
+    if (!match) {
+      return 'assets/images/product-freedom.png';
+    }
+    let ext = match[1].toLowerCase();
+    if (ext === 'jpeg') ext = 'jpg';
+    if (ext !== 'jpg' && ext !== 'png' && ext !== 'webp' && ext !== 'gif') {
+      ext = 'jpg';
+    }
+
+    const buffer = Buffer.from(match[2], 'base64');
+    const suffix = itemId ? String(itemId) : String(Date.now()).slice(-6);
+    const fileName = `img-${suffix}.${ext}`;
+    const imagesDir = path.join(__dirname, '..', '..', 'secX_grY_fe_src', 'assets', 'images');
+
+    if (!fs.existsSync(imagesDir)) {
+      fs.mkdirSync(imagesDir, { recursive: true });
+    }
+    fs.writeFileSync(path.join(imagesDir, fileName), buffer);
+    return `assets/images/${fileName}`;
+  } catch (err) {
+    console.warn('Failed to shorten base64 image_url:', err.message);
+    return 'assets/images/product-freedom.png';
+  }
+}
 
 // ==============================================================================
 // 1. GET /api/products - การค้นหาและเข้าถึงข้อมูลสินค้า (Search & View)
@@ -83,14 +125,23 @@ router.get('/', async (req, res) => {
     }
 
     const [rows] = await pool.query(sql, params);
-    // ตรวจสอบความถูกต้องของสเกลตามมาตรฐานกันพลา Bandai (HG, RG ต้องเป็น 1/144 เสมอ ไม่ใช่ 1/100)
-    const normalizedRows = rows.map(p => {
+
+    // ตรวจสอบสเกลกันพลา และแปลง image_url ที่เป็น Base64 ยาวๆ ใน MySQL ให้เป็นไฟล์สั้นๆ อัตโนมัติ
+    const normalizedRows = [];
+    for (const p of rows) {
       const g = (p.grade || '').toUpperCase().trim();
       if ((g === 'HG' || g === 'RG' || g === 'EG') && (!p.scale || p.scale === '1/100')) {
         p.scale = '1/144';
       }
-      return p;
-    });
+      if (p.image_url && typeof p.image_url === 'string' && p.image_url.startsWith('data:image/')) {
+        const shortPath = shortenImageUrl(p.image_url, p.id);
+        p.image_url = shortPath;
+        try {
+          await pool.query('UPDATE products SET image_url = ? WHERE id = ?', [shortPath, p.id]);
+        } catch (_) {}
+      }
+      normalizedRows.push(p);
+    }
 
     return res.status(200).json({
       success: true,
@@ -131,6 +182,13 @@ router.get('/:id', async (req, res) => {
     const g = (p.grade || '').toUpperCase().trim();
     if ((g === 'HG' || g === 'RG' || g === 'EG') && (!p.scale || p.scale === '1/100')) {
       p.scale = '1/144';
+    }
+    if (p.image_url && typeof p.image_url === 'string' && p.image_url.startsWith('data:image/')) {
+      const shortPath = shortenImageUrl(p.image_url, p.id);
+      p.image_url = shortPath;
+      try {
+        await pool.query('UPDATE products SET image_url = ? WHERE id = ?', [shortPath, p.id]);
+      } catch (_) {}
     }
 
     return res.status(200).json({
@@ -205,6 +263,9 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    // แปลง Base64 เป็นไฟล์รูปสั้นๆ ก่อนบันทึกลง MySQL
+    const shortImgUrl = shortenImageUrl(image_url);
+
     const insertSql = `
       INSERT INTO products (
         name, series, grade, category, scale, price, stock,
@@ -222,7 +283,7 @@ router.post('/', async (req, res) => {
       parseInt(stock, 10) || 0,
       release_date || new Date().toISOString().slice(0, 10),
       parseFloat(rating) || 5.0,
-      image_url.trim(),
+      shortImgUrl,
       description.trim(),
       details.trim(),
       reference_source.trim(),
@@ -230,6 +291,15 @@ router.post('/', async (req, res) => {
     ];
 
     const [result] = await pool.query(insertSql, values);
+
+    // หากส่งมาเป็น Base64 ให้ตั้งชื่อไฟล์ตาม ID สินค้าที่เพิ่งได้มา เช่น assets/images/img-17.jpg
+    if (image_url && typeof image_url === 'string' && image_url.startsWith('data:image/') && result && result.insertId) {
+      const idBasedUrl = shortenImageUrl(image_url, result.insertId);
+      try {
+        await pool.query('UPDATE products SET image_url = ? WHERE id = ?', [idBasedUrl, result.insertId]);
+      } catch (_) {}
+    }
+
     const [newProduct] = await pool.query('SELECT * FROM products WHERE id = ?', [result.insertId]);
 
     return res.status(201).json({
@@ -281,6 +351,9 @@ router.put('/:id', async (req, res) => {
       targetScale = '1/144';
     }
 
+    const rawImg = req.body.image_url !== undefined ? req.body.image_url.trim() : current.image_url;
+    const shortImgUrl = shortenImageUrl(rawImg, id);
+
     const updateData = {
       name: req.body.name !== undefined ? req.body.name.trim() : current.name,
       series: req.body.series !== undefined ? req.body.series.trim() : current.series,
@@ -291,7 +364,7 @@ router.put('/:id', async (req, res) => {
       stock: req.body.stock !== undefined ? parseInt(req.body.stock, 10) : current.stock,
       release_date: req.body.release_date !== undefined ? req.body.release_date : current.release_date,
       rating: req.body.rating !== undefined ? parseFloat(req.body.rating) : current.rating,
-      image_url: req.body.image_url !== undefined ? req.body.image_url.trim() : current.image_url,
+      image_url: shortImgUrl,
       description: req.body.description !== undefined ? req.body.description.trim() : current.description,
       details: req.body.details !== undefined ? req.body.details.trim() : current.details,
       reference_source: req.body.reference_source !== undefined ? req.body.reference_source.trim() : current.reference_source,
@@ -350,10 +423,10 @@ router.delete('/:id', async (req, res) => {
       });
     }
 
-    try {
-      await pool.query('DELETE FROM order_items WHERE product_id = ?', [id]);
-    } catch (_) {}
+    try { await pool.query('SET FOREIGN_KEY_CHECKS = 0'); } catch (_) {}
+    try { await pool.query('DELETE FROM order_items WHERE product_id = ?', [id]); } catch (_) {}
     await pool.query('DELETE FROM products WHERE id = ?', [id]);
+    try { await pool.query('SET FOREIGN_KEY_CHECKS = 1'); } catch (_) {}
 
     return res.status(200).json({
       success: true,
@@ -361,6 +434,7 @@ router.delete('/:id', async (req, res) => {
       deletedId: parseInt(id, 10)
     });
   } catch (error) {
+    try { await pool.query('SET FOREIGN_KEY_CHECKS = 1'); } catch (_) {}
     console.error(`Error deleting product ${id}:`, error);
     return res.status(500).json({
       success: false,

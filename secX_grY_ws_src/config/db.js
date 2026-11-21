@@ -31,18 +31,20 @@ let activePool = mysql.createPool({
 });
 
 let isMySQLReady = false;
-let initAttempted = false;
+let lastInitAttemptTime = 0;
 
 // ==============================================================================
 // 1. ระบบ Auto-Initialize MySQL Database (สร้าง unimart_db และนำเข้า .sql อัตโนมัติ)
 // ==============================================================================
 async function ensureMySQLInitialized() {
   if (isMySQLReady) return true;
-  if (initAttempted) return isMySQLReady;
-  initAttempted = true;
+  const now = Date.now();
+  // หากเพิ่งลองเชื่อมต่อไม่สำเร็จภายใน 3 วินาทีที่ผ่านมา ให้ใช้ Fallback ชั่วคราว แต่ถ้าเกิน 3 วินาทีให้ลองต่อ MySQL ใหม่อัตโนมัติ
+  if (now - lastInitAttemptTime < 3000) return false;
+  lastInitAttemptTime = now;
 
   // ลองรหัสผ่านจาก .env ก่อน และถ้ารหัสผ่านไม่ตรง ลองรหัสผ่านมาตรฐานของ XAMPP/MySQL Lab
-  const candidatePasswords = [DB_PASSWORD, '', 'root', 'itcs212'];
+  const candidatePasswords = [DB_PASSWORD, '', 'root', '1234', '123456', 'admin', 'itcs212'];
   const uniquePasswords = [...new Set(candidatePasswords)];
 
   for (const pwd of uniquePasswords) {
@@ -450,15 +452,32 @@ function executeInMemoryQuery(sql, params = []) {
 // ==============================================================================
 // 3. Smart Database Interface (ใช้ MySQL จริงเป็นหลัก + Fallback อัตโนมัติเมื่อไม่ได้เปิด MySQL)
 // ==============================================================================
+const CONNECTION_ERROR_CODES = new Set([
+  'ECONNREFUSED',
+  'PROTOCOL_CONNECTION_LOST',
+  'ENOTFOUND',
+  'ETIMEDOUT',
+  'EACCES',
+  'ER_ACCESS_DENIED_ERROR',
+  'ER_BAD_DB_ERROR',
+  'ECONNRESET'
+]);
+
 const smartPool = {
   async query(sql, params = []) {
-    try {
-      await ensureMySQLInitialized();
-      if (isMySQLReady) {
+    await ensureMySQLInitialized();
+    if (isMySQLReady) {
+      try {
         return await activePool.query(sql, params);
+      } catch (err) {
+        if (CONNECTION_ERROR_CODES.has(err.code)) {
+          console.warn('[MySQL Fallback] การเชื่อมต่อ MySQL ขัดข้อง สลับไปใช้ In-Memory DB:', err.message);
+          isMySQLReady = false;
+          return executeInMemoryQuery(sql, params);
+        }
+        // หากเป็น SQL Error ปกติ (เช่น ตารางไม่มี หรือ Constraint) ให้โยนไปให้ Route จัดการโดยไม่ตัดการเชื่อมต่อ MySQL จริง
+        throw err;
       }
-    } catch (err) {
-      isMySQLReady = false;
     }
     return executeInMemoryQuery(sql, params);
   },
