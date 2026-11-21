@@ -5,7 +5,7 @@
  * ==============================================================================
  */
 
-const UNIMART_PRODUCTS = [
+var UNIMART_PRODUCTS = [
     {
         id: 1,
         name: "Freedom GUNDAM Ver.2.0",
@@ -342,4 +342,10 @@ function sortProducts(products, sortType) {
             // เรียงจากสินค้าที่วางจำหน่ายล่าสุดไปเก่าสุด
             return list.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
     }
+}
+
+// ผูกข้อมูลสินค้าเข้ากับ window เพื่อให้ทุกสคริปต์ (เช่น api.js และหน้า Admin) เรียกใช้งานได้เสมอ
+if (typeof window !== 'undefined') {
+    window.UNIMART_PRODUCTS = UNIMART_PRODUCTS;
+    window.products = UNIMART_PRODUCTS;
 }

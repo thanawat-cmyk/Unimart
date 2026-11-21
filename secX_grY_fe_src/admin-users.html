@@ -492,19 +492,25 @@
 
             document.getElementById('btn-confirm-delete-user').addEventListener('click', async () => {
                 if (pendingDeleteUserId !== null) {
-                    try {
-                        await UnimartAPI.deleteUser(pendingDeleteUserId);
-                        alert(`🗑️ ลบบัญชีผู้ใช้ ID #${pendingDeleteUserId} ออกจากระบบเรียบร้อยแล้ว`);
-                        await reloadUsers();
-                    } catch (err) {
-                        console.warn('Backend unavailable, deleting from local mock state:', err);
-                        allAdminUsers = allAdminUsers.filter(u => u.id !== pendingDeleteUserId);
-                        applyUserFilters();
-                        alert(`🗑️ ลบบัญชีผู้ใช้ ID #${pendingDeleteUserId} ออกจากระบบเรียบร้อยแล้ว`);
-                    }
+                    const idToDelete = pendingDeleteUserId;
                     deleteModal.classList.remove('open');
                     deleteModal.setAttribute('aria-hidden', 'true');
                     pendingDeleteUserId = null;
+
+                    try {
+                        await UnimartAPI.deleteUser(idToDelete);
+                        allAdminUsers = allAdminUsers.filter(u => Number(u.id) !== Number(idToDelete) && String(u.id) !== String(idToDelete));
+                        displayedUsers = displayedUsers.filter(u => Number(u.id) !== Number(idToDelete) && String(u.id) !== String(idToDelete));
+                        renderUserTable(displayedUsers);
+                        alert(`🗑️ ลบบัญชีผู้ใช้ ID #${idToDelete} ออกจากระบบเรียบร้อยแล้ว`);
+                        await reloadUsers();
+                    } catch (err) {
+                        console.warn('Backend unavailable, deleting from local mock state:', err);
+                        allAdminUsers = allAdminUsers.filter(u => Number(u.id) !== Number(idToDelete) && String(u.id) !== String(idToDelete));
+                        displayedUsers = displayedUsers.filter(u => Number(u.id) !== Number(idToDelete) && String(u.id) !== String(idToDelete));
+                        renderUserTable(displayedUsers);
+                        alert(`🗑️ ลบบัญชีผู้ใช้ ID #${idToDelete} ออกจากระบบเรียบร้อยแล้ว`);
+                    }
                 }
             });
 
@@ -521,7 +527,7 @@
 
         // Global Edit / Delete Modal Openers
         window.openEditUserModal = function(id) {
-            const user = (allAdminUsers || []).find(u => u.id === id) || (displayedUsers || []).find(u => u.id === id);
+            const user = (allAdminUsers || []).find(u => Number(u.id) === Number(id) || String(u.id) === String(id)) || (displayedUsers || []).find(u => Number(u.id) === Number(id) || String(u.id) === String(id));
             if (!user) return;
 
             document.getElementById('edit-user-id').value = user.id;
@@ -537,7 +543,7 @@
         };
 
         window.openDeleteUserModal = function(id) {
-            const user = (allAdminUsers || []).find(u => u.id === id) || (displayedUsers || []).find(u => u.id === id);
+            const user = (allAdminUsers || []).find(u => Number(u.id) === Number(id) || String(u.id) === String(id)) || (displayedUsers || []).find(u => Number(u.id) === Number(id) || String(u.id) === String(id));
             if (!user) return;
 
             pendingDeleteUserId = id;

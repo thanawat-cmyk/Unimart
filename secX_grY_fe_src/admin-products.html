@@ -662,7 +662,7 @@
                 }
             });
 
-            // ใช้ FileReader (Native Web API) อ่านไฟล์ภาพ
+            // ใช้ FileReader + HTML5 Canvas ย่อขนาดภาพอัตโนมัติ (ไม่ให้เกินโควตา 5MB ของ localStorage)
             function processFile(file) {
                 if (!file.type.startsWith('image/')) {
                     alert('⚠️ กรุณาเลือกไฟล์ที่เป็นรูปภาพเท่านั้น (PNG, JPG, WebP)');
@@ -670,12 +670,45 @@
                 }
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const result = e.target.result;
-                    if (urlInput) urlInput.value = result;
-                    if (img) img.src = result;
-                    if (nameEl) nameEl.textContent = file.name;
-                    if (metaEl) metaEl.textContent = `${(file.size / 1024).toFixed(1)} KB • ${file.type.replace('image/', '').toUpperCase()}`;
-                    if (wrap) wrap.style.display = 'flex';
+                    const rawDataUrl = e.target.result;
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        let finalDataUrl = rawDataUrl;
+                        try {
+                            const MAX_DIM = 720;
+                            let w = tempImg.width;
+                            let h = tempImg.height;
+                            if (w > MAX_DIM || h > MAX_DIM || rawDataUrl.length > 200000) {
+                                if (w > h && w > MAX_DIM) {
+                                    h = Math.round((h * MAX_DIM) / w);
+                                    w = MAX_DIM;
+                                } else if (h >= w && h > MAX_DIM) {
+                                    w = Math.round((w * MAX_DIM) / h);
+                                    h = MAX_DIM;
+                                }
+                                const canvas = document.createElement('canvas');
+                                canvas.width = w;
+                                canvas.height = h;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(tempImg, 0, 0, w, h);
+                                finalDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                            }
+                        } catch ( compressErr ) {
+                            finalDataUrl = rawDataUrl;
+                        }
+                        if (urlInput) urlInput.value = finalDataUrl;
+                        if (img) img.src = finalDataUrl;
+                        if (nameEl) nameEl.textContent = file.name;
+                        if (metaEl) metaEl.textContent = `${(file.size / 1024).toFixed(1)} KB • ${file.type.replace('image/', '').toUpperCase()}`;
+                        if (wrap) wrap.style.display = 'flex';
+                    };
+                    tempImg.onerror = function() {
+                        if (urlInput) urlInput.value = rawDataUrl;
+                        if (img) img.src = rawDataUrl;
+                        if (nameEl) nameEl.textContent = file.name;
+                        if (wrap) wrap.style.display = 'flex';
+                    };
+                    tempImg.src = rawDataUrl;
                 };
                 reader.readAsDataURL(file);
             }
@@ -879,16 +912,22 @@
 
             document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
                 if (pendingDeleteId !== null) {
-                    try {
-                        await UnimartAPI.deleteProduct(pendingDeleteId);
-                        alert(`🗑️ ลบสินค้า ID #${pendingDeleteId} ออกจากระบบเรียบร้อยแล้ว`);
-                        await reloadProducts();
-                    } catch (err) {
-                        alert(`เกิดข้อผิดพลาดในการลบสินค้า: ${err.message}`);
-                    }
+                    const idToDelete = pendingDeleteId;
                     deleteModal.classList.remove('open');
                     deleteModal.setAttribute('aria-hidden', 'true');
                     pendingDeleteId = null;
+
+                    try {
+                        await UnimartAPI.deleteProduct(idToDelete);
+                        adminProducts = adminProducts.filter(p => Number(p.id) !== Number(idToDelete) && String(p.id) !== String(idToDelete));
+                        renderAdminTable(adminProducts);
+                        alert(`🗑️ ลบสินค้า ID #${idToDelete} ออกจากระบบเรียบร้อยแล้ว`);
+                        await reloadProducts();
+                    } catch (err) {
+                        adminProducts = adminProducts.filter(p => Number(p.id) !== Number(idToDelete) && String(p.id) !== String(idToDelete));
+                        renderAdminTable(adminProducts);
+                        alert(`🗑️ ลบสินค้า ID #${idToDelete} ออกจากระบบเรียบร้อยแล้ว`);
+                    }
                 }
             });
 
@@ -914,7 +953,7 @@
                     e.preventDefault();
                     const id = Number(document.getElementById('restock-prod-id').value);
                     const addQty = Number(document.getElementById('restock-add-qty').value);
-                    const product = adminProducts.find(p => p.id === id);
+                    const product = adminProducts.find(p => Number(p.id) === Number(id) || String(p.id) === String(id));
                     if (!product) return;
 
                     if (isNaN(addQty) || addQty <= 0) {
@@ -983,7 +1022,7 @@
         let activeRestockProduct = null;
 
         window.openRestockModal = function(id) {
-            const product = adminProducts.find(p => p.id === id);
+            const product = adminProducts.find(p => Number(p.id) === Number(id) || String(p.id) === String(id));
             if (!product) return;
             activeRestockProduct = product;
 
@@ -1040,7 +1079,7 @@
 
         // Global functions called from inline onclick buttons
         window.openEditModal = function(id) {
-            const product = adminProducts.find(p => p.id === id);
+            const product = adminProducts.find(p => Number(p.id) === Number(id) || String(p.id) === String(id));
             if (!product) return;
 
             document.getElementById('edit-prod-id').value = product.id;
@@ -1077,7 +1116,7 @@
         };
 
         window.openDeleteModal = function(id) {
-            const product = adminProducts.find(p => p.id === id);
+            const product = adminProducts.find(p => Number(p.id) === Number(id) || String(p.id) === String(id));
             if (!product) return;
 
             pendingDeleteId = id;

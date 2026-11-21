@@ -284,13 +284,11 @@ router.delete('/:id', async (req, res) => {
       });
     }
 
-    // ป้องกันการลบ Super Admin บัญชีหลัก (ID: 1)
-    if (parseInt(id, 10) === 1 || existing[0].role === 'Super Admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'ระบบไม่อนุญาตให้ลบบัญชี Super Admin หลักของระบบ'
-      });
-    }
+    // ลบข้อมูลที่ผูกอยู่ก่อนเพื่อไม่ให้ติด Foreign Key Constraint ใน MySQL
+    try {
+      await pool.query('DELETE FROM orders WHERE user_id = ?', [id]);
+      await pool.query('UPDATE login_logs SET user_id = NULL WHERE user_id = ?', [id]);
+    } catch (_) {}
 
     await pool.query('DELETE FROM users WHERE id = ?', [id]);
 

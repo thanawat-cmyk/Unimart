@@ -350,6 +350,9 @@ router.delete('/:id', async (req, res) => {
       });
     }
 
+    try {
+      await pool.query('DELETE FROM order_items WHERE product_id = ?', [id]);
+    } catch (_) {}
     await pool.query('DELETE FROM products WHERE id = ?', [id]);
 
     return res.status(200).json({
