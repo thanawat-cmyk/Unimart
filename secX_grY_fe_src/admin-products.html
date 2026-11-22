@@ -513,7 +513,7 @@
         let adminProducts = [];
         let pendingDeleteId = null;
         let currentAdminPage = 1;
-        const ADMIN_ITEMS_PER_PAGE = 8;
+        const ADMIN_ITEMS_PER_PAGE = 16;
 
         window.goToAdminProductPage = function(page) {
             const totalPages = Math.max(1, Math.ceil(adminProducts.length / ADMIN_ITEMS_PER_PAGE));
