@@ -123,12 +123,12 @@
                 <!-- Pagination Footer (Figma node 277:302) -->
                 <footer class="admin-table-footer">
                     <div class="admin-counts-text" id="admin-user-pagination-info">
-                        Showing <strong id="admin-user-showing-count">1-5</strong> of <strong id="admin-user-total-count">5</strong> users
+                        Showing <strong id="admin-user-showing-count">1-6</strong> of <strong id="admin-user-total-count">6</strong> users
                     </div>
-                    <div class="admin-pagination">
-                        <button class="page-btn" title="หน้าก่อนหน้า" disabled>&lt;</button>
-                        <button class="page-btn active">1</button>
-                        <button class="page-btn" title="หน้าถัดไป" disabled>&gt;</button>
+                    <div class="admin-pagination" id="admin-user-pagination">
+                        <button type="button" class="page-btn" title="หน้าก่อนหน้า" disabled>&lt;</button>
+                        <button type="button" class="page-btn active">1</button>
+                        <button type="button" class="page-btn" title="หน้าถัดไป" disabled>&gt;</button>
                     </div>
                 </footer>
             </section>
@@ -278,6 +278,15 @@
         let allAdminUsers = [];
         let displayedUsers = [];
         let pendingDeleteUserId = null;
+        let currentUserPage = 1;
+        const ADMIN_USERS_PER_PAGE = 6;
+
+        window.goToAdminUserPage = function(page) {
+            const totalPages = Math.max(1, Math.ceil(displayedUsers.length / ADMIN_USERS_PER_PAGE));
+            if (page < 1 || page > totalPages) return;
+            currentUserPage = page;
+            renderUserTable(displayedUsers, currentUserPage);
+        };
 
         document.addEventListener('DOMContentLoaded', async () => {
             await reloadUsers();
@@ -302,11 +311,12 @@
             await applyUserFilters();
         }
 
-        // Render User Rows into the table
-        function renderUserTable(items) {
+        // Render User Rows into the table with dynamic pagination
+        function renderUserTable(items, page = currentUserPage) {
             const tbody = document.getElementById('admin-user-tbody');
             const showingCount = document.getElementById('admin-user-showing-count');
             const totalCount = document.getElementById('admin-user-total-count');
+            const paginationContainer = document.getElementById('admin-user-pagination');
 
             if (!tbody) return;
 
@@ -314,11 +324,20 @@
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: #64748b; font-size: 0.95rem;">🔍 ไม่พบข้อมูลผู้ใช้งานที่ตรงกับเงื่อนไขการค้นหา</td></tr>`;
                 if (showingCount) showingCount.textContent = '0';
                 if (totalCount) totalCount.textContent = '0';
+                if (paginationContainer) paginationContainer.innerHTML = '';
                 return;
             }
 
+            const totalItems = items.length;
+            const totalPages = Math.max(1, Math.ceil(totalItems / ADMIN_USERS_PER_PAGE));
+            currentUserPage = Math.min(Math.max(1, page), totalPages);
+
+            const startIdx = (currentUserPage - 1) * ADMIN_USERS_PER_PAGE;
+            const endIdx = Math.min(startIdx + ADMIN_USERS_PER_PAGE, totalItems);
+            const pagedUsers = items.slice(startIdx, endIdx);
+
             let html = '';
-            items.forEach((u) => {
+            pagedUsers.forEach((u) => {
                 const statusClass = (u.status || '').toLowerCase() === 'active' ? 'instock' : 'outofstock';
                 const displayName = u.fullname || u.name || u.username;
                 const roleLabel = u.role || 'Staff';
@@ -347,8 +366,17 @@
             });
 
             tbody.innerHTML = html;
-            if (showingCount) showingCount.textContent = `1-${items.length}`;
-            if (totalCount) totalCount.textContent = items.length;
+            if (showingCount) showingCount.textContent = `${startIdx + 1}-${endIdx}`;
+            if (totalCount) totalCount.textContent = totalItems;
+
+            if (paginationContainer) {
+                let btns = `<button type="button" class="page-btn" onclick="goToAdminUserPage(${currentUserPage - 1})" ${currentUserPage <= 1 ? 'disabled style="opacity:0.45;cursor:not-allowed;"' : ''} title="หน้าก่อนหน้า">&lt;</button>`;
+                for (let p = 1; p <= totalPages; p++) {
+                    btns += `<button type="button" class="page-btn ${p === currentUserPage ? 'active' : ''}" onclick="goToAdminUserPage(${p})">${p}</button>`;
+                }
+                btns += `<button type="button" class="page-btn" onclick="goToAdminUserPage(${currentUserPage + 1})" ${currentUserPage >= totalPages ? 'disabled style="opacity:0.45;cursor:not-allowed;"' : ''} title="หน้าถัดไป">&gt;</button>`;
+                paginationContainer.innerHTML = btns;
+            }
         }
 
         // Filter Users via Web Services API with instant local fallback

@@ -484,13 +484,12 @@
                 </div>
 
                 <!-- ----------------------------------------------------------
-                     PAGINATION BUTTONS (ตรงตาม Figma Search Page: 1, 2, 3, 4)
+                     PAGINATION BUTTONS (รองรับการคลิกเปลี่ยนหน้า 1, 2, 3, 4... แบบไดนามิก)
                      ---------------------------------------------------------- -->
-                <nav class="pagination-wrapper" aria-label="Search Result Pagination">
-                    <button type="button" class="page-btn active" title="Page 1">1</button>
-                    <button type="button" class="page-btn" title="Page 2">2</button>
-                    <button type="button" class="page-btn" title="Page 3">3</button>
-                    <button type="button" class="page-btn" title="Page 4">4</button>
+                <nav class="pagination-wrapper" id="search-pagination" aria-label="Search Result Pagination">
+                    <button type="button" class="page-btn active" onclick="goToSearchPage(1)" title="Page 1">1</button>
+                    <button type="button" class="page-btn" onclick="goToSearchPage(2)" title="Page 2">2</button>
+                    <button type="button" class="page-btn" onclick="goToSearchPage(3)" title="Page 3">3</button>
                 </nav>
 
             </section>
@@ -535,8 +534,23 @@
 
     <!-- สคริปต์ค้นหา, กรองข้อมูลตามหมวดหมู่, สลับมุมมอง, และเชื่อมต่อ Web Services API -->
     <script>
-        // Global variables for live exchange rate from Public API
+        // Global variables for live exchange rate & pagination
         let currentJpyRate = 0.238; // 1 JPY = 0.238 THB fallback
+        let currentSearchProducts = [];
+        let currentSearchPage = 1;
+        const SEARCH_ITEMS_PER_PAGE = 6;
+
+        // เปลี่ยนหน้า Pagination ในหน้า Search
+        window.goToSearchPage = function(page) {
+            const totalPages = Math.max(1, Math.ceil(currentSearchProducts.length / SEARCH_ITEMS_PER_PAGE));
+            if (page < 1 || page > totalPages) return;
+            currentSearchPage = page;
+            renderSearchResults(currentSearchProducts, currentSearchPage);
+            const heading = document.getElementById('results-heading');
+            if (heading) {
+                heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
 
         // โหลดข้อมูลอัตราแลกเปลี่ยนจาก Public API เมื่อเริ่มต้น
         async function loadPublicExchangeRate() {
@@ -576,15 +590,27 @@
             }
         }
 
-        // ฟังก์ชันเรนเดอร์สินค้าลงใน Grid และ Table (รองรับราคาเงินบาท และแปลงเป็นเงินเยนญี่ปุ่น)
-        function renderSearchResults(products) {
+        // ฟังก์ชันเรนเดอร์สินค้าลงใน Grid และ Table พร้อมระบบแบ่งหน้า (Pagination) รองรับสินค้าไม่จำกัดจำนวน
+        function renderSearchResults(products, page = 1) {
+            currentSearchProducts = products || [];
             const gridContainer = document.getElementById('grid-view-container');
             const tableTbody = document.getElementById('table-tbody');
             const countBadge = document.getElementById('results-count');
+            const paginationNav = document.getElementById('search-pagination');
 
-            countBadge.textContent = `(${products.length} ITEMS)`;
+            const totalItems = currentSearchProducts.length;
+            const totalPages = Math.max(1, Math.ceil(totalItems / SEARCH_ITEMS_PER_PAGE));
+            currentSearchPage = Math.min(Math.max(1, page), totalPages);
 
-            if (products.length === 0) {
+            const startIdx = (currentSearchPage - 1) * SEARCH_ITEMS_PER_PAGE;
+            const endIdx = Math.min(startIdx + SEARCH_ITEMS_PER_PAGE, totalItems);
+            const pagedProducts = currentSearchProducts.slice(startIdx, endIdx);
+
+            countBadge.textContent = totalItems > 0
+                ? `(แสดง ${startIdx + 1}-${endIdx} จาก ${totalItems} ITEMS • หน้า ${currentSearchPage}/${totalPages})`
+                : `(0 ITEMS)`;
+
+            if (totalItems === 0) {
                 gridContainer.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 48px; background: #161b22; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
                         <p style="font-size: 1.35rem; color: #e6edf3; margin-bottom: 12px;">🔍 ไม่พบสินค้าที่ตรงตามเงื่อนไขการค้นหา</p>
@@ -599,11 +625,23 @@
                         </td>
                     </tr>
                 `;
+                if (paginationNav) paginationNav.innerHTML = '';
                 return;
             }
 
-            // เรนเดอร์การ์ด (Grid View)
-            gridContainer.innerHTML = products.map(item => {
+            // เรนเดอร์ปุ่ม Pagination แบบไดนามิกตามจำนวนหน้าจริง
+            if (paginationNav) {
+                let pageBtns = '';
+                pageBtns += `<button type="button" class="page-btn" onclick="goToSearchPage(${currentSearchPage - 1})" ${currentSearchPage <= 1 ? 'disabled style="opacity:0.45;cursor:not-allowed;"' : ''} title="หน้าก่อนหน้า">&lt;</button>`;
+                for (let p = 1; p <= totalPages; p++) {
+                    pageBtns += `<button type="button" class="page-btn ${p === currentSearchPage ? 'active' : ''}" onclick="goToSearchPage(${p})" title="Page ${p}">${p}</button>`;
+                }
+                pageBtns += `<button type="button" class="page-btn" onclick="goToSearchPage(${currentSearchPage + 1})" ${currentSearchPage >= totalPages ? 'disabled style="opacity:0.45;cursor:not-allowed;"' : ''} title="หน้าถัดไป">&gt;</button>`;
+                paginationNav.innerHTML = pageBtns;
+            }
+
+            // เรนเดอร์การ์ด (Grid View) เฉพาะหน้าปัจจุบัน
+            gridContainer.innerHTML = pagedProducts.map(item => {
                 const imgUrl = item.image_url || item.image || 'assets/images/product-freedom.png';
                 const priceNum = Number(item.price);
                 const approxJpy = currentJpyRate > 0 ? Math.round(priceNum / currentJpyRate) : 0;
@@ -633,8 +671,8 @@
                 `;
             }).join('');
 
-            // เรนเดอร์แถวในตาราง (Table View)
-            tableTbody.innerHTML = products.map(item => {
+            // เรนเดอร์แถวในตาราง (Table View) เฉพาะหน้าปัจจุบัน
+            tableTbody.innerHTML = pagedProducts.map(item => {
                 const imgUrl = item.image_url || item.image || 'assets/images/product-freedom.png';
                 const priceNum = Number(item.price);
                 const approxJpy = currentJpyRate > 0 ? Math.round(priceNum / currentJpyRate) : 0;
@@ -679,13 +717,13 @@
                     maxPrice: maxPrice,
                     sortBy: sort
                 });
-                renderSearchResults(products);
+                renderSearchResults(products, 1);
             } catch (error) {
                 console.warn('API Search failed, using local model:', error);
                 const filters = { keyword, grade, category, minPrice: Number(minPrice) || 0, maxPrice: Number(maxPrice) || 0 };
                 let results = filterProducts(filters);
                 results = sortProducts(results, sort);
-                renderSearchResults(results);
+                renderSearchResults(results, 1);
             }
         }
 

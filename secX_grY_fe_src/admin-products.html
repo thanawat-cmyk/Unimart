@@ -206,14 +206,13 @@
                 <!-- Pagination Footer (Figma node 277:530) -->
                 <footer class="admin-table-footer">
                     <div class="admin-counts-text" id="admin-pagination-info">
-                        Showing <strong id="admin-showing-count">1-10</strong> of <strong id="admin-total-count">16</strong> products
+                        Showing <strong id="admin-showing-count">1-8</strong> of <strong id="admin-total-count">16</strong> products
                     </div>
-                    <div class="admin-pagination">
-                        <button class="page-btn" id="btn-prev-page" title="หน้าก่อนหน้า">&lt;</button>
-                        <button class="page-btn active">1</button>
-                        <button class="page-btn">2</button>
-                        <button class="page-btn">3</button>
-                        <button class="page-btn" id="btn-next-page" title="หน้าถัดไป">&gt;</button>
+                    <div class="admin-pagination" id="admin-product-pagination">
+                        <button type="button" class="page-btn" id="btn-prev-page" onclick="goToAdminProductPage(1)" title="หน้าก่อนหน้า">&lt;</button>
+                        <button type="button" class="page-btn active" onclick="goToAdminProductPage(1)">1</button>
+                        <button type="button" class="page-btn" onclick="goToAdminProductPage(2)">2</button>
+                        <button type="button" class="page-btn" id="btn-next-page" onclick="goToAdminProductPage(2)" title="หน้าถัดไป">&gt;</button>
                     </div>
                 </footer>
             </section>
@@ -513,6 +512,15 @@
         // Array of admin products loaded via Web Services API
         let adminProducts = [];
         let pendingDeleteId = null;
+        let currentAdminPage = 1;
+        const ADMIN_ITEMS_PER_PAGE = 8;
+
+        window.goToAdminProductPage = function(page) {
+            const totalPages = Math.max(1, Math.ceil(adminProducts.length / ADMIN_ITEMS_PER_PAGE));
+            if (page < 1 || page > totalPages) return;
+            currentAdminPage = page;
+            renderAdminTable(adminProducts, currentAdminPage);
+        };
 
         document.addEventListener('DOMContentLoaded', async () => {
             await reloadProducts();
@@ -532,23 +540,33 @@
             renderAdminTable(adminProducts);
         }
 
-        // Render product rows into the table
-        function renderAdminTable(items) {
+        // Render product rows into the table with dynamic pagination
+        function renderAdminTable(items, page = currentAdminPage) {
             const tbody = document.getElementById('admin-product-tbody');
             const showingCount = document.getElementById('admin-showing-count');
             const totalCount = document.getElementById('admin-total-count');
+            const paginationContainer = document.getElementById('admin-product-pagination');
 
             if (!tbody) return;
 
-            if (items.length === 0) {
+            if (!items || items.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">ไม่พบข้อมูลสินค้าที่ตรงกับคำค้นหา</td></tr>`;
                 if (showingCount) showingCount.textContent = '0';
                 if (totalCount) totalCount.textContent = '0';
+                if (paginationContainer) paginationContainer.innerHTML = '';
                 return;
             }
 
+            const totalItems = items.length;
+            const totalPages = Math.max(1, Math.ceil(totalItems / ADMIN_ITEMS_PER_PAGE));
+            currentAdminPage = Math.min(Math.max(1, page), totalPages);
+
+            const startIdx = (currentAdminPage - 1) * ADMIN_ITEMS_PER_PAGE;
+            const endIdx = Math.min(startIdx + ADMIN_ITEMS_PER_PAGE, totalItems);
+            const pagedItems = items.slice(startIdx, endIdx);
+
             let html = '';
-            items.forEach((p) => {
+            pagedItems.forEach((p) => {
                 let statusClass = 'instock';
                 let statusText = p.status || 'In Stock';
                 if (p.stock <= 0) {
@@ -591,8 +609,17 @@
             });
 
             tbody.innerHTML = html;
-            if (showingCount) showingCount.textContent = `1-${items.length}`;
-            if (totalCount) totalCount.textContent = items.length;
+            if (showingCount) showingCount.textContent = `${startIdx + 1}-${endIdx}`;
+            if (totalCount) totalCount.textContent = totalItems;
+
+            if (paginationContainer) {
+                let btns = `<button type="button" class="page-btn" onclick="goToAdminProductPage(${currentAdminPage - 1})" ${currentAdminPage <= 1 ? 'disabled style="opacity:0.45;cursor:not-allowed;"' : ''} title="หน้าก่อนหน้า">&lt;</button>`;
+                for (let p = 1; p <= totalPages; p++) {
+                    btns += `<button type="button" class="page-btn ${p === currentAdminPage ? 'active' : ''}" onclick="goToAdminProductPage(${p})">${p}</button>`;
+                }
+                btns += `<button type="button" class="page-btn" onclick="goToAdminProductPage(${currentAdminPage + 1})" ${currentAdminPage >= totalPages ? 'disabled style="opacity:0.45;cursor:not-allowed;"' : ''} title="หน้าถัดไป">&gt;</button>`;
+                paginationContainer.innerHTML = btns;
+            }
         }
 
         // Search & Filter Handler via Web Services API
