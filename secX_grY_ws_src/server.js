@@ -5,8 +5,21 @@
 // Description: Main Web Service Server Entrypoint (Express Framework + CORS + MySQL)
 // ==============================================================================
 
+const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 module.paths.push(path.join(__dirname, '..', 'secX_grY_fe_src', 'node_modules'));
+
+// Auto-install dependencies หากคนที่โหลดโปรเจกต์ไปเปิดใน VS Code แล้วกด npm start ทันทีโดยยังไม่ได้รัน npm install
+if (!fs.existsSync(path.join(__dirname, 'node_modules', 'express'))) {
+  console.log('📦 [Auto-Setup] กำลังติดตั้ง Dependencies (npm install) สำหรับ Web Service Server อัตโนมัติ...');
+  try {
+    execSync('npm install', { cwd: __dirname, stdio: 'inherit' });
+  } catch (e) {
+    console.warn('กรุณารันคำสั่ง npm install ในโฟลเดอร์ secX_grY_ws_src:', e.message);
+  }
+}
+
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config({ path: path.join(__dirname, '.env') });

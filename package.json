@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "ITDS242 Web Technologies Lab - Unimart Gunpla Store (Front-end Server + Web Service Server)",
   "scripts": {
-    "start": "node -e \"const {spawn}=require('child_process'); spawn('node',['secX_grY_ws_src/server.js'],{stdio:'inherit'}); spawn('node',['secX_grY_fe_src/server.js'],{stdio:'inherit'});\"",
+    "postinstall": "node -e \"const {execSync}=require('child_process'); execSync('npm install',{cwd:'secX_grY_ws_src',stdio:'inherit'}); execSync('npm install',{cwd:'secX_grY_fe_src',stdio:'inherit'});\"",
+    "start": "node -e \"const fs=require('fs'),{execSync,spawn}=require('child_process'); if(!fs.existsSync('secX_grY_ws_src/node_modules/express')){execSync('npm install',{cwd:'secX_grY_ws_src',stdio:'inherit'});} spawn('node',['secX_grY_ws_src/server.js'],{stdio:'inherit'}); spawn('node',['secX_grY_fe_src/server.js'],{stdio:'inherit'});\"",
     "start:ws": "node secX_grY_ws_src/server.js",
     "start:fe": "node secX_grY_fe_src/server.js",
-    "install:all": "cd secX_grY_ws_src && npm install && cd ../secX_grY_fe_src && npm install"
+    "install:all": "node -e \"const {execSync}=require('child_process'); execSync('npm install',{cwd:'secX_grY_ws_src',stdio:'inherit'}); execSync('npm install',{cwd:'secX_grY_fe_src',stdio:'inherit'});\""
   },
   "author": "ITDS242 Group Members (Section X, Group Y)",
   "license": "ISC"

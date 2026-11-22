@@ -5,8 +5,21 @@
 // Description: Dedicated Front-end Express Server (runs separately from Web Service Server)
 // ==============================================================================
 
+const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 module.paths.push(path.join(__dirname, '..', 'secX_grY_ws_src', 'node_modules'));
+
+// Auto-install dependencies หากคนที่โหลดโปรเจกต์ไปเปิดใน VS Code แล้วกด npm start ทันทีโดยยังไม่ได้รัน npm install
+if (!fs.existsSync(path.join(__dirname, 'node_modules', 'express')) && !fs.existsSync(path.join(__dirname, '..', 'secX_grY_ws_src', 'node_modules', 'express'))) {
+  console.log('📦 [Auto-Setup] กำลังติดตั้ง Dependencies (npm install) สำหรับ Front-end Server อัตโนมัติ...');
+  try {
+    execSync('npm install', { cwd: __dirname, stdio: 'inherit' });
+  } catch (e) {
+    console.warn('กรุณารันคำสั่ง npm install ในโฟลเดอร์ secX_grY_fe_src:', e.message);
+  }
+}
+
 const express = require('express');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
