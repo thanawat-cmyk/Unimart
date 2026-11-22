@@ -684,7 +684,7 @@
                 return `
                 <tr>
                     <td><img src="${imgUrl}" alt="${item.name}" class="table-product-thumb"></td>
-                    <td><strong class="table-product-title">${item.name}</strong><br><small style="color: #64748b;">${item.series || ''}</small></td>
+                    <td><strong class="table-product-title">${item.name}</strong><br><small style="color: #64748b;">${item.series || (item.grade ? `${item.grade} Series` : 'Gunpla Series')}</small></td>
                     <td><span class="table-badge-grade">${badgeLabel}</span></td>
                     <td>${item.category === 'gundam' ? 'Gundam Plastic Model' : item.category === 'parts' ? 'Parts & Accessories' : 'Tools & Supplies'}</td>
                     <td>

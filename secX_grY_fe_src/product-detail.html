@@ -393,15 +393,15 @@
                 document.getElementById('spec-grade').textContent = `${product.grade} (${normalizedScale})`;
                 document.getElementById('spec-category').textContent = product.category === 'gundam' ? 'Gundam Plastic Model' : product.category === 'parts' ? 'Parts & Accessories' : 'Tools & Supplies';
                 document.getElementById('spec-scale').textContent = normalizedScale || 'N/A';
-                document.getElementById('spec-series').textContent = product.series || 'Mobile Suit Gundam';
-                document.getElementById('spec-release').textContent = releaseDateStr;
+                document.getElementById('spec-series').textContent = product.series || `${product.grade} Gunpla Series`;
+                document.getElementById('spec-release').textContent = product.release_date || releaseDateStr;
 
                 // อัปเดตแท็บคำอธิบาย
                 document.getElementById('detail-desc-text').textContent = product.description;
-                document.getElementById('detail-specs-text').textContent = product.details;
+                document.getElementById('detail-specs-text').textContent = product.details || product.description || 'ชุดประกอบพลาสติกโมเดลมาตรฐานบันได รายละเอียดคมชัด';
 
                 // อัปเดตแหล่งอ้างอิง
-                document.getElementById('reference-item-link').innerHTML = `<strong>Official Specifications:</strong> ${refSource}`;
+                document.getElementById('reference-item-link').innerHTML = `<strong>Official Specifications:</strong> ${product.reference_source || refSource}`;
             }
         });
     </script>

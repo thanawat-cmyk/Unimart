@@ -55,6 +55,37 @@ function shortenImageUrl(rawUrl, itemId = null) {
   }
 }
 
+/**
+ * จัดรูปแบบข้อมูลสินค้าให้สะอาดและตรงตามฟิลด์ที่กรอกในระบบจริง 10 ฟิลด์
+ * (id, name, grade, scale, category, price, stock, status, description, image_url)
+ */
+function formatProduct(p) {
+  if (!p) return null;
+  const g = (p.grade || 'HG').toUpperCase().trim();
+  let sc = p.scale;
+  if ((g === 'HG' || g === 'RG' || g === 'EG') && (!sc || sc === '1/100')) {
+    sc = '1/144';
+  } else if (g === 'MG' && (!sc || sc === 'N/A')) {
+    sc = '1/100';
+  } else if (g === 'PG' && (!sc || sc === 'N/A')) {
+    sc = '1/60';
+  } else if (g === 'SD' && (!sc || sc === 'N/A')) {
+    sc = 'Non-scale';
+  }
+  return {
+    id: Number(p.id),
+    name: p.name || '',
+    grade: p.grade || 'HG',
+    scale: sc || '1/144',
+    category: p.category || 'gundam',
+    price: Number(p.price) || 0,
+    stock: Number(p.stock) || 0,
+    status: p.status || 'In Stock',
+    description: p.description || '',
+    image_url: p.image_url || 'assets/images/product-freedom.png'
+  };
+}
+
 // ==============================================================================
 // 1. GET /api/products - การค้นหาและเข้าถึงข้อมูลสินค้า (Search & View)
 // รองรับทั้งแบบไม่มีเงื่อนไข (Select All) และการระบุเกณฑ์ค้นหาตามเกณฑ์อาจารย์
@@ -130,13 +161,10 @@ router.get('/', async (req, res) => {
 
     const [rows] = await pool.query(sql, params);
 
-    // ตรวจสอบสเกลกันพลา และแปลง image_url ที่เป็น Base64 ยาวๆ ใน MySQL ให้เป็นไฟล์สั้นๆ อัตโนมัติ
+    // ตรวจสอบสเกลกันพลา แปลง Base64 และจัดรูปแบบข้อมูลให้ได้เฉพาะฟิลด์มาตรฐาน 10 ฟิลด์
     const normalizedRows = [];
-    for (const p of rows) {
-      const g = (p.grade || '').toUpperCase().trim();
-      if ((g === 'HG' || g === 'RG' || g === 'EG') && (!p.scale || p.scale === '1/100')) {
-        p.scale = '1/144';
-      }
+    for (const rawP of rows) {
+      const p = formatProduct(rawP);
       if (p.image_url && typeof p.image_url === 'string' && (p.image_url.startsWith('data:') || p.image_url.length > 500)) {
         const shortPath = shortenImageUrl(p.image_url, p.id);
         p.image_url = shortPath;
@@ -182,11 +210,7 @@ router.get('/:id', async (req, res) => {
       });
     }
 
-    const p = rows[0];
-    const g = (p.grade || '').toUpperCase().trim();
-    if ((g === 'HG' || g === 'RG' || g === 'EG') && (!p.scale || p.scale === '1/100')) {
-      p.scale = '1/144';
-    }
+    const p = formatProduct(rows[0]);
     if (p.image_url && typeof p.image_url === 'string' && p.image_url.startsWith('data:image/')) {
       const shortPath = shortenImageUrl(p.image_url, p.id);
       p.image_url = shortPath;
@@ -218,10 +242,9 @@ router.get('/:id', async (req, res) => {
 // Body (raw JSON):
 // {
 //   "name": "MG 1/100 Sazabi Ver.Ka",
-//   "series": "Mobile Suit Gundam: Char's Counterattack",
 //   "grade": "MG",
-//   "category": "gundam",
 //   "scale": "1/100",
+//   "category": "gundam",
 //   "price": 2800.00,
 //   "stock": 10,
 //   "status": "In Stock",
@@ -232,18 +255,13 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const {
     name,
-    series = 'Universal Century',
     grade = 'HG',
     category = 'gundam',
     scale = '1/144',
     price,
     stock = 0,
-    release_date,
-    rating = 5.0,
     image_url = 'assets/images/product-freedom.png',
     description = '',
-    details = '',
-    reference_source = 'Bandai Hobby Site',
     status = 'In Stock'
   } = req.body;
 
@@ -256,6 +274,8 @@ router.post('/', async (req, res) => {
     effectiveScale = '1/100';
   } else if (upperGrade === 'PG' && (!effectiveScale || effectiveScale === 'N/A')) {
     effectiveScale = '1/60';
+  } else if (upperGrade === 'SD' && (!effectiveScale || effectiveScale === 'N/A')) {
+    effectiveScale = 'Non-scale';
   }
 
   // Validation ตรวจสอบข้อมูลบังคับ
@@ -272,25 +292,20 @@ router.post('/', async (req, res) => {
 
     const insertSql = `
       INSERT INTO products (
-        name, series, grade, category, scale, price, stock,
-        release_date, rating, image_url, description, details, reference_source, status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        name, grade, category, scale, price, stock,
+        image_url, description, status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
       name.trim(),
-      series.trim(),
       grade.trim(),
       category.trim(),
       effectiveScale.trim(),
       parseFloat(price),
       parseInt(stock, 10) || 0,
-      release_date || new Date().toISOString().slice(0, 10),
-      parseFloat(rating) || 5.0,
       shortImgUrl,
       description.trim(),
-      details.trim(),
-      reference_source.trim(),
       status.trim()
     ];
 
@@ -309,7 +324,7 @@ router.post('/', async (req, res) => {
     return res.status(201).json({
       success: true,
       message: `เพิ่มสินค้าใหม่ "${name}" สำเร็จเรียบร้อยแล้ว`,
-      data: newProduct[0]
+      data: formatProduct(newProduct[0])
     });
   } catch (error) {
     console.error('Error inserting product:', error);
@@ -353,6 +368,12 @@ router.put('/:id', async (req, res) => {
     const upperG = (targetGrade || '').toUpperCase().trim();
     if ((upperG === 'HG' || upperG === 'RG' || upperG === 'EG') && (!targetScale || targetScale === '1/100')) {
       targetScale = '1/144';
+    } else if (upperG === 'MG' && (!targetScale || targetScale === 'N/A')) {
+      targetScale = '1/100';
+    } else if (upperG === 'PG' && (!targetScale || targetScale === 'N/A')) {
+      targetScale = '1/60';
+    } else if (upperG === 'SD' && (!targetScale || targetScale === 'N/A')) {
+      targetScale = 'Non-scale';
     }
 
     const rawImgInput = req.body.image_url !== undefined ? req.body.image_url : req.body.image;
@@ -377,33 +398,26 @@ router.put('/:id', async (req, res) => {
 
     const updateData = {
       name: req.body.name !== undefined && req.body.name !== null ? String(req.body.name).trim() : current.name,
-      series: req.body.series !== undefined && req.body.series !== null ? String(req.body.series).trim() : current.series,
       grade: targetGrade,
       category: req.body.category !== undefined && req.body.category !== null ? String(req.body.category).trim() : current.category,
       scale: targetScale,
       price: parsedPrice,
       stock: parsedStock,
-      release_date: req.body.release_date !== undefined && req.body.release_date !== null ? req.body.release_date : current.release_date,
-      rating: req.body.rating !== undefined && req.body.rating !== null && !isNaN(parseFloat(req.body.rating)) ? parseFloat(req.body.rating) : current.rating,
       image_url: shortImgUrl,
       description: req.body.description !== undefined && req.body.description !== null ? String(req.body.description).trim() : (current.description || ''),
-      details: req.body.details !== undefined && req.body.details !== null ? String(req.body.details).trim() : (current.details || ''),
-      reference_source: req.body.reference_source !== undefined && req.body.reference_source !== null ? String(req.body.reference_source).trim() : (current.reference_source || ''),
       status: resolvedStatus
     };
 
     const updateSql = `
       UPDATE products SET
-        name = ?, series = ?, grade = ?, category = ?, scale = ?, price = ?, stock = ?,
-        release_date = ?, rating = ?, image_url = ?, description = ?, details = ?,
-        reference_source = ?, status = ?
+        name = ?, grade = ?, category = ?, scale = ?, price = ?, stock = ?,
+        image_url = ?, description = ?, status = ?
       WHERE id = ?
     `;
 
     const values = [
-      updateData.name, updateData.series, updateData.grade, updateData.category, updateData.scale,
-      updateData.price, updateData.stock, updateData.release_date, updateData.rating,
-      updateData.image_url, updateData.description, updateData.details, updateData.reference_source,
+      updateData.name, updateData.grade, updateData.category, updateData.scale,
+      updateData.price, updateData.stock, updateData.image_url, updateData.description,
       updateData.status, id
     ];
 
@@ -413,7 +427,7 @@ router.put('/:id', async (req, res) => {
     return res.status(200).json({
       success: true,
       message: `ปรับปรุงข้อมูลสินค้ารหัส ID ${id} สำเร็จเรียบร้อยแล้ว`,
-      data: refreshed[0]
+      data: formatProduct(refreshed[0])
     });
   } catch (error) {
     console.error(`Error updating product ${id}:`, error);

@@ -383,7 +383,7 @@
         function renderRecommended(products) {
             const grid = document.getElementById('recommended-products-grid');
             if (!grid) return;
-            const recommended = [...products].sort((a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0)).slice(0, 4);
+            const recommended = [...products].sort((a, b) => ((Number(b.rating) || 0) - (Number(a.rating) || 0)) || (Number(b.id) - Number(a.id))).slice(0, 4);
             grid.innerHTML = recommended.map(createProductCardHTML).join('');
         }
 

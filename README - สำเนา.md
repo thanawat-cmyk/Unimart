@@ -1,3 +1,96 @@
+# 🛒 UNIMART - Online Gunpla & Hobby Supplies Store
+**คณะเทคโนโลยีสารสนเทศและการสื่อสาร มหาวิทยาลัยมหิดล (ICT Mahidol)**  
+**วิชา ITDS242 Web Technologies Lab | Course Project (62 คะแนนเต็ม)**
+
+---
+
+## 👥 ข้อมูลสมาชิกกลุ่ม (Team Members)
+
+- **Section:** X | **Group:** Y
+1. **6887018** ณิชาภัทร วิชาธรรม
+2. **6887063** อโยสรา ต้องทรัพย์
+3. **6887025** ธนวัฒน์ แสนโบราณ
+4. **6887071** คชาธร ศิริเลิศ
+5. **6887077** ธัญชนก โรจนสฤษฎิ์
+
+---
+
+## 🏗️ สถาปัตยกรรมระบบแบบแยกเซิร์ฟเวอร์ (Two-Server System Architecture)
+
+โปรเจกต์นี้ออกแบบและพัฒนาโดยแยกเซิร์ฟเวอร์ออกเป็น **2 เซิร์ฟเวอร์อิสระ** ตามแผนภาพข้อกำหนดในใบงานของอาจารย์ผู้สอน:
+
+```text
++-----------------------------------+            +-----------------------------------------------+
+|         Front-end Server          |   HTTP /   |              Web Service Server               |
+|         (secX_grY_fe_src)         |   Fetch    |               (secX_grY_ws_src)               |
+|                                   |  =======>  |                                               |
+|  - Node.js + Express.js           |   CORS     |  - Node.js + Express.js + CORS                |
+|  - express.Router() & sendFile()  |  <=======  |  - RESTful Web Services (/api/*)              |
+|  - HTML5 / CSS3 / Fetch API       |   JSON     |  - MySQL Connection Pool + Auto-DB Fallback   |
+|  - รันบน Port: 3100               |            |  - รันบน Port: 3000  <===>  MySQL (unimart_db)|
++-----------------------------------+            +-----------------------------------------------+
+```
+
+1. **Front-end Server (`secX_grY_fe_src` - Port `3100`):**
+   - ทำหน้าที่เป็น Web Server ฝั่งหน้าบ้านด้วย `express`, `express.Router()`, `express.static()` และ `res.sendFile()` (ตามสไลด์ Lecture 10: Node.js Part II)
+   - เสิร์ฟหน้าเว็บ HTML, CSS, JavaScript และเชื่อมต่อกับ Web Service Server ข้ามพอร์ตผ่าน `fetch('http://localhost:3000/api/...')`
+
+2. **Web Service Server (`secX_grY_ws_src` - Port `3000`):**
+   - ทำหน้าที่เป็น RESTful Web Services API Server ด้วย `express`, `cors`, `dotenv` และ `mysql2` (ตามสไลด์ Lecture 13: Web Services with Node.js)
+   - มาพร้อมระบบ **Auto-Database Setup & Smart In-Memory SQL Fallback**:
+     - **หากเปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสร้างฐานข้อมูล `unimart_db` และนำเข้าไฟล์ `secX_grY_database.sql` ให้อัตโนมัติทันทีเมื่อสั่ง `npm start`
+     - **หากไม่ได้เปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสลับไปใช้ฐานข้อมูลจำลอง (**In-Memory SQL Database**) ที่มีข้อมูลตรงกับ `secX_grY_database.sql` ทุกตารางโดยอัตโนมัติ ทำให้ผู้ตรวจสามารถสั่ง `npm start` แล้วเปิด **Postman** ยิงทดสอบ API ทุกเส้น (`GET`, `POST`, `PUT`, `DELETE`) ได้ทันที 100% โดยไม่เกิด Error!
+
+---
+
+## 📁 โครงสร้างโปรเจกต์ตามข้อกำหนดการส่งงาน (Project Structure)
+
+> **หมายเหตุสำคัญตามใบงานหน้า 5:** ทั้งโฟลเดอร์ `secX_grY_fe_src` และ `secX_grY_ws_src` ตั้งค่า `.gitignore` ให้ไม่รวมโฟลเดอร์ `node_modules` เรียบร้อยแล้ว
+
+```text
+unimart-web/
+├── secX_grY_fe_src/                     # [งานที่ 1 & งานที่ 4] Front-end Server & Source Code (Port 3100)
+│   ├── server.js                        # Front-end Express Server (express.Router + res.sendFile)
+│   ├── app.js                           # Alias Entrypoint สำหรับรัน node app.js / nodemon app.js
+│   ├── package.json                     # รายการ Dependencies และ Script (npm start) ของฝั่ง Front-end
+│   ├── .env                             # ตั้งค่า PORT=3100 และ API_BASE_URL=http://localhost:3000/api
+│   ├── index.html                       # หน้าหลัก (Home Page)
+│   ├── search.html                      # หน้าค้นหาและกรองสินค้า (Search & Filter + Public API)
+│   ├── product-detail.html              # หน้ารายละเอียดสินค้า (Product Detail & Citations)
+│   ├── about.html                       # เกี่ยวกับร้านและวิสัยทัศน์ (About Us)
+│   ├── teampage.html                    # ข้อมูลสมาชิกในกลุ่ม (Our Team)
+│   ├── login.html                       # หน้าเข้าสู่ระบบ (Authentication Login)
+│   ├── profile.html                     # หน้าโปรไฟล์ลูกค้า (Customer Profile & Orders)
+│   ├── admin-profile.html               # หน้าโปรไฟล์แอดมิน (Admin/Staff Profile & Shortcuts)
+│   ├── admin-products.html              # ระบบจัดการสินค้าหลังบ้าน (Product CRUD & Modals)
+│   ├── admin-users.html                 # ระบบจัดการผู้ใช้หลังบ้าน (User CRUD & Modals)
+│   ├── css/
+│   │   └── style.css                    # Unified External CSS ควบคุมทั้งระบบ
+│   ├── js/
+│   │   ├── api.js                       # โมดูลเชื่อมต่อ Web Services (http://localhost:3000/api) ด้วย Fetch API
+│   │   └── products.js                  # Shared Data Model สินค้าและตัวกรอง
+│   └── assets/images/                   # รูปภาพ แบนเนอร์ ไอคอน และมาสคอตจาก Figma
+│
+├── secX_grY_database.sql                # [งานที่ 2] สคริปต์ฐานข้อมูล MySQL (Tables & Seed Data)
+│
+├── secX_grY_ws_src/                     # [งานที่ 3] Web Service Server (RESTful API & MySQL - Port 3000)
+│   ├── config/
+│   │   └── db.js                        # MySQL Connection Pool + Auto-DB Import + In-Memory SQL Fallback
+│   ├── routes/
+│   │   ├── auth.js                      # เซอร์วิส Authentication (Login & Session)
+│   │   ├── products.js                  # เซอร์วิสจัดการสินค้า (CRUD & Multi-Criteria Search)
+│   │   ├── users.js                     # เซอร์วิสจัดการผู้ใช้งาน (CRUD & Filter)
+│   │   ├── orders.js                    # เซอร์วิสดึงประวัติคำสั่งซื้อ
+│   │   ├── logs.js                      # เซอร์วิสดึงประวัติการเข้าสู่ระบบ (Login Logs)
+│   │   └── publicApi.js                 # เซอร์วิสเชื่อมต่อ Public API อัตราแลกเปลี่ยน JPY/THB
+│   ├── server.js                        # Web Service Express Server (Port 3000)
+│   ├── app.js                           # Alias Entrypoint สำหรับรัน node app.js / nodemon app.js
+│   ├── Unimart_API.postman_collection.json # ไฟล์ Postman Collection สำหรับนำเข้าและทดสอบผ่าน Postman
+│   ├── package.json                     # รายการ Dependencies และ Scripts (npm start) ของฝั่ง Web Service
+│   └── .env                             # การตั้งค่า Environment Variables (DB & PORT=3000)
+│
+└── package.json                         # Root Script อำนวยความสะดวกสำหรับรันทั้ง 2 เซิร์ฟเวอร์พร้อมกัน
+```
 
 ---
 
@@ -5,28 +98,42 @@
 
 ### 🚀 วิธีรันแบบแยก 2 เซิร์ฟเวอร์ (2 Terminals ตามโครงสร้างใบงานอาจารย์)
 
-#### 1. รัน Web Service Server (`secX_grY_ws_src`- Port `3000`)
+#### 1. รัน Web Service Server (`secX_grY_ws_src` - Port `3000`)
 
-เปิด Terminal ที่ 1 เพื่อเปิดเซิร์ฟเวอร์หลังบ้านและฐานข้อมูล 
+เปิด Terminal ที่ 1 เพื่อสตาร์ทเซิร์ฟเวอร์หลังบ้านและฐานข้อมูล (สำหรับรับคำขอจากหน้าเว็บและทดสอบใน **Postman**):
 
 ```bash
 cd secX_grY_ws_src
+npm install
 npm start
 ```
-______________________________________________________________________________________________________________________________
+
+* **Web Service API URL:** `http://localhost:3000/api`
+* **พร้อมทดสอบด้วย Postman ทันที:** หากเครื่องเปิด MySQL (XAMPP) อยู่ ระบบจะสร้างฐานข้อมูล `unimart_db` และนำเข้า `secX_grY_database.sql` ให้อัตโนมัติ แต่หากไม่ได้เปิด MySQL ระบบจะเปิดโหมด **In-Memory SQL Database** ให้ยิง Postman ทดสอบได้ครบทุกเส้นทันที!
+
+<br>
 
 #### 2. รัน Front-end Server (`secX_grY_fe_src` - Port `3100`)
 
-เปิด Terminal ที่ 2 เพื่อเปิดเซิร์ฟเวอร์หน้าบ้าน:
+เปิด Terminal ที่ 2 เพื่อสตาร์ทเซิร์ฟเวอร์หน้าบ้านแยกต่างหาก:
 
 ```bash
 cd secX_grY_fe_src
+npm install
 npm start
 ```
 
 * **Front-end Web URL:** เปิดเบราว์เซอร์ไปที่ `http://localhost:3100`
+
 ---
-______________________________________________________________________________________________________________________________
+
+### 💡 ทางลัด: รันทั้ง 2 เซิร์ฟเวอร์พร้อมกันในคำสั่งเดียว (จากโฟลเดอร์หลัก)
+
+หากเปิด Terminal ที่โฟลเดอร์หลัก `unimart-web` สามารถสั่งรันทั้ง **Web Service Server (Port 3000)** และ **Front-end Server (Port 3100)** พร้อมกันได้ทันทีด้วยคำสั่ง:
+
+```bash
+npm start
+```
 
 ---
 
@@ -42,15 +149,25 @@ mysql -u root -p < secX_grY_database.sql
 
 ---
 
+## 🔑 บัญชีผู้ใช้ตัวอย่างสำหรับการทดสอบ (Demo Accounts)
+
+| บัญชี | Username | Password | สิทธิ์ (Role) | หน้าเริ่มต้นหลัง Login |
+| :--- | :--- | :--- | :--- | :--- |
+| **Super Admin** | `admin` | `admin123` | Super Admin | `admin-products.html` |
+| **Manager** | `nichaphat` | `user123` | Manager | `admin-products.html` |
+| **Staff** | `ayosara` | `user123` | Staff | `admin-products.html` |
+| **Customer VIP** | `GundamLover159` | `customer123` | Customer | `profile.html` |
+
+---
 
 ## 📡 ตัวอย่างการทดสอบ Web Services ด้วย Postman (Postman Testing Examples)
 
-  
+> ทุกไฟล์ในโฟลเดอร์ `secX_grY_ws_src/routes/` มี **Comment Header ตัวอย่างการทดสอบใน Postman อย่างน้อย 2 ตัวอย่าง** กำกับอยู่ด้านบนของโค้ดอย่างครบถ้วนตามเกณฑ์ของอาจารย์ผู้สอน  
 > *(สำหรับคำขอแบบ `POST` และ `PUT` ให้ตั้งค่าใน Postman ที่แท็บ **Body** &rarr; เลือก **raw** &rarr; เลือกชนิดเป็น **JSON**)*
 
 ---
 
-### 1. Authentication Web Service (`/api/auth`)
+### 🔐 1. Authentication Web Service (`/api/auth`)
 
 #### 1.1 เข้าสู่ระบบ (Login) — `POST`
 
@@ -100,6 +217,9 @@ POST http://localhost:3000/api/auth/login
 
 ### 📦 2. Products Web Services (`/api/products` — Search, View, Insert, Update, Delete)
 
+> **โครงสร้างข้อมูลสินค้า (Standardized Product Schema - 10 ฟิลด์ตามฟอร์มการกรอกจริง):**  
+> `id`, `name`, `grade`, `scale`, `category`, `price`, `stock`, `status`, `description`, `image_url`
+
 #### 2.1 ค้นหาและดูรายการสินค้าทั้งหมด (Search & View Products) — `GET`
 
 * **ตัวอย่างที่ 1: ดึงข้อมูลสินค้าทั้งหมดแบบไม่มีเงื่อนไข (Select All - No Criteria)**
@@ -148,7 +268,6 @@ POST http://localhost:3000/api/products
   ```json
   {
     "name": "MG 1/100 Sazabi Ver.Ka",
-    "series": "Mobile Suit Gundam: Char's Counterattack",
     "grade": "MG",
     "category": "gundam",
     "scale": "1/100",
@@ -164,7 +283,6 @@ POST http://localhost:3000/api/products
   ```json
   {
     "name": "HG 1/144 Gundam Aerial",
-    "series": "Mobile Suit Gundam: The Witch from Mercury",
     "grade": "HG",
     "category": "gundam",
     "scale": "1/144",
@@ -224,6 +342,9 @@ POST http://localhost:3000/api/products
 
 ### 👥 3. Users Web Services (`/api/users` — Search, View, Insert, Update, Delete)
 
+> **โครงสร้างข้อมูลผู้ใช้งาน (Standardized User Schema - 6 ฟิลด์ตามฟอร์มการกรอกจริง):**  
+> `id`, `username`, `fullname`, `email`, `role`, `status`
+
 #### 3.1 ค้นหาและดูรายชื่อผู้ใช้งานทั้งหมด (Search & View Users) — `GET`
 
 * **ตัวอย่างที่ 1: ดึงรายชื่อผู้ใช้งานทั้งหมด (Select All Users)**
@@ -270,10 +391,6 @@ POST http://localhost:3000/api/users
     "password": "password123",
     "fullname": "สมชาย รักการต่อกันดั้ม",
     "email": "somchai.gunpla@example.com",
-    "phone": "089-999-8888",
-    "age": 25,
-    "address": "45/2 ถ.พหลโยธิน แขวงพญาไท เขตพญาไท กรุงเทพมหานคร 10400",
-    "preferences": "ชอบโมเดลเกรด PG และอุปกรณ์ทำสี",
     "role": "Staff",
     "status": "Active"
   }
@@ -286,10 +403,6 @@ POST http://localhost:3000/api/users
     "password": "customer123",
     "fullname": "อามูโร่ เรย์",
     "email": "amuro.ray@efsf.org",
-    "phone": "081-078-0079",
-    "age": 22,
-    "address": "Side 7 Colony, Universal Century",
-    "preferences": "สะสมโมเดล RX-78-2 และ Nu Gundam",
     "role": "Customer",
     "status": "Active"
   }
@@ -299,7 +412,7 @@ POST http://localhost:3000/api/users
 
 #### 3.4 แก้ไขข้อมูลผู้ใช้งาน (Update User) — `PUT`
 
-* **ตัวอย่างที่ 1: แก้ไขสิทธิ์ (`role`) และเบอร์โทรศัพท์ของผู้ใช้ ID ที่ 3**
+* **ตัวอย่างที่ 1: แก้ไขสิทธิ์ (`role`) และสถานะของผู้ใช้ ID ที่ 3**
   ```http
   PUT http://localhost:3000/api/users/3
   ```
@@ -307,7 +420,6 @@ POST http://localhost:3000/api/users
   ```json
   {
     "role": "Manager",
-    "phone": "082-999-7777",
     "status": "Active"
   }
   ```

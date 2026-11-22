@@ -153,7 +153,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"MG 1/100 Sazabi Ver.Ka\",\n  \"series\": \"Mobile Suit Gundam: Char's Counterattack\",\n  \"grade\": \"MG\",\n  \"category\": \"gundam\",\n  \"scale\": \"1/100\",\n  \"price\": 2800.00,\n  \"stock\": 10,\n  \"release_date\": \"2024-06-01\",\n  \"rating\": 5.0,\n  \"image_url\": \"assets/images/product-freedom.png\",\n  \"description\": \"MSN-04 Sazabi Ver.Ka โมเดลสีแดงระดับตำนาน พร้อมบีมช็อตไรเฟิลและฟันเนล 6 ตัว\",\n  \"details\": \"โครงสร้าง Full Inner Frame แข็งแรง พร้อมสติกเกอร์ดีคอลน้ำพรีเมียมจาก Katoki Hajime\",\n  \"reference_source\": \"Bandai Hobby Site - https://bandai-hobby.net\",\n  \"status\": \"In Stock\"\n}"
+              "raw": "{\n  \"name\": \"MG 1/100 Sazabi Ver.Ka\",\n  \"grade\": \"MG\",\n  \"category\": \"gundam\",\n  \"scale\": \"1/100\",\n  \"price\": 2800.00,\n  \"stock\": 10,\n  \"status\": \"In Stock\",\n  \"image_url\": \"assets/images/product-freedom.png\",\n  \"description\": \"MSN-04 Sazabi Ver.Ka โมเดลสีแดงระดับตำนาน พร้อมบีมช็อตไรเฟิลและฟันเนล 6 ตัว\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/products",

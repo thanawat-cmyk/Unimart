@@ -217,6 +217,9 @@ POST http://localhost:3000/api/auth/login
 
 ### 📦 2. Products Web Services (`/api/products` — Search, View, Insert, Update, Delete)
 
+> **โครงสร้างข้อมูลสินค้า (Standardized Product Schema - 10 ฟิลด์ตามฟอร์มการกรอกจริง):**  
+> `id`, `name`, `grade`, `scale`, `category`, `price`, `stock`, `status`, `description`, `image_url`
+
 #### 2.1 ค้นหาและดูรายการสินค้าทั้งหมด (Search & View Products) — `GET`
 
 * **ตัวอย่างที่ 1: ดึงข้อมูลสินค้าทั้งหมดแบบไม่มีเงื่อนไข (Select All - No Criteria)**
@@ -265,7 +268,6 @@ POST http://localhost:3000/api/products
   ```json
   {
     "name": "MG 1/100 Sazabi Ver.Ka",
-    "series": "Mobile Suit Gundam: Char's Counterattack",
     "grade": "MG",
     "category": "gundam",
     "scale": "1/100",
@@ -281,7 +283,6 @@ POST http://localhost:3000/api/products
   ```json
   {
     "name": "HG 1/144 Gundam Aerial",
-    "series": "Mobile Suit Gundam: The Witch from Mercury",
     "grade": "HG",
     "category": "gundam",
     "scale": "1/144",
@@ -340,6 +341,9 @@ POST http://localhost:3000/api/products
 ---
 
 ### 👥 3. Users Web Services (`/api/users` — Search, View, Insert, Update, Delete)
+
+> **โครงสร้างข้อมูลผู้ใช้งาน (Standardized User Schema - 6 ฟิลด์ตามฟอร์มการกรอกจริง):**  
+> `id`, `username`, `fullname`, `email`, `role`, `status`
 
 #### 3.1 ค้นหาและดูรายชื่อผู้ใช้งานทั้งหมด (Search & View Users) — `GET`
 

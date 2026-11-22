@@ -371,25 +371,51 @@ function executeInMemoryQuery(sql, params = []) {
   }
 
   // ----------------------------------------------------------------------------
-  // B. ตาราง products
+  // B. ตาราง products (มาตรฐาน 10 ฟิลด์ตามฟอร์มการกรอกข้อมูลในระบบจริง)
   // ----------------------------------------------------------------------------
+  function formatMockProduct(p) {
+    if (!p) return null;
+    const g = (p.grade || 'HG').toUpperCase().trim();
+    let sc = p.scale;
+    if ((g === 'HG' || g === 'RG' || g === 'EG') && (!sc || sc === '1/100')) {
+      sc = '1/144';
+    } else if (g === 'MG' && (!sc || sc === 'N/A')) {
+      sc = '1/100';
+    } else if (g === 'PG' && (!sc || sc === 'N/A')) {
+      sc = '1/60';
+    } else if (g === 'SD' && (!sc || sc === 'N/A')) {
+      sc = 'Non-scale';
+    }
+    return {
+      id: Number(p.id),
+      name: p.name || '',
+      grade: p.grade || 'HG',
+      scale: sc || '1/144',
+      category: p.category || 'gundam',
+      price: Number(p.price) || 0,
+      stock: Number(p.stock) || 0,
+      status: p.status || 'In Stock',
+      description: p.description || '',
+      image_url: p.image_url || 'assets/images/product-freedom.png'
+    };
+  }
+
   if (upperSql.startsWith('SELECT') && upperSql.includes('FROM PRODUCTS')) {
     if (upperSql.includes('WHERE ID = ?')) {
       const targetId = Number(params[0]);
       const rows = memoryDB.products.filter(p => Number(p.id) === targetId);
-      return [rows.map(r => ({ ...r })), []];
+      return [rows.map(formatMockProduct), []];
     }
 
     if (upperSql.includes('WHERE 1=1')) {
-      let rows = memoryDB.products.map(r => ({ ...r }));
+      let rows = memoryDB.products.map(formatMockProduct);
       let idx = 0;
 
       if (upperSql.includes('NAME LIKE ?')) {
         const kw = String(params[idx] || '').replace(/%/g, '').toLowerCase();
-        idx += 3;
+        idx += (upperSql.includes('SERIES LIKE ?') ? 3 : (upperSql.includes('DESCRIPTION LIKE ?') ? 2 : 1));
         rows = rows.filter(p =>
           (p.name || '').toLowerCase().includes(kw) ||
-          (p.series || '').toLowerCase().includes(kw) ||
           (p.description || '').toLowerCase().includes(kw)
         );
       }
@@ -419,9 +445,9 @@ function executeInMemoryQuery(sql, params = []) {
       } else if (upperSql.includes('ORDER BY PRICE DESC')) {
         rows.sort((a, b) => Number(b.price) - Number(a.price));
       } else if (upperSql.includes('ORDER BY RATING DESC')) {
-        rows.sort((a, b) => Number(b.rating) - Number(a.rating));
+        rows.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
       } else if (upperSql.includes('ORDER BY RELEASE_DATE DESC')) {
-        rows.sort((a, b) => String(b.release_date).localeCompare(String(a.release_date)) || (b.id - a.id));
+        rows.sort((a, b) => String(b.release_date || '').localeCompare(String(a.release_date || '')) || (b.id - a.id));
       } else if (upperSql.includes('ORDER BY NAME ASC')) {
         rows.sort((a, b) => String(a.name).localeCompare(String(b.name)));
       } else {
@@ -434,24 +460,35 @@ function executeInMemoryQuery(sql, params = []) {
 
   if (upperSql.startsWith('INSERT INTO PRODUCTS')) {
     const nextId = memoryDB.products.reduce((max, p) => Math.max(max, Number(p.id) || 0), 0) + 1;
-    const newProd = {
-      id: nextId,
-      name: params[0],
-      series: params[1],
-      grade: params[2],
-      category: params[3],
-      scale: params[4],
-      price: params[5],
-      stock: params[6],
-      release_date: params[7],
-      rating: params[8],
-      image_url: params[9],
-      description: params[10],
-      details: params[11],
-      reference_source: params[12],
-      status: params[13]
-    };
-    memoryDB.products.push(newProd);
+    let newProd;
+    if (params.length === 9) {
+      newProd = {
+        id: nextId,
+        name: params[0],
+        grade: params[1],
+        category: params[2],
+        scale: params[3],
+        price: Number(params[4]),
+        stock: Number(params[5]),
+        image_url: params[6],
+        description: params[7],
+        status: params[8]
+      };
+    } else {
+      newProd = {
+        id: nextId,
+        name: params[0],
+        grade: params[2] || 'HG',
+        category: params[3] || 'gundam',
+        scale: params[4] || '1/144',
+        price: Number(params[5]),
+        stock: Number(params[6]),
+        image_url: params[9] || 'assets/images/product-freedom.png',
+        description: params[10] || '',
+        status: params[13] || 'In Stock'
+      };
+    }
+    memoryDB.products.push(formatMockProduct(newProd));
     savePersistedMemoryDB();
     return [{ insertId: nextId, affectedRows: 1 }, []];
   }
@@ -467,26 +504,36 @@ function executeInMemoryQuery(sql, params = []) {
       }
       return [{ affectedRows: 0 }, []];
     }
-    const targetId = Number(params[14]);
+    const targetId = Number(params[params.length - 1]);
     const idx = memoryDB.products.findIndex(p => Number(p.id) === targetId);
     if (idx !== -1) {
-      memoryDB.products[idx] = {
-        ...memoryDB.products[idx],
-        name: params[0],
-        series: params[1],
-        grade: params[2],
-        category: params[3],
-        scale: params[4],
-        price: params[5],
-        stock: params[6],
-        release_date: params[7],
-        rating: params[8],
-        image_url: params[9],
-        description: params[10],
-        details: params[11],
-        reference_source: params[12],
-        status: params[13]
-      };
+      if (params.length === 10) {
+        memoryDB.products[idx] = formatMockProduct({
+          id: targetId,
+          name: params[0],
+          grade: params[1],
+          category: params[2],
+          scale: params[3],
+          price: Number(params[4]),
+          stock: Number(params[5]),
+          image_url: params[6],
+          description: params[7],
+          status: params[8]
+        });
+      } else {
+        memoryDB.products[idx] = formatMockProduct({
+          ...memoryDB.products[idx],
+          name: params[0],
+          grade: params[2] || memoryDB.products[idx].grade,
+          category: params[3] || memoryDB.products[idx].category,
+          scale: params[4] || memoryDB.products[idx].scale,
+          price: Number(params[5]),
+          stock: Number(params[6]),
+          image_url: params[9] || memoryDB.products[idx].image_url,
+          description: params[10] || memoryDB.products[idx].description,
+          status: params[13] || memoryDB.products[idx].status
+        });
+      }
       savePersistedMemoryDB();
       return [{ affectedRows: 1 }, []];
     }
