@@ -21,14 +21,14 @@ if (!fs.existsSync(path.join(__dirname, 'node_modules', 'express')) && !fs.exist
 }
 
 const express = require('express');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config({ path: path.join(__dirname, '.env'), override: true });
 
 const app = express();
 const router = express.Router();
 
 // กำหนดพอร์ตสำหรับ Front-end Server (ค่าเริ่มต้น Port 3100 ตามสไลด์ CORS Lecture 13)
 // แยกกับ Web Service Server ที่รันบน Port 3000
-const PORT = process.env.PORT || 3100;
+const PORT = process.env.FE_PORT || process.env.PORT || 3100;
 
 // เสิร์ฟไฟล์ Static (HTML, CSS, JS, Images) ในโฟลเดอร์ secX_grY_fe_src (ตามสไลด์ Lecture 10)
 app.use(express.static(path.join(__dirname)));
