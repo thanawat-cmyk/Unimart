@@ -92,13 +92,22 @@ var UnimartAPI = {
   },
 
   _getLocalProducts() {
+    const CACHE_VERSION = 'v3_distinct_gundam_images';
     let list = null;
     try {
-      const raw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_local_products') : null;
-      if (raw !== null) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          list = parsed;
+      if (typeof localStorage !== 'undefined') {
+        const currentVer = localStorage.getItem('unimart_products_cache_version');
+        if (currentVer !== CACHE_VERSION) {
+          localStorage.removeItem('unimart_local_products');
+          localStorage.removeItem('unimart_deleted_product_ids');
+          localStorage.setItem('unimart_products_cache_version', CACHE_VERSION);
+        }
+        const raw = localStorage.getItem('unimart_local_products');
+        if (raw !== null) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            list = parsed;
+          }
         }
       }
     } catch (e) {

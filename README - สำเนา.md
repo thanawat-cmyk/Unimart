@@ -45,12 +45,12 @@ mysql -u root -p < secX_grY_database.sql
 
 ## 📡 ตัวอย่างการทดสอบ Web Services ด้วย Postman (Postman Testing Examples)
 
-> ทุกไฟล์ในโฟลเดอร์ `secX_grY_ws_src/routes/` มี **Comment Header ตัวอย่างการทดสอบใน Postman อย่างน้อย 2 ตัวอย่าง** กำกับอยู่ด้านบนของโค้ดอย่างครบถ้วนตามเกณฑ์ของอาจารย์ผู้สอน  
+  
 > *(สำหรับคำขอแบบ `POST` และ `PUT` ให้ตั้งค่าใน Postman ที่แท็บ **Body** &rarr; เลือก **raw** &rarr; เลือกชนิดเป็น **JSON**)*
 
 ---
 
-### 🔐 1. Authentication Web Service (`/api/auth`)
+### 1. Authentication Web Service (`/api/auth`)
 
 #### 1.1 เข้าสู่ระบบ (Login) — `POST`
 
