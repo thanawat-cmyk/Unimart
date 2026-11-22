@@ -84,7 +84,7 @@ const fePath = path.join(__dirname, '..', 'secX_grY_fe_src');
 app.use(express.static(fePath));
 
 // Start Web Service Server & Verify Database Connection
-app.listen(PORT, async () => {
+app.listen(PORT, '0.0.0.0', async () => {
   console.log('==============================================================================');
   console.log(`🚀 Unimart Web Service Server running at: http://localhost:${PORT}`);
   console.log(`📡 Postman API Base URL: http://localhost:${PORT}/api`);

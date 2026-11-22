@@ -28,15 +28,6 @@ npm start
 ---
 ______________________________________________________________________________________________________________________________
 
-### 💡 ทางลัด: รันทั้ง 2 เซิร์ฟเวอร์พร้อมกันในคำสั่งเดียว (จากโฟลเดอร์หลัก)
-
-หากเปิด Terminal ที่โฟลเดอร์หลัก `unimart-web` สามารถสั่งรันทั้ง **Web Service Server (Port 3000)** และ **Front-end Server (Port 3100)** พร้อมกันได้ทันทีด้วยคำสั่ง:
-
-```bash
-npm start
-```
-
-______________________________________________________________________________________________________________________________
 ---
 
 ### 🗄️ การนำเข้าฐานข้อมูล MySQL ด้วยตนเอง (ตัวเลือกเสริมสำหรับงานที่ 2)
@@ -51,16 +42,6 @@ mysql -u root -p < secX_grY_database.sql
 
 ---
 
-## 🔑 บัญชีผู้ใช้ตัวอย่างสำหรับการทดสอบ (Demo Accounts)
-
-| บัญชี | Username | Password | สิทธิ์ (Role) | หน้าเริ่มต้นหลัง Login |
-| :--- | :--- | :--- | :--- | :--- |
-| **Super Admin** | `admin` | `admin123` | Super Admin | `admin-products.html` |
-| **Manager** | `nichaphat` | `user123` | Manager | `admin-products.html` |
-| **Staff** | `ayosara` | `user123` | Staff | `admin-products.html` |
-| **Customer VIP** | `GundamLover159` | `customer123` | Customer | `profile.html` |
-
----
 
 ## 📡 ตัวอย่างการทดสอบ Web Services ด้วย Postman (Postman Testing Examples)
 

@@ -9,8 +9,18 @@
  * ==============================================================================
  */
 
-// ที่อยู่หลัก (Base URL) ของ Web Services Backend บนเครื่อง Localhost
-const API_BASE_URL = 'http://localhost:3000/api';
+// ที่อยู่หลัก (Base URL) ของ Web Services Backend (รองรับทั้ง localhost บนคอมพิวเตอร์ และ IP Wi-Fi เมื่อเปิดผ่านโทรศัพท์มือถือ)
+const API_BASE_URL = (
+  typeof window !== 'undefined' &&
+  window.location &&
+  window.location.hostname &&
+  window.location.protocol === 'http:' &&
+  !window.location.hostname.includes('workers.dev') &&
+  !window.location.hostname.includes('pages.dev') &&
+  !window.location.hostname.includes('github.io')
+)
+  ? `http://${window.location.hostname}:3000/api`
+  : 'http://localhost:3000/api';
 
 // ข้อมูลผู้ใช้เริ่มต้น 6 บัญชี (ตรงกับ secX_grY_database.sql)
 const DEFAULT_SEED_USERS = [

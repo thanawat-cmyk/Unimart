@@ -94,9 +94,27 @@ app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(PORT, () => {
+// ฟังก์ชันหา IP Address ของเครื่องคอมพิวเตอร์ในวงแลน/Wi-Fi สำหรับเปิดผ่านโทรศัพท์มือถือ
+function getLocalIpAddress() {
+  try {
+    const os = require('os');
+    const nets = os.networkInterfaces();
+    for (const name of Object.keys(nets)) {
+      for (const net of nets[name]) {
+        if (net.family === 'IPv4' && !net.internal) {
+          return net.address;
+        }
+      }
+    }
+  } catch (_) {}
+  return 'localhost';
+}
+
+app.listen(PORT, '0.0.0.0', () => {
+  const localIp = getLocalIpAddress();
   console.log('==============================================================================');
-  console.log(`🌐 Unimart Front-end Server running at: http://localhost:${PORT}`);
-  console.log(`🔗 Connecting to Web Service Server at: ${process.env.API_BASE_URL || 'http://localhost:3000/api'}`);
+  console.log(`🌐 Unimart Front-end Server (บนคอมพิวเตอร์): http://localhost:${PORT}`);
+  console.log(`📱 เปิดผ่านโทรศัพท์มือถือ (ต่อ Wi-Fi เดียวกัน): http://${localIp}:${PORT}`);
+  console.log(`🔗 Connecting to Web Service Server at: http://${localIp}:3000/api`);
   console.log('==============================================================================');
 });
