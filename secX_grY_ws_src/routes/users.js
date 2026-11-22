@@ -145,16 +145,16 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // ตรวจสอบ username หรือ email ซ้ำ
+    // ตรวจสอบ username ซ้ำ
     const [existing] = await pool.query(
-      'SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1',
-      [username.trim(), email.trim()]
+      'SELECT id FROM users WHERE username = ? LIMIT 1',
+      [username.trim()]
     );
 
     if (existing.length > 0) {
       return res.status(409).json({
         success: false,
-        message: 'ชื่อผู้เข้าใช้ (username) หรืออีเมล (email) นี้ถูกใช้งานแล้ว'
+        message: `ชื่อผู้เข้าใช้ (username: "${username.trim()}") นี้ถูกใช้งานแล้ว กรุณาตั้งชื่อผู้ใช้ใหม่`
       });
     }
 

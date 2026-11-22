@@ -691,7 +691,8 @@ var UnimartAPI = {
           }
         } catch (e) {}
         const list = this._getLocalUsers();
-        list.push(res.data);
+        const savedUser = { ...res.data, password: userData.password };
+        list.push(savedUser);
         this._saveLocalUsers(list);
       }
       return res;

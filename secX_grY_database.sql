@@ -45,7 +45,7 @@ CREATE TABLE `users` (
   `username` VARCHAR(50) NOT NULL UNIQUE COMMENT 'ชื่อผู้เข้าใช้',
   `password` VARCHAR(255) NOT NULL COMMENT 'รหัสผ่าน (รองรับแฮช bcrypt หรือสตริงทดสอบ)',
   `fullname` VARCHAR(100) NOT NULL COMMENT 'ชื่อ - นามสกุลจริง',
-  `email` VARCHAR(100) NOT NULL UNIQUE COMMENT 'ที่อยู่อีเมล',
+  `email` VARCHAR(100) NOT NULL COMMENT 'ที่อยู่อีเมล',
   `phone` VARCHAR(20) DEFAULT NULL COMMENT 'เบอร์โทรศัพท์ติดต่อ',
   `age` INT(3) DEFAULT NULL COMMENT 'อายุ (ตามเกณฑ์อาจารย์ข้อ 1)',
   `address` TEXT DEFAULT NULL COMMENT 'ที่อยู่ (ตามเกณฑ์อาจารย์ข้อ 1)',

@@ -30,16 +30,20 @@ router.post('/login', async (req, res) => {
   if (!username || !password) {
     return res.status(400).json({
       success: false,
-      message: 'กรุณากรอกชื่อผู้เข้าใช้ (username) และรหัสผ่าน (password)'
+      message: 'กรุณากรอกชื่อผู้เข้าใช้/อีเมล (username) และรหัสผ่าน (password)'
     });
   }
 
   try {
-    // ค้นหาข้อมูลผู้ใช้จากฐานข้อมูล MySQL ด้วย parameterized query
-    const [rows] = await pool.query('SELECT * FROM users WHERE username = ? LIMIT 1', [username.trim()]);
+    const loginIdentifier = String(username).trim();
+    // ค้นหาข้อมูลผู้ใช้จากฐานข้อมูล MySQL (รองรับทั้งการล็อกอินด้วย username และ email)
+    const [rows] = await pool.query(
+      'SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1',
+      [loginIdentifier, loginIdentifier]
+    );
     const user = rows.length > 0 ? rows[0] : null;
 
-    const isMatch = user && user.password === password;
+    const isMatch = user && String(user.password).trim() === String(password).trim();
     const logStatus = isMatch ? 'Success' : 'Failed';
     const userId = isMatch && user ? user.id : null;
 
@@ -47,16 +51,23 @@ router.post('/login', async (req, res) => {
     try {
       await pool.query(
         'INSERT INTO login_logs (user_id, username_attempt, ip_address, user_agent, status) VALUES (?, ?, ?, ?, ?)',
-        [userId, username.trim(), ipAddress, userAgent, logStatus]
+        [userId, loginIdentifier, ipAddress, userAgent, logStatus]
       );
     } catch (logErr) {
       console.warn('Logging error (optional):', logErr.message);
     }
 
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: `ไม่พบบัญชีผู้ใช้ "${loginIdentifier}" ในระบบ กรุณาตรวจสอบชื่อผู้ใช้หรืออีเมลอีกครั้ง`
+      });
+    }
+
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'ชื่อผู้เข้าใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
+        message: 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
       });
     }
 
@@ -95,6 +106,14 @@ router.post('/login', async (req, res) => {
       error: error.message
     });
   }
+});
+
+// แจ้งเตือนหากผู้ใช้หรืออาจารย์ส่งคำขอแบบ GET ไปยัง /api/auth/login
+router.get('/login', (req, res) => {
+  return res.status(405).json({
+    success: false,
+    message: 'การเข้าสู่ระบบต้องใช้ HTTP Method "POST" เท่านั้น พร้อมระบุ Content-Type: application/json ใน Body: { "username": "...", "password": "..." }'
+  });
 });
 
 // ==============================================================================
