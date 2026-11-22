@@ -99,13 +99,17 @@ function getLocalIpAddress() {
   try {
     const os = require('os');
     const nets = os.networkInterfaces();
+    const candidates = [];
     for (const name of Object.keys(nets)) {
       for (const net of nets[name]) {
-        if (net.family === 'IPv4' && !net.internal) {
-          return net.address;
+        if (net.family === 'IPv4' && !net.internal && !net.address.startsWith('169.254.') && net.address !== '192.168.56.1') {
+          candidates.push(net.address);
         }
       }
     }
+    const lanIp = candidates.find(ip => ip.startsWith('192.168.') || ip.startsWith('10.') || ip.startsWith('172.'));
+    if (lanIp) return lanIp;
+    if (candidates.length > 0) return candidates[0];
   } catch (_) {}
   return 'localhost';
 }
