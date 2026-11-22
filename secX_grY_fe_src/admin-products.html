@@ -239,6 +239,8 @@
                             <option value="RG">RG (Real Grade)</option>
                             <option value="MG">MG (Master Grade)</option>
                             <option value="PG">PG (Perfect Grade)</option>
+                            <option value="SD">SD (Super Deformed)</option>
+                            <option value="Tools">Tools (อุปกรณ์และเครื่องมือ)</option>
                             <option value="Non-Grade">Non-Grade</option>
                         </select>
                     </div>
@@ -250,6 +252,8 @@
                             <option value="1/100">1/100 (MG, Full Mechanics)</option>
                             <option value="1/60">1/60 (PG)</option>
                             <option value="Non-scale">Non-scale (SD)</option>
+                            <option value="Universal">Universal (ทุกสเกล)</option>
+                            <option value="N/A">N/A (ไม่ระบุสเกล)</option>
                         </select>
                     </div>
 
@@ -264,7 +268,7 @@
 
                     <div class="modal-form-group">
                         <label for="add-prod-price">Price (THB) *</label>
-                        <input type="number" id="add-prod-price" class="modal-input" placeholder="e.g. 1950" min="0" step="50" required>
+                        <input type="number" id="add-prod-price" class="modal-input" placeholder="e.g. 1950" min="0" step="any" required>
                     </div>
 
                     <div class="modal-form-group">
@@ -343,6 +347,8 @@
                             <option value="RG">RG (Real Grade)</option>
                             <option value="MG">MG (Master Grade)</option>
                             <option value="PG">PG (Perfect Grade)</option>
+                            <option value="SD">SD (Super Deformed)</option>
+                            <option value="Tools">Tools (อุปกรณ์และเครื่องมือ)</option>
                             <option value="Non-Grade">Non-Grade</option>
                         </select>
                     </div>
@@ -354,6 +360,8 @@
                             <option value="1/100">1/100 (MG, Full Mechanics)</option>
                             <option value="1/60">1/60 (PG)</option>
                             <option value="Non-scale">Non-scale (SD)</option>
+                            <option value="Universal">Universal (ทุกสเกล)</option>
+                            <option value="N/A">N/A (ไม่ระบุสเกล)</option>
                         </select>
                     </div>
 
@@ -368,12 +376,12 @@
 
                     <div class="modal-form-group">
                         <label for="edit-prod-price">Price (THB) *</label>
-                        <input type="number" id="edit-prod-price" class="modal-input" min="0" step="50" required>
+                        <input type="number" id="edit-prod-price" class="modal-input" min="0" step="any" required>
                     </div>
 
                     <div class="modal-form-group">
                         <label for="edit-prod-stock">Stock Quantity *</label>
-                        <input type="number" id="edit-prod-stock" class="modal-input" min="0" required>
+                        <input type="number" id="edit-prod-stock" class="modal-input" min="0" required oninput="autoUpdateStatusFromStock('edit')">
                     </div>
 
                     <div class="modal-form-group">
@@ -569,12 +577,15 @@
             pagedItems.forEach((p) => {
                 let statusClass = 'instock';
                 let statusText = p.status || 'In Stock';
-                if (p.stock <= 0) {
+                if (Number(p.stock) <= 0 || statusText === 'Out of Stock') {
                     statusClass = 'outofstock';
                     statusText = 'Out of Stock';
-                } else if (p.stock <= 5) {
+                } else if (Number(p.stock) <= 5 || statusText === 'Low Stock') {
                     statusClass = 'lowstock';
                     statusText = 'Low Stock';
+                } else {
+                    statusClass = 'instock';
+                    statusText = 'In Stock';
                 }
 
                 const imgUrl = p.image_url || p.image || 'assets/images/product-freedom.png';
@@ -892,17 +903,21 @@
             document.getElementById('edit-product-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const id = Number(document.getElementById('edit-prod-id').value);
-                const gradeVal = document.getElementById('edit-prod-grade').value;
+                const gradeVal = document.getElementById('edit-prod-grade').value || 'HG';
                 const scaleEl = document.getElementById('edit-prod-scale');
-                const scaleVal = scaleEl ? scaleEl.value : (gradeVal === 'HG' || gradeVal === 'RG' ? '1/144' : (gradeVal === 'MG' ? '1/100' : '1/144'));
+                const scaleVal = (scaleEl && scaleEl.value) ? scaleEl.value : (gradeVal === 'HG' || gradeVal === 'RG' ? '1/144' : (gradeVal === 'MG' ? '1/100' : '1/144'));
+                const stockVal = Number(document.getElementById('edit-prod-stock').value);
+                const statusEl = document.getElementById('edit-prod-status');
+                const statusVal = (statusEl && statusEl.value) ? statusEl.value : (stockVal <= 0 ? 'Out of Stock' : (stockVal <= 5 ? 'Low Stock' : 'In Stock'));
 
                 const updatedData = {
                     name: document.getElementById('edit-prod-name').value.trim(),
                     grade: gradeVal,
                     scale: scaleVal,
-                    category: document.getElementById('edit-prod-category').value,
+                    category: document.getElementById('edit-prod-category').value || 'gundam',
                     price: Number(document.getElementById('edit-prod-price').value),
-                    stock: Number(document.getElementById('edit-prod-stock').value),
+                    stock: isNaN(stockVal) ? 0 : stockVal,
+                    status: statusVal,
                     image_url: document.getElementById('edit-prod-image').value.trim() || 'assets/images/product-freedom.png',
                     description: document.getElementById('edit-prod-desc').value.trim()
                 };
@@ -914,11 +929,16 @@
                 }
 
                 try {
-                    await UnimartAPI.updateProduct(id, updatedData);
-                    alert(`✅ บันทึกการแก้ไขสินค้า ID #${id} สำเร็จ!`);
-                    await reloadProducts();
+                    const res = await UnimartAPI.updateProduct(id, updatedData);
+                    const idx = adminProducts.findIndex(p => Number(p.id) === Number(id) || String(p.id) === String(id));
+                    if (idx !== -1) {
+                        adminProducts[idx] = { ...adminProducts[idx], ...updatedData, ...(res && res.data ? res.data : {}) };
+                    }
+                    renderAdminTable(adminProducts);
                     editModal.classList.remove('open');
                     editModal.setAttribute('aria-hidden', 'true');
+                    alert(`✅ บันทึกการแก้ไขสินค้า ID #${id} สำเร็จ!`);
+                    await reloadProducts();
                 } catch (err) {
                     alert(`เกิดข้อผิดพลาดในการแก้ไขสินค้า: ${err.message}`);
                 } finally {
@@ -1101,6 +1121,18 @@
                 scaleSelect.value = '1/60';
             } else if (g === 'SD') {
                 scaleSelect.value = 'Non-scale';
+            } else if (g === 'TOOLS') {
+                scaleSelect.value = 'N/A';
+            }
+        };
+
+        window.autoUpdateStatusFromStock = function(type) {
+            const stockEl = document.getElementById(`${type}-prod-stock`);
+            const statusEl = document.getElementById(`${type}-prod-status`);
+            if (!stockEl || !statusEl) return;
+            const st = Number(stockEl.value);
+            if (!isNaN(st)) {
+                statusEl.value = st <= 0 ? 'Out of Stock' : (st <= 5 ? 'Low Stock' : 'In Stock');
             }
         };
 
@@ -1110,20 +1142,41 @@
             if (!product) return;
 
             document.getElementById('edit-prod-id').value = product.id;
-            document.getElementById('edit-prod-name').value = product.name;
+            document.getElementById('edit-prod-name').value = product.name || '';
             const editGrade = product.grade || 'HG';
-            document.getElementById('edit-prod-grade').value = editGrade;
+            const gradeEl = document.getElementById('edit-prod-grade');
+            if (gradeEl) {
+                gradeEl.value = editGrade;
+                if (!gradeEl.value) gradeEl.value = 'HG';
+            }
             
             // Auto-correct scale: HG & RG are 1/144, not 1/100!
             const editScale = (editGrade === 'HG' || editGrade === 'RG') && product.scale === '1/100' ? '1/144' : (product.scale || (editGrade === 'HG' || editGrade === 'RG' ? '1/144' : (editGrade === 'MG' ? '1/100' : '1/144')));
             const scaleEl = document.getElementById('edit-prod-scale');
-            if (scaleEl) scaleEl.value = editScale;
+            if (scaleEl) {
+                scaleEl.value = editScale;
+                if (!scaleEl.value) scaleEl.value = '1/144';
+            }
 
-            document.getElementById('edit-prod-category').value = product.category || 'gundam';
+            const catEl = document.getElementById('edit-prod-category');
+            if (catEl) {
+                catEl.value = product.category || 'gundam';
+                if (!catEl.value) catEl.value = 'gundam';
+            }
             document.getElementById('edit-prod-price').value = product.price;
             document.getElementById('edit-prod-stock').value = product.stock;
+
+            const statusEl = document.getElementById('edit-prod-status');
+            if (statusEl) {
+                const defaultStatus = Number(product.stock) <= 0 ? 'Out of Stock' : (Number(product.stock) <= 5 ? 'Low Stock' : 'In Stock');
+                statusEl.value = product.status || defaultStatus;
+                if (!statusEl.value) statusEl.value = defaultStatus;
+            }
+
             document.getElementById('edit-prod-desc').value = product.description || '';
             document.getElementById('edit-prod-image').value = product.image_url || product.image || '';
+            const fileEl = document.getElementById('edit-prod-file');
+            if (fileEl) fileEl.value = '';
 
             // แสดงพรีวิวรูปภาพเดิมของสินค้า
             const editWrap = document.getElementById('edit-preview-wrap');

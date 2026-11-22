@@ -357,6 +357,34 @@ var UnimartAPI = {
         }
       } catch (e) {}
 
+      // ซิงก์การแก้ไขสินค้าที่เพิ่งอัปเดตล่าสุด (กรณีเซิร์ฟเวอร์ยังไม่ถูกรีสตาร์ท)
+      try {
+        const patchesRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_product_patches') : null;
+        if (patchesRaw) {
+          const patches = JSON.parse(patchesRaw) || {};
+          let changed = false;
+          items = items.map(p => {
+            const patch = patches[String(p.id)];
+            if (!patch) return p;
+            const backendSynced =
+              (!patch.name || p.name === patch.name) &&
+              (patch.price === undefined || Number(p.price) === Number(patch.price)) &&
+              (patch.stock === undefined || Number(p.stock) === Number(patch.stock)) &&
+              (!patch.status || p.status === patch.status) &&
+              (!patch.grade || p.grade === patch.grade);
+            if (backendSynced) {
+              delete patches[String(p.id)];
+              changed = true;
+              return p;
+            }
+            return this.normalizeGunplaItem({ ...p, ...patch });
+          });
+          if (changed && typeof localStorage !== 'undefined') {
+            localStorage.setItem('unimart_product_patches', JSON.stringify(patches));
+          }
+        }
+      } catch (e) {}
+
       // ซิงก์รายการล่าสุดจาก MySQL ลง localStorage
       if (!queryString) {
         this._saveLocalProducts(items);
@@ -465,6 +493,15 @@ var UnimartAPI = {
   async updateProduct(id, productData) {
     productData = this.normalizeGunplaItem(productData);
     try {
+      const patchesRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_product_patches') : null;
+      const patches = patchesRaw ? JSON.parse(patchesRaw) : {};
+      patches[String(id)] = { ...(patches[String(id)] || {}), ...productData };
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('unimart_product_patches', JSON.stringify(patches));
+      }
+    } catch (e) {}
+
+    try {
       const res = await fetchApi(`/products/${id}`, {
         method: 'PUT',
         body: JSON.stringify(productData)
@@ -472,7 +509,7 @@ var UnimartAPI = {
       const list = this._getLocalProducts();
       const idx = list.findIndex(p => Number(p.id) === Number(id) || String(p.id) === String(id));
       if (idx !== -1) {
-        list[idx] = this.normalizeGunplaItem({ ...list[idx], ...productData });
+        list[idx] = this.normalizeGunplaItem({ ...list[idx], ...productData, ...(res && res.data ? res.data : {}) });
         this._saveLocalProducts(list);
       }
       return res;
@@ -498,6 +535,15 @@ var UnimartAPI = {
    * ลบสินค้าออกจากระบบ (Delete Product)
    */
   async deleteProduct(id) {
+    try {
+      const patchesRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_product_patches') : null;
+      if (patchesRaw) {
+        const patches = JSON.parse(patchesRaw) || {};
+        delete patches[String(id)];
+        localStorage.setItem('unimart_product_patches', JSON.stringify(patches));
+      }
+    } catch (e) {}
+
     // 1. ลบออกจากรายการสินค้าใน localStorage ก่อน
     const list = this._getLocalProducts().filter(
       p => Number(p.id) !== Number(id) && String(p.id) !== String(id)
@@ -560,6 +606,34 @@ var UnimartAPI = {
             }
             items = items.filter(u => !deletedIds.some(dId => Number(dId) === Number(u.id) || String(dId) === String(u.id)));
             localStorage.removeItem('unimart_deleted_user_ids');
+          }
+        }
+      } catch (e) {}
+
+      // ซิงก์การแก้ไขข้อมูลผู้ใช้ที่เพิ่งอัปเดตล่าสุด (กรณีเซิร์ฟเวอร์ยังไม่ถูกรีสตาร์ท)
+      try {
+        const patchesRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_user_patches') : null;
+        if (patchesRaw) {
+          const patches = JSON.parse(patchesRaw) || {};
+          let changed = false;
+          items = items.map(u => {
+            const patch = patches[String(u.id)];
+            if (!patch) return u;
+            const backendSynced =
+              (!patch.username || u.username === patch.username) &&
+              (!patch.fullname || u.fullname === patch.fullname) &&
+              (!patch.email || u.email === patch.email) &&
+              (!patch.role || u.role === patch.role) &&
+              (!patch.status || u.status === patch.status);
+            if (backendSynced) {
+              delete patches[String(u.id)];
+              changed = true;
+              return u;
+            }
+            return { ...u, ...patch };
+          });
+          if (changed && typeof localStorage !== 'undefined') {
+            localStorage.setItem('unimart_user_patches', JSON.stringify(patches));
           }
         }
       } catch (e) {}
@@ -656,6 +730,15 @@ var UnimartAPI = {
    */
   async updateUser(id, userData) {
     try {
+      const patchesRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_user_patches') : null;
+      const patches = patchesRaw ? JSON.parse(patchesRaw) : {};
+      patches[String(id)] = { ...(patches[String(id)] || {}), ...userData };
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('unimart_user_patches', JSON.stringify(patches));
+      }
+    } catch (e) {}
+
+    try {
       const res = await fetchApi(`/users/${id}`, {
         method: 'PUT',
         body: JSON.stringify(userData)
@@ -663,7 +746,7 @@ var UnimartAPI = {
       const list = this._getLocalUsers();
       const idx = list.findIndex(u => Number(u.id) === Number(id) || String(u.id) === String(id));
       if (idx !== -1) {
-        list[idx] = { ...list[idx], ...userData };
+        list[idx] = { ...list[idx], ...(res && res.data ? res.data : {}), ...userData };
         this._saveLocalUsers(list);
       }
       return res;
@@ -683,6 +766,15 @@ var UnimartAPI = {
    * ลบผู้ใช้ออกจากระบบ (Delete User)
    */
   async deleteUser(id) {
+    try {
+      const patchesRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('unimart_user_patches') : null;
+      if (patchesRaw) {
+        const patches = JSON.parse(patchesRaw) || {};
+        delete patches[String(id)];
+        localStorage.setItem('unimart_user_patches', JSON.stringify(patches));
+      }
+    } catch (e) {}
+
     // 1. ลบออกจาก localStorage
     const list = this._getLocalUsers().filter(
       u => Number(u.id) !== Number(id) && String(u.id) !== String(id)

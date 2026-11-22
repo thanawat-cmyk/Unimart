@@ -269,6 +269,29 @@ function executeInMemoryQuery(sql, params = []) {
   }
 
   if (upperSql.startsWith('UPDATE USERS SET')) {
+    if (params.length === 11) {
+      const targetId = Number(params[10]);
+      const idx = memoryDB.users.findIndex(u => Number(u.id) === targetId);
+      if (idx !== -1) {
+        memoryDB.users[idx] = {
+          ...memoryDB.users[idx],
+          username: params[0],
+          fullname: params[1],
+          email: params[2],
+          phone: params[3],
+          age: params[4],
+          address: params[5],
+          preferences: params[6],
+          role: params[7],
+          status: params[8],
+          password: params[9],
+          updated_at: new Date().toISOString()
+        };
+        savePersistedMemoryDB();
+        return [{ affectedRows: 1 }, []];
+      }
+      return [{ affectedRows: 0 }, []];
+    }
     const targetId = Number(params[9]);
     const idx = memoryDB.users.findIndex(u => Number(u.id) === targetId);
     if (idx !== -1) {

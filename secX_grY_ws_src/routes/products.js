@@ -39,7 +39,8 @@ function shortenImageUrl(rawUrl, itemId = null) {
 
     const base64Data = trimmed.slice(markerIdx + base64Marker.length).replace(/\s+/g, '');
     const buffer = Buffer.from(base64Data, 'base64');
-    const suffix = itemId ? String(itemId) : String(Date.now()).slice(-6);
+    const stamp = String(Date.now()).slice(-4);
+    const suffix = itemId ? `${itemId}-${stamp}` : String(Date.now()).slice(-6);
     const fileName = `img-${suffix}.${ext}`;
     const imagesDir = path.join(__dirname, '..', '..', 'secX_grY_fe_src', 'assets', 'images');
 
@@ -347,31 +348,48 @@ router.put('/:id', async (req, res) => {
     }
 
     const current = existing[0];
-    const targetGrade = req.body.grade !== undefined ? req.body.grade.trim() : current.grade;
-    let targetScale = req.body.scale !== undefined ? req.body.scale.trim() : current.scale;
+    const targetGrade = req.body.grade !== undefined && req.body.grade !== null ? String(req.body.grade).trim() : current.grade;
+    let targetScale = req.body.scale !== undefined && req.body.scale !== null ? String(req.body.scale).trim() : current.scale;
     const upperG = (targetGrade || '').toUpperCase().trim();
     if ((upperG === 'HG' || upperG === 'RG' || upperG === 'EG') && (!targetScale || targetScale === '1/100')) {
       targetScale = '1/144';
     }
 
-    const rawImg = req.body.image_url !== undefined ? req.body.image_url.trim() : current.image_url;
+    const rawImgInput = req.body.image_url !== undefined ? req.body.image_url : req.body.image;
+    const rawImg = rawImgInput !== undefined && rawImgInput !== null && String(rawImgInput).trim() !== ''
+      ? String(rawImgInput).trim()
+      : current.image_url;
     const shortImgUrl = shortenImageUrl(rawImg, id);
 
+    const parsedPrice = req.body.price !== undefined && req.body.price !== null && !isNaN(parseFloat(req.body.price))
+      ? parseFloat(req.body.price)
+      : current.price;
+    const parsedStock = req.body.stock !== undefined && req.body.stock !== null && !isNaN(parseInt(req.body.stock, 10))
+      ? parseInt(req.body.stock, 10)
+      : current.stock;
+
+    let resolvedStatus = current.status;
+    if (req.body.status !== undefined && req.body.status !== null && String(req.body.status).trim() !== '') {
+      resolvedStatus = String(req.body.status).trim();
+    } else if (req.body.stock !== undefined) {
+      resolvedStatus = parsedStock <= 0 ? 'Out of Stock' : (parsedStock <= 5 ? 'Low Stock' : 'In Stock');
+    }
+
     const updateData = {
-      name: req.body.name !== undefined ? req.body.name.trim() : current.name,
-      series: req.body.series !== undefined ? req.body.series.trim() : current.series,
+      name: req.body.name !== undefined && req.body.name !== null ? String(req.body.name).trim() : current.name,
+      series: req.body.series !== undefined && req.body.series !== null ? String(req.body.series).trim() : current.series,
       grade: targetGrade,
-      category: req.body.category !== undefined ? req.body.category.trim() : current.category,
+      category: req.body.category !== undefined && req.body.category !== null ? String(req.body.category).trim() : current.category,
       scale: targetScale,
-      price: req.body.price !== undefined ? parseFloat(req.body.price) : current.price,
-      stock: req.body.stock !== undefined ? parseInt(req.body.stock, 10) : current.stock,
-      release_date: req.body.release_date !== undefined ? req.body.release_date : current.release_date,
-      rating: req.body.rating !== undefined ? parseFloat(req.body.rating) : current.rating,
+      price: parsedPrice,
+      stock: parsedStock,
+      release_date: req.body.release_date !== undefined && req.body.release_date !== null ? req.body.release_date : current.release_date,
+      rating: req.body.rating !== undefined && req.body.rating !== null && !isNaN(parseFloat(req.body.rating)) ? parseFloat(req.body.rating) : current.rating,
       image_url: shortImgUrl,
-      description: req.body.description !== undefined ? req.body.description.trim() : current.description,
-      details: req.body.details !== undefined ? req.body.details.trim() : current.details,
-      reference_source: req.body.reference_source !== undefined ? req.body.reference_source.trim() : current.reference_source,
-      status: req.body.status !== undefined ? req.body.status.trim() : current.status
+      description: req.body.description !== undefined && req.body.description !== null ? String(req.body.description).trim() : (current.description || ''),
+      details: req.body.details !== undefined && req.body.details !== null ? String(req.body.details).trim() : (current.details || ''),
+      reference_source: req.body.reference_source !== undefined && req.body.reference_source !== null ? String(req.body.reference_source).trim() : (current.reference_source || ''),
+      status: resolvedStatus
     };
 
     const updateSql = `

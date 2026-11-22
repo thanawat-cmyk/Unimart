@@ -279,7 +279,7 @@
         let displayedUsers = [];
         let pendingDeleteUserId = null;
         let currentUserPage = 1;
-        const ADMIN_USERS_PER_PAGE = 6;
+        const ADMIN_USERS_PER_PAGE = 16;
 
         window.goToAdminUserPage = function(page) {
             const totalPages = Math.max(1, Math.ceil(displayedUsers.length / ADMIN_USERS_PER_PAGE));
@@ -486,28 +486,50 @@
                 e.preventDefault();
                 const id = Number(document.getElementById('edit-user-id').value);
                 const updatedData = {
+                    username: document.getElementById('edit-user-username').value.trim(),
                     fullname: document.getElementById('edit-user-fullname').value.trim(),
                     email: document.getElementById('edit-user-email').value.trim(),
-                    role: document.getElementById('edit-user-role').value,
-                    status: document.getElementById('edit-user-status').value
+                    role: document.getElementById('edit-user-role').value || 'Staff',
+                    status: document.getElementById('edit-user-status').value || 'Active'
                 };
+
+                const saveBtn = document.getElementById('edit-user-form').querySelector('.btn-modal-save');
+                if (saveBtn) {
+                    saveBtn.disabled = true;
+                    saveBtn.textContent = 'SAVING...';
+                }
 
                 try {
                     await UnimartAPI.updateUser(id, updatedData);
+                    const idx = allAdminUsers.findIndex(u => Number(u.id) === Number(id) || String(u.id) === String(id));
+                    if (idx !== -1) {
+                        allAdminUsers[idx] = { ...allAdminUsers[idx], ...updatedData };
+                    }
+                    const dIdx = displayedUsers.findIndex(u => Number(u.id) === Number(id) || String(u.id) === String(id));
+                    if (dIdx !== -1) {
+                        displayedUsers[dIdx] = { ...displayedUsers[dIdx], ...updatedData };
+                    }
+                    renderUserTable(displayedUsers);
+                    editModal.classList.remove('open');
+                    editModal.setAttribute('aria-hidden', 'true');
                     alert(`✅ บันทึกการแก้ไขข้อมูลผู้ใช้ ID #${id} เรียบร้อยแล้ว!`);
                     await reloadUsers();
                 } catch (err) {
                     console.warn('Backend unavailable, updating local mock state:', err);
-                    const idx = allAdminUsers.findIndex(u => u.id === id);
+                    const idx = allAdminUsers.findIndex(u => Number(u.id) === Number(id) || String(u.id) === String(id));
                     if (idx !== -1) {
                         allAdminUsers[idx] = { ...allAdminUsers[idx], ...updatedData };
                     }
-                    applyUserFilters();
+                    await applyUserFilters();
+                    editModal.classList.remove('open');
+                    editModal.setAttribute('aria-hidden', 'true');
                     alert(`✅ บันทึกการแก้ไขข้อมูลผู้ใช้ ID #${id} เรียบร้อยแล้ว!`);
+                } finally {
+                    if (saveBtn) {
+                        saveBtn.disabled = false;
+                        saveBtn.textContent = 'SAVE CHANGES';
+                    }
                 }
-
-                editModal.classList.remove('open');
-                editModal.setAttribute('aria-hidden', 'true');
             });
 
             // Delete User Web Service Submit (DELETE /api/users/:id)
@@ -559,11 +581,17 @@
             if (!user) return;
 
             document.getElementById('edit-user-id').value = user.id;
-            document.getElementById('edit-user-username').value = user.username;
+            document.getElementById('edit-user-username').value = user.username || '';
             document.getElementById('edit-user-fullname').value = user.fullname || user.name || '';
-            document.getElementById('edit-user-email').value = user.email;
-            document.getElementById('edit-user-role').value = user.role;
-            document.getElementById('edit-user-status').value = user.status;
+            document.getElementById('edit-user-email').value = user.email || '';
+
+            const roleEl = document.getElementById('edit-user-role');
+            roleEl.value = user.role || 'Staff';
+            if (!roleEl.value) roleEl.value = 'Staff';
+
+            const statusEl = document.getElementById('edit-user-status');
+            statusEl.value = user.status || 'Active';
+            if (!statusEl.value) statusEl.value = 'Active';
 
             const editModal = document.getElementById('edit-user-modal');
             editModal.classList.add('open');

@@ -220,26 +220,27 @@ router.put('/:id', async (req, res) => {
 
     const current = existing[0];
     const updateData = {
-      fullname: req.body.fullname !== undefined ? req.body.fullname.trim() : current.fullname,
-      email: req.body.email !== undefined ? req.body.email.trim() : current.email,
-      phone: req.body.phone !== undefined ? req.body.phone.trim() : current.phone,
-      age: req.body.age !== undefined ? parseInt(req.body.age, 10) : current.age,
-      address: req.body.address !== undefined ? req.body.address.trim() : current.address,
-      preferences: req.body.preferences !== undefined ? req.body.preferences.trim() : current.preferences,
-      role: req.body.role !== undefined ? req.body.role.trim() : current.role,
-      status: req.body.status !== undefined ? req.body.status.trim() : current.status,
+      username: req.body.username !== undefined && String(req.body.username).trim() !== '' ? String(req.body.username).trim() : current.username,
+      fullname: req.body.fullname !== undefined ? String(req.body.fullname).trim() : current.fullname,
+      email: req.body.email !== undefined ? String(req.body.email).trim() : current.email,
+      phone: req.body.phone !== undefined ? (req.body.phone ? String(req.body.phone).trim() : null) : current.phone,
+      age: req.body.age !== undefined ? (req.body.age !== null && req.body.age !== '' ? parseInt(req.body.age, 10) : null) : current.age,
+      address: req.body.address !== undefined ? String(req.body.address || '').trim() : current.address,
+      preferences: req.body.preferences !== undefined ? String(req.body.preferences || '').trim() : current.preferences,
+      role: req.body.role !== undefined ? String(req.body.role).trim() : current.role,
+      status: req.body.status !== undefined ? String(req.body.status).trim() : current.status,
       password: req.body.password !== undefined && req.body.password !== '' ? req.body.password : current.password
     };
 
     const updateSql = `
       UPDATE users SET
-        fullname = ?, email = ?, phone = ?, age = ?, address = ?, preferences = ?,
+        username = ?, fullname = ?, email = ?, phone = ?, age = ?, address = ?, preferences = ?,
         role = ?, status = ?, password = ?
       WHERE id = ?
     `;
 
     const values = [
-      updateData.fullname, updateData.email, updateData.phone, updateData.age,
+      updateData.username, updateData.fullname, updateData.email, updateData.phone, updateData.age,
       updateData.address, updateData.preferences, updateData.role, updateData.status,
       updateData.password, id
     ];
