@@ -387,10 +387,6 @@ POST http://localhost:3000/api/users
     "password": "password123",
     "fullname": "สมชาย รักการต่อกันดั้ม",
     "email": "somchai.gunpla@example.com",
-    "phone": "089-999-8888",
-    "age": 25,
-    "address": "45/2 ถ.พหลโยธิน แขวงพญาไท เขตพญาไท กรุงเทพมหานคร 10400",
-    "preferences": "ชอบโมเดลเกรด PG และอุปกรณ์ทำสี",
     "role": "Staff",
     "status": "Active"
   }
@@ -403,10 +399,6 @@ POST http://localhost:3000/api/users
     "password": "customer123",
     "fullname": "อามูโร่ เรย์",
     "email": "amuro.ray@efsf.org",
-    "phone": "081-078-0079",
-    "age": 22,
-    "address": "Side 7 Colony, Universal Century",
-    "preferences": "สะสมโมเดล RX-78-2 และ Nu Gundam",
     "role": "Customer",
     "status": "Active"
   }
@@ -416,7 +408,7 @@ POST http://localhost:3000/api/users
 
 #### 3.4 แก้ไขข้อมูลผู้ใช้งาน (Update User) — `PUT`
 
-* **ตัวอย่างที่ 1: แก้ไขสิทธิ์ (`role`) และเบอร์โทรศัพท์ของผู้ใช้ ID ที่ 3**
+* **ตัวอย่างที่ 1: แก้ไขสิทธิ์ (`role`) และสถานะของผู้ใช้ ID ที่ 3**
   ```http
   PUT http://localhost:3000/api/users/3
   ```
@@ -424,7 +416,6 @@ POST http://localhost:3000/api/users
   ```json
   {
     "role": "Manager",
-    "phone": "082-999-7777",
     "status": "Active"
   }
   ```

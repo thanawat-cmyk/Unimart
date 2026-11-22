@@ -78,16 +78,12 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    // ตัด password ออกก่อนส่งกลับ Client
+    // ตัด password ออกก่อนส่งกลับ Client (แสดงเฉพาะ 6 ฟิลด์หลักที่กรอกจริง)
     const safeUser = {
       id: user.id,
       username: user.username,
       fullname: user.fullname,
       email: user.email,
-      phone: user.phone,
-      age: user.age,
-      address: user.address,
-      preferences: user.preferences,
       role: user.role,
       status: user.status
     };
@@ -133,9 +129,10 @@ router.get('/me', async (req, res) => {
   }
 
   try {
+    const loginIdentifier = username.trim();
     const [rows] = await pool.query(
-      'SELECT id, username, fullname, email, phone, age, address, preferences, role, status, created_at FROM users WHERE username = ? LIMIT 1',
-      [username.trim()]
+      'SELECT id, username, fullname, email, role, status FROM users WHERE username = ? OR email = ? LIMIT 1',
+      [loginIdentifier, loginIdentifier]
     );
 
     if (rows.length === 0) {

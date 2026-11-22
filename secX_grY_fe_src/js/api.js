@@ -22,14 +22,14 @@ const API_BASE_URL = (
   ? `http://${window.location.hostname}:3000/api`
   : 'http://localhost:3000/api';
 
-// ข้อมูลผู้ใช้เริ่มต้น 6 บัญชี (ตรงกับ secX_grY_database.sql)
+// ข้อมูลผู้ใช้เริ่มต้น 6 บัญชี (แสดงเฉพาะ 6 ฟิลด์หลักที่กรอกจริง: id, username, fullname, email, role, status)
 const DEFAULT_SEED_USERS = [
-  { id: 1, fullname: 'ธนวัฒน์ แสนโบราณ (Admin RakGundam)', username: 'admin', email: 'adminrakgundam01@gmail.com', phone: '095-125-1834', role: 'Super Admin', status: 'Active' },
-  { id: 2, fullname: 'ณิชาภัทร วิชาธรรม', username: 'nichaphat', email: 'nichaphat.wic@student.mahidol.ac.th', phone: '081-234-5678', role: 'Manager', status: 'Active' },
-  { id: 3, fullname: 'อโยสรา ต้องทรัพย์', username: 'ayosara', email: 'ayosara.ton@student.mahidol.ac.th', phone: '082-345-6789', role: 'Staff', status: 'Active' },
-  { id: 4, fullname: 'คชาธร ศิริเลิศ', username: 'khachatorn', email: 'khachatorn.sir@student.mahidol.ac.th', phone: '083-456-7890', role: 'Staff', status: 'Active' },
-  { id: 5, fullname: 'ธัญชนก โรจนสฤษฎิ์', username: 'thanchanok', email: 'thanchanok.roj@student.mahidol.ac.th', phone: '084-567-8901', role: 'Staff', status: 'Active' },
-  { id: 6, fullname: 'กันดัม เลิฟเวอร์', username: 'GundamLover159', email: 'gundamlover159@gmail.com', phone: '098-159-1594', role: 'Customer', status: 'Active' }
+  { id: 1, fullname: 'ธนวัฒน์ แสนโบราณ (Admin RakGundam)', username: 'admin', email: 'adminrakgundam01@gmail.com', role: 'Super Admin', status: 'Active' },
+  { id: 2, fullname: 'ณิชาภัทร วิชาธรรม', username: 'nichaphat', email: 'nichaphat.wic@student.mahidol.ac.th', role: 'Manager', status: 'Active' },
+  { id: 3, fullname: 'อโยสรา ต้องทรัพย์', username: 'ayosara', email: 'ayosara.ton@student.mahidol.ac.th', role: 'Staff', status: 'Active' },
+  { id: 4, fullname: 'คชาธร ศิริเลิศ', username: 'khachatorn', email: 'khachatorn.sir@student.mahidol.ac.th', role: 'Staff', status: 'Active' },
+  { id: 5, fullname: 'ธัญชนก โรจนสฤษฎิ์', username: 'thanchanok', email: 'thanchanok.roj@student.mahidol.ac.th', role: 'Staff', status: 'Active' },
+  { id: 6, fullname: 'กันดัม เลิฟเวอร์', username: 'GundamLover159', email: 'gundamlover159@gmail.com', role: 'Customer', status: 'Active' }
 ];
 
 /**

@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
   try {
     const { q, role, status } = req.query;
 
-    let sql = 'SELECT id, username, fullname, email, phone, age, address, preferences, role, status, created_at, updated_at FROM users WHERE 1=1';
+    let sql = 'SELECT id, username, fullname, email, role, status FROM users WHERE 1=1';
     const params = [];
 
     // เกณฑ์ค้นหาที่ 1: คำค้นหา Keyword (fullname, username, email)
@@ -77,7 +77,7 @@ router.get('/:id', async (req, res) => {
 
   try {
     const [rows] = await pool.query(
-      'SELECT id, username, fullname, email, phone, age, address, preferences, role, status, created_at, updated_at FROM users WHERE id = ?',
+      'SELECT id, username, fullname, email, role, status FROM users WHERE id = ?',
       [id]
     );
 
@@ -128,10 +128,6 @@ router.post('/', async (req, res) => {
     password,
     fullname,
     email,
-    phone = '',
-    age = null,
-    address = '',
-    preferences = '',
     role = 'Staff',
     status = 'Active'
   } = req.body;
@@ -159,8 +155,8 @@ router.post('/', async (req, res) => {
     }
 
     const insertSql = `
-      INSERT INTO users (username, password, fullname, email, phone, age, address, preferences, role, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (username, password, fullname, email, role, status)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -168,17 +164,13 @@ router.post('/', async (req, res) => {
       password,
       fullname.trim(),
       email.trim(),
-      phone ? phone.trim() : null,
-      age ? parseInt(age, 10) : null,
-      address ? address.trim() : '',
-      preferences ? preferences.trim() : '',
       role.trim(),
       status.trim()
     ];
 
     const [result] = await pool.query(insertSql, values);
     const [newUser] = await pool.query(
-      'SELECT id, username, fullname, email, phone, age, address, preferences, role, status, created_at FROM users WHERE id = ?',
+      'SELECT id, username, fullname, email, role, status FROM users WHERE id = ?',
       [result.insertId]
     );
 
@@ -203,7 +195,7 @@ router.post('/', async (req, res) => {
 // Postman Test Sample:
 // PUT http://localhost:3000/api/users/3
 // Headers: Content-Type: application/json
-// Body (raw JSON): { "role": "Manager", "phone": "082-999-7777" }
+// Body (raw JSON): { "role": "Manager" }
 // ==============================================================================
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
@@ -223,10 +215,6 @@ router.put('/:id', async (req, res) => {
       username: req.body.username !== undefined && String(req.body.username).trim() !== '' ? String(req.body.username).trim() : current.username,
       fullname: req.body.fullname !== undefined ? String(req.body.fullname).trim() : current.fullname,
       email: req.body.email !== undefined ? String(req.body.email).trim() : current.email,
-      phone: req.body.phone !== undefined ? (req.body.phone ? String(req.body.phone).trim() : null) : current.phone,
-      age: req.body.age !== undefined ? (req.body.age !== null && req.body.age !== '' ? parseInt(req.body.age, 10) : null) : current.age,
-      address: req.body.address !== undefined ? String(req.body.address || '').trim() : current.address,
-      preferences: req.body.preferences !== undefined ? String(req.body.preferences || '').trim() : current.preferences,
       role: req.body.role !== undefined ? String(req.body.role).trim() : current.role,
       status: req.body.status !== undefined ? String(req.body.status).trim() : current.status,
       password: req.body.password !== undefined && req.body.password !== '' ? req.body.password : current.password
@@ -234,20 +222,20 @@ router.put('/:id', async (req, res) => {
 
     const updateSql = `
       UPDATE users SET
-        username = ?, fullname = ?, email = ?, phone = ?, age = ?, address = ?, preferences = ?,
+        username = ?, fullname = ?, email = ?,
         role = ?, status = ?, password = ?
       WHERE id = ?
     `;
 
     const values = [
-      updateData.username, updateData.fullname, updateData.email, updateData.phone, updateData.age,
-      updateData.address, updateData.preferences, updateData.role, updateData.status,
+      updateData.username, updateData.fullname, updateData.email,
+      updateData.role, updateData.status,
       updateData.password, id
     ];
 
     await pool.query(updateSql, values);
     const [refreshed] = await pool.query(
-      'SELECT id, username, fullname, email, phone, age, address, preferences, role, status, updated_at FROM users WHERE id = ?',
+      'SELECT id, username, fullname, email, role, status FROM users WHERE id = ?',
       [id]
     );
 

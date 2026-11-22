@@ -266,7 +266,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"somchai_staff\",\n  \"password\": \"password123\",\n  \"fullname\": \"สมชาย รักการต่อกันดั้ม\",\n  \"email\": \"somchai.gunpla@example.com\",\n  \"phone\": \"089-999-8888\",\n  \"age\": 25,\n  \"address\": \"45/2 ถ.พหลโยธิน แขวงพญาไท เขตพญาไท กรุงเทพมหานคร 10400\",\n  \"preferences\": \"ดูแลคลังสินค้าเกรด Perfect Grade และอุปกรณ์ทำสีแอร์บรัช\",\n  \"role\": \"Staff\",\n  \"status\": \"Active\"\n}"
+              "raw": "{\n  \"username\": \"somchai_staff\",\n  \"password\": \"password123\",\n  \"fullname\": \"สมชาย รักการต่อกันดั้ม\",\n  \"email\": \"somchai.gunpla@example.com\",\n  \"role\": \"Staff\",\n  \"status\": \"Active\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/users",
@@ -282,7 +282,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role\": \"Manager\",\n  \"phone\": \"082-999-7777\",\n  \"preferences\": \"ปรับบทบาทดูแลสต็อกสินค้าพรีเมียมและประสานงานทีม\"\n}"
+              "raw": "{\n  \"fullname\": \"อโยสรา ต้องทรัพย์ (Manager)\",\n  \"role\": \"Manager\",\n  \"status\": \"Active\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/users/3",

@@ -194,6 +194,20 @@ function executeInMemoryQuery(sql, params = []) {
   // A. ตาราง users
   // ----------------------------------------------------------------------------
   if (upperSql.startsWith('SELECT') && upperSql.includes('FROM USERS')) {
+    const formatUserRow = (item) => {
+      if (upperSql.includes('*') || upperSql.includes('PHONE') || upperSql.includes('ADDRESS')) {
+        return { ...item };
+      }
+      return {
+        id: item.id,
+        username: item.username,
+        fullname: item.fullname,
+        email: item.email,
+        role: item.role,
+        status: item.status
+      };
+    };
+
     // 1. SELECT ... FROM users WHERE username = ? OR email = ?
     if (upperSql.includes('WHERE USERNAME = ? OR EMAIL = ?')) {
       const u = String(params[0] || '').toLowerCase();
@@ -201,21 +215,21 @@ function executeInMemoryQuery(sql, params = []) {
       const rows = memoryDB.users.filter(
         item => item.username.toLowerCase() === u || item.email.toLowerCase() === e
       );
-      return [rows, []];
+      return [rows.map(formatUserRow), []];
     }
 
     // 2. SELECT ... FROM users WHERE username = ?
     if (upperSql.includes('WHERE USERNAME = ?')) {
       const u = String(params[0] || '').toLowerCase();
       const rows = memoryDB.users.filter(item => item.username.toLowerCase() === u);
-      return [rows.map(r => ({ ...r })), []];
+      return [rows.map(formatUserRow), []];
     }
 
     // 3. SELECT ... FROM users WHERE id = ?
     if (upperSql.includes('WHERE ID = ?')) {
       const targetId = Number(params[0]);
       const rows = memoryDB.users.filter(item => Number(item.id) === targetId);
-      return [rows.map(r => ({ ...r })), []];
+      return [rows.map(formatUserRow), []];
     }
 
     // 4. SELECT ... FROM users WHERE 1=1 (Search & Filter)
@@ -241,34 +255,68 @@ function executeInMemoryQuery(sql, params = []) {
         rows = rows.filter(u => (u.status || '').toLowerCase() === status);
       }
       rows.sort((a, b) => a.id - b.id);
-      return [rows, []];
+      return [rows.map(formatUserRow), []];
     }
   }
 
   if (upperSql.startsWith('INSERT INTO USERS')) {
     const nextId = memoryDB.users.reduce((max, u) => Math.max(max, Number(u.id) || 0), 0) + 1;
     const now = new Date().toISOString();
-    const newUser = {
-      id: nextId,
-      username: params[0],
-      password: params[1],
-      fullname: params[2],
-      email: params[3],
-      phone: params[4],
-      age: params[5],
-      address: params[6],
-      preferences: params[7],
-      role: params[8] || 'Staff',
-      status: params[9] || 'Active',
-      created_at: now,
-      updated_at: now
-    };
+    let newUser;
+    if (params.length === 6) {
+      newUser = {
+        id: nextId,
+        username: params[0],
+        password: params[1],
+        fullname: params[2],
+        email: params[3],
+        role: params[4] || 'Staff',
+        status: params[5] || 'Active',
+        created_at: now,
+        updated_at: now
+      };
+    } else {
+      newUser = {
+        id: nextId,
+        username: params[0],
+        password: params[1],
+        fullname: params[2],
+        email: params[3],
+        phone: params[4] || null,
+        age: params[5] || null,
+        address: params[6] || '',
+        preferences: params[7] || '',
+        role: params[8] || 'Staff',
+        status: params[9] || 'Active',
+        created_at: now,
+        updated_at: now
+      };
+    }
     memoryDB.users.push(newUser);
     savePersistedMemoryDB();
     return [{ insertId: nextId, affectedRows: 1 }, []];
   }
 
   if (upperSql.startsWith('UPDATE USERS SET')) {
+    if (params.length === 7) {
+      const targetId = Number(params[6]);
+      const idx = memoryDB.users.findIndex(u => Number(u.id) === targetId);
+      if (idx !== -1) {
+        memoryDB.users[idx] = {
+          ...memoryDB.users[idx],
+          username: params[0],
+          fullname: params[1],
+          email: params[2],
+          role: params[3],
+          status: params[4],
+          password: params[5],
+          updated_at: new Date().toISOString()
+        };
+        savePersistedMemoryDB();
+        return [{ affectedRows: 1 }, []];
+      }
+      return [{ affectedRows: 0 }, []];
+    }
     if (params.length === 11) {
       const targetId = Number(params[10]);
       const idx = memoryDB.users.findIndex(u => Number(u.id) === targetId);
