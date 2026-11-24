@@ -2,9 +2,8 @@
 -- Faculty of Information and Communication Technology, Mahidol University
 -- ITDS242 Web Technologies Lab - Course Project
 -- Task 2: Database Schema & Seed Data (MySQL)
--- File: sec2_gr7_database.sql
+-- File: secX_grY_database.sql
 -- Project: UNIMART (Online Gunpla & Hobby Supplies Store)
--- Section: 2 | Group: 7
 -- Team Members:
 --   1. 6887018 ณิชาภัทร วิชาธรรม
 --   2. 6887063 อโยสรา ต้องทรัพย์

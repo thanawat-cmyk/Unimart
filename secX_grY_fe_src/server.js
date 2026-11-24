@@ -8,15 +8,15 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-module.paths.push(path.join(__dirname, '..', 'sec2_gr7_ws_src', 'node_modules'));
+module.paths.push(path.join(__dirname, '..', 'secX_grY_ws_src', 'node_modules'));
 
 // Auto-install dependencies หากคนที่โหลดโปรเจกต์ไปเปิดใน VS Code แล้วกด npm start ทันทีโดยยังไม่ได้รัน npm install
-if (!fs.existsSync(path.join(__dirname, 'node_modules', 'express')) && !fs.existsSync(path.join(__dirname, '..', 'sec2_gr7_ws_src', 'node_modules', 'express'))) {
+if (!fs.existsSync(path.join(__dirname, 'node_modules', 'express')) && !fs.existsSync(path.join(__dirname, '..', 'secX_grY_ws_src', 'node_modules', 'express'))) {
   console.log('📦 [Auto-Setup] กำลังติดตั้ง Dependencies (npm install) สำหรับ Front-end Server อัตโนมัติ...');
   try {
     execSync('npm install', { cwd: __dirname, stdio: 'inherit' });
   } catch (e) {
-    console.warn('กรุณารันคำสั่ง npm install ในโฟลเดอร์ sec2_gr7_fe_src:', e.message);
+    console.warn('กรุณารันคำสั่ง npm install ในโฟลเดอร์ secX_grY_fe_src:', e.message);
   }
 }
 
@@ -30,7 +30,7 @@ const router = express.Router();
 // แยกกับ Web Service Server ที่รันบน Port 3000
 const PORT = process.env.FE_PORT || process.env.PORT || 3100;
 
-// เสิร์ฟไฟล์ Static (HTML, CSS, JS, Images) ในโฟลเดอร์ sec2_gr7_fe_src (ตามสไลด์ Lecture 10)
+// เสิร์ฟไฟล์ Static (HTML, CSS, JS, Images) ในโฟลเดอร์ secX_grY_fe_src (ตามสไลด์ Lecture 10)
 app.use(express.static(path.join(__dirname)));
 
 // ==============================================================================

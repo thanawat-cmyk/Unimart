@@ -14,7 +14,7 @@
     "unimart",
     "rest-api"
   ],
-  "author": "ITDS242 Group Members (Section 2, Group 7)",
+  "author": "ITDS242 Group Members (Section X, Group Y)",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

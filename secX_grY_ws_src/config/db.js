@@ -65,14 +65,11 @@ async function ensureMySQLInitialized() {
 
       const [tables] = await adminConn.query(`SHOW TABLES LIKE 'products'`);
       if (tables.length === 0) {
-        let sqlFilePath = path.join(__dirname, '..', '..', 'sec2_gr7_database.sql');
-        if (!fs.existsSync(sqlFilePath)) {
-          sqlFilePath = path.join(__dirname, '..', '..', 'secX_grY_database.sql');
-        }
+        const sqlFilePath = path.join(__dirname, '..', '..', 'secX_grY_database.sql');
         if (fs.existsSync(sqlFilePath)) {
           const sqlScript = fs.readFileSync(sqlFilePath, 'utf8');
           await adminConn.query(sqlScript);
-          console.log(`[MySQL Auto-Setup] นำเข้าโครงสร้างตารางและข้อมูลเริ่มต้นจาก ${path.basename(sqlFilePath)} สำเร็จ!`);
+          console.log('[MySQL Auto-Setup] นำเข้าโครงสร้างตารางและข้อมูลเริ่มต้นจาก secX_grY_database.sql สำเร็จ!');
         }
       }
 
