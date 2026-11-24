@@ -15,6 +15,129 @@
 
 ---
 
+## 🚀 คู่มือเริ่มต้นใช้งานสำหรับเครื่องใหม่ (Zero-to-Hero Quick Start Guide)
+> **สำหรับผู้ตรวจ, อาจารย์, หรือผู้ทดสอบที่มีเฉพาะโปรแกรม Visual Studio Code (VS Code) ในเครื่อง**  
+> ปฏิบัติตามขั้นตอนด้านล่างนี้ตั้งแต่การติดตั้งโปรแกรมพื้นฐานจนถึงการเปิดเว็บไซต์และยิงทดสอบ API ได้อย่างง่ายดาย
+
+```text
+สรุปภาพรวมขั้นตอนง่าย ๆ ใน 4 สเต็ป:
+[1. ติดตั้ง Node.js] ➔ [2. เปิดโฟลเดอร์ใน VS Code] ➔ [3. สั่ง npm install & npm start ใน 2 Terminals] ➔ [4. เปิด http://localhost:3100]
+```
+
+---
+
+### 📦 ขั้นตอนที่ 0: สิ่งที่ต้องติดตั้งในเครื่อง (Prerequisites)
+
+#### 1. ติดตั้ง Node.js (จำเป็นที่สุด ⚠️)
+Node.js คือตัวรันเอนจินของ JavaScript บนฝั่งเซิร์ฟเวอร์ที่โปรเจกต์นี้ใช้:
+1. เข้าเว็บไซต์ทางการ: 👉 **[https://nodejs.org/](https://nodejs.org/)**
+2. ดาวน์โหลดเวอร์ชัน **LTS (Long Term Support)** เช่น Node.js `20.x` หรือ `22.x` (เป็นเวอร์ชันที่เสถียรที่สุด)
+3. เปิดไฟล์ที่ดาวน์โหลดมา แล้วกด **Next** ตามขั้นตอนปกติจนเสร็จสิ้น (ติ๊กเลือกค่าเริ่มต้นทั้งหมด)
+4. **วิธีตรวจสอบว่าติดตั้งสำเร็จ:**
+   - เปิดโปรแกรม **Terminal** (บน Mac/Linux) หรือ **Command Prompt / PowerShell** (บน Windows) แล้วพิมพ์คำสั่ง:
+     ```bash
+     node -v
+     npm -v
+     ```
+   - หากมีเลขเวอร์ชันแสดงขึ้นมา (เช่น `v20.18.0` และ `10.8.2`) แสดงว่าติดตั้งสำเร็จ 100%!
+
+<br>
+
+#### 2. โปรแกรมฐานข้อมูล MySQL (XAMPP) — *✨ มี In-Memory Fallback ไม่ต้องลงก็รันได้ทันที!*
+* **กรณีไม่มี XAMPP หรือไม่ได้เปิด MySQL:**  
+  **ไม่ต้องกังวลและไม่ต้องติดตั้งเพิ่มเลยครับ!** โค้ดของโปรเจกต์นี้มาพร้อมระบบ **Smart In-Memory SQL Fallback** โดยอัตโนมัติ เซิร์ฟเวอร์จะจำลองฐานข้อมูลที่ตรงกับไฟล์ `secX_grY_database.sql` ทุกประการให้ทันที สามารถเปิดหน้าเว็บ ค้นหาสินค้า เพิ่ม ลบ แก้ไข เติมสต็อก และยิง Postman ได้ครบทุกเส้น 100%!
+* **กรณีมีโปรแกรม XAMPP อยู่แล้ว และต้องการต่อฐานข้อมูล MySQL จริง:**
+  1. เปิดโปรแกรม **XAMPP Control Panel**
+  2. กดปุ่ม **Start** ที่โมดูล **MySQL** (พอร์ต 3306)
+  3. เซิร์ฟเวอร์จะเชื่อมต่อไปยัง MySQL อัตโนมัติทันที
+
+<br>
+
+#### 3. โปรแกรม Postman (สำหรับทดสอบ Web Services API)
+สำหรับใช้ทดสอบการทำงานของ Web Services ตามเกณฑ์การให้คะแนน:
+* ดาวน์โหลดและติดตั้งได้ฟรีที่: 👉 **[https://www.postman.com/downloads/](https://www.postman.com/downloads/)**
+
+---
+
+### 📂 ขั้นตอนที่ 1: การเปิดโฟลเดอร์โปรเจกต์ใน VS Code
+
+1. แตกไฟล์ Zip (Unzip) โฟลเดอร์โปรเจกต์ออกมาไว้ในเครื่อง (เช่นที่หน้า `Desktop` หรือโฟลเดอร์เอกสาร)
+2. เปิดโปรแกรม **Visual Studio Code (VS Code)**
+3. ไปที่เมนูด้านบน: **File** &rarr; **Open Folder...** (หรือกดคีย์ลัด `Ctrl + K, Ctrl + O` บน Windows / `Cmd + O` บน Mac)
+4. เลือกเปิดโฟลเดอร์โปรเจกต์ (`For_test` หรือ `unimart-web`) จะเห็นโครงสร้างไฟล์ทางแถบซ้ายมือ
+
+---
+
+### 💻 ขั้นตอนที่ 2: การสั่งรันเซิร์ฟเวอร์ผ่าน Terminal ใน VS Code
+
+โปรเจกต์นี้ออกแบบตามข้อกำหนดใบงานของอาจารย์ผู้สอน โดยแยกเป็น **2 เซิร์ฟเวอร์อิสระ**:
+- **เซิร์ฟเวอร์หลังบ้าน (Web Service):** รันบนพอร์ต `3000`
+- **เซิร์ฟเวอร์หน้าบ้าน (Front-end Web):** รันบนพอร์ต `3100`
+
+ดังนั้นเราจะเปิด **2 หน้าต่าง Terminal ใน VS Code** ดังนี้:
+
+#### 🔹 2.1 สตาร์ตเซิร์ฟเวอร์หลังบ้าน (Terminal ที่ 1: Web Service — Port 3000)
+1. ใน VS Code ไปที่เมนูด้านบน: **Terminal** &rarr; **New Terminal** (หรือกดปุ่มคีย์ลัด `` Ctrl + ` ``)
+2. พิมพ์คำสั่งเพื่อเข้าโฟลเดอร์ ติดตั้งไลบรารี และเริ่มรันเซิร์ฟเวอร์:
+   ```bash
+   cd secX_grY_ws_src
+   npm install
+   npm start
+   ```
+   > **💡 ทำไมต้องสั่ง `npm install`?**  
+   > เนื่องจากตามข้อกำหนดการส่งงานของอาจารย์ จะไม่รวมโฟลเดอร์ `node_modules` มาในไฟล์งาน จึงต้องสั่ง `npm install` ในเครื่องครั้งแรกเพียง 1 ครั้ง เพื่อให้ระบบดาวน์โหลดแพ็กเกจ (เช่น Express, CORS, dotenv) เข้ามาในเครื่องครับ
+3. เมื่อเซิร์ฟเวอร์เริ่มทำงาน จะแสดงข้อความ:
+   ```text
+   🚀 [UNIMART WS] Server running on port 3000
+   🔗 API Base URL: http://localhost:3000/api
+   ```
+
+<br>
+
+#### 🔹 2.2 สตาร์ตเซิร์ฟเวอร์หน้าบ้าน (Terminal ที่ 2: Front-end — Port 3100)
+1. ในหน้าต่าง Terminal ของ VS Code สังเกตแถบขวามือของ Terminal จะมีปุ่ม **`+` (Create New Terminal)** หรือปุ่ม **Split Terminal (แบ่งจอ 2 ข้าง หรือกด `Ctrl + Shift + 5`)** ให้กดเพื่อเปิด Terminal จอที่ 2
+2. ใน Terminal จอที่ 2 ให้พิมพ์คำสั่ง:
+   ```bash
+   cd secX_grY_fe_src
+   npm install
+   npm start
+   ```
+3. เมื่อเซิร์ฟเวอร์เริ่มทำงาน จะแสดงข้อความ:
+   ```text
+   🌐 [UNIMART FRONTEND] Server running at http://localhost:3100
+   ```
+
+---
+
+### 🌐 ขั้นตอนที่ 3: เปิดใช้งานและทดสอบผ่านหน้าเว็บเบราว์เซอร์
+
+1. เปิดเว็บเบราว์เซอร์ (Google Chrome, Microsoft Edge, Firefox หรือ Safari)
+2. พิมพ์ URL ในแถบที่อยู่เว็บ:
+   👉 **`http://localhost:3100`**
+3. หน้าหลักของร้าน **UNIMART Gundam & Hobby Store** จะปรากฏขึ้นอย่างสมบูรณ์!
+4. **ทดสอบระบบเข้าสู่ระบบ (Login):**  
+   คลิกที่ปุ่ม **LOGIN** หรือไปที่ `http://localhost:3100/login.html` โดยมีบัญชีตัวอย่างให้ทดสอบครบทุกระดับสิทธิ์:
+
+| ระดับสิทธิ์ (Role) | Username | Password | ความสามารถและหน้าที่ |
+| :--- | :--- | :--- | :--- |
+| 👑 **Super Admin** | `admin` | `admin123` | จัดการสินค้าหลังบ้าน (CRUD), จัดการผู้ใช้งาน, เติมสต็อก |
+| 👔 **Manager** | `nichaphat` | `user123` | จัดการข้อมูลสินค้าและดูสถิติ |
+| 🛠️ **Staff** | `ayosara` | `user123` | เติมสต็อกและอัปเดตสถานะสินค้า |
+| 👤 **Customer VIP** | `GundamLover159` | `customer123` | ดูโปรไฟล์ลูกค้าและประวัติคำสั่งซื้อส่วนตัว |
+
+---
+
+### 📬 ขั้นตอนที่ 4: การนำเข้าและทดสอบ API ด้วย Postman
+
+1. เปิดโปรแกรม **Postman**
+2. คลิกปุ่ม **Import** ที่มุมบนซ้ายของหน้าต่าง
+3. ลากไฟล์หรือกดเลือกไฟล์:
+   📁 **`secX_grY_ws_src/Unimart_API.postman_collection.json`**
+4. ในแถบด้านซ้ายของ Postman จะมีคอลเลกชันชื่อ **UNIMART Web Services API (ITDS242 Lab)**
+5. คลิกเลือกคำขอทดสอบที่ต้องการ (เช่น `GET Products - Select All`, `POST Insert New Product`, `PUT Update Product`) แล้วกดปุ่มสีฟ้า **Send** เพื่อดูผลลัพธ์ JSON ได้ทันที!
+
+---
+
 ## 🏗️ สถาปัตยกรรมระบบแบบแยกเซิร์ฟเวอร์ (Two-Server System Architecture)
 
 โปรเจกต์นี้ออกแบบและพัฒนาโดยแยกเซิร์ฟเวอร์ออกเป็น **2 เซิร์ฟเวอร์อิสระ** ตามแผนภาพข้อกำหนดในใบงานของอาจารย์ผู้สอน:
@@ -94,59 +217,16 @@ unimart-web/
 
 ---
 
-## ⚡ วิธีการติดตั้งและรันโปรแกรม (Setup & Execution Guide)
+## 🗄️ การนำเข้าฐานข้อมูล MySQL ด้วยตนเอง (ตัวเลือกเสริมสำหรับงานที่ 2)
 
-### 🚀 วิธีรันแบบแยก 2 เซิร์ฟเวอร์ (2 Terminals ตามโครงสร้างใบงานอาจารย์)
-
-#### 1. รัน Web Service Server (`secX_grY_ws_src` - Port `3000`)
-
-เปิด Terminal ที่ 1 เพื่อสตาร์ทเซิร์ฟเวอร์หลังบ้านและฐานข้อมูล (สำหรับรับคำขอจากหน้าเว็บและทดสอบใน **Postman**):
-
-```bash
-cd secX_grY_ws_src
-npm install
-npm start
-```
-
-* **Web Service API URL:** `http://localhost:3000/api`
-* **พร้อมทดสอบด้วย Postman ทันที:** หากเครื่องเปิด MySQL (XAMPP) อยู่ ระบบจะสร้างฐานข้อมูล `unimart_db` และนำเข้า `secX_grY_database.sql` ให้อัตโนมัติ แต่หากไม่ได้เปิด MySQL ระบบจะเปิดโหมด **In-Memory SQL Database** ให้ยิง Postman ทดสอบได้ครบทุกเส้นทันที!
-
-<br>
-
-#### 2. รัน Front-end Server (`secX_grY_fe_src` - Port `3100`)
-
-เปิด Terminal ที่ 2 เพื่อสตาร์ทเซิร์ฟเวอร์หน้าบ้านแยกต่างหาก:
-
-```bash
-cd secX_grY_fe_src
-npm install
-npm start
-```
-
-* **Front-end Web URL:** เปิดเบราว์เซอร์ไปที่ `http://localhost:3100`
-
----
-
-### 🗄️ การนำเข้าฐานข้อมูล MySQL ด้วยตนเอง (ตัวเลือกเสริมสำหรับงานที่ 2)
-
-หากต้องการนำเข้าไฟล์ `secX_grY_database.sql` ผ่าน **phpMyAdmin** หรือ **MySQL CLI** ด้วยตนเอง:
+> **💡 ระบบ Auto-DB & In-Memory Fallback:** หากเปิดรัน Web Service โดยเปิด XAMPP MySQL ไว้ ระบบจะสร้างฐานข้อมูลและนำเข้าไฟล์ SQL นี้ให้อัตโนมัติ หรือถ้าไม่ได้เปิด MySQL ระบบจะสลับไปใช้ In-Memory Database ให้อัตโนมัติเช่นกัน  
+> แต่หากต้องการนำเข้าไฟล์ `secX_grY_database.sql` ผ่าน **phpMyAdmin** หรือ **MySQL CLI** ด้วยตนเอง สามารถทำได้ดังนี้:
 
 ```bash
 mysql -u root -p < secX_grY_database.sql
 ```
 
 *(สคริปต์จะสร้างฐานข้อมูล `unimart_db` พร้อมตาราง `users`, `login_logs`, `categories`, `products`, `orders`, `order_items` และข้อมูลเริ่มต้นครบถ้วน)*
-
----
-
-## 🔑 บัญชีผู้ใช้ตัวอย่างสำหรับการทดสอบ (Demo Accounts)
-
-| บัญชี | Username | Password | สิทธิ์ (Role) | หน้าเริ่มต้นหลัง Login |
-| :--- | :--- | :--- | :--- | :--- |
-| **Super Admin** | `admin` | `admin123` | Super Admin | `admin-products.html` |
-| **Manager** | `nichaphat` | `user123` | Manager | `admin-products.html` |
-| **Staff** | `ayosara` | `user123` | Staff | `admin-products.html` |
-| **Customer VIP** | `GundamLover159` | `customer123` | Customer | `profile.html` |
 
 ---
 
@@ -486,7 +566,7 @@ POST http://localhost:3000/api/users
 
 สามารถนำเข้าไฟล์ **`secX_grY_ws_src/Unimart_API.postman_collection.json`** เข้าสู่โปรแกรม Postman เพื่อทดสอบ API ทุก Endpoint ได้ทันที:
 
-1. รันเซิร์ฟเวอร์ด้วยคำสั่ง `cd secX_grY_ws_src && npm start` (หรือรัน `npm start` จากโฟลเดอร์หลัก)
+1. รันเซิร์ฟเวอร์ด้วยคำสั่ง `cd secX_grY_ws_src && npm start`
 2. เปิดโปรแกรม **Postman** แล้วกดปุ่ม **Import**
 3. เลือกไฟล์ `secX_grY_ws_src/Unimart_API.postman_collection.json`
 4. กด **Send** ทดสอบการทำงานของ CRUD, Multi-Criteria Search, Filter, Restock และ Authentication ได้ครบทุกเส้นทันที!
