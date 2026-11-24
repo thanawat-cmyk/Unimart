@@ -23,4 +23,5 @@ $RECYCLE.BIN/
 
 # Distribution & Test archives
 For_test/
+For_test_nopackage/
 *.zip
