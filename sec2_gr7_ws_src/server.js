@@ -8,7 +8,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-module.paths.push(path.join(__dirname, '..', 'secX_grY_fe_src', 'node_modules'));
+module.paths.push(path.join(__dirname, '..', 'sec2_gr7_fe_src', 'node_modules'));
 
 // Auto-install dependencies หากคนที่โหลดโปรเจกต์ไปเปิดใน VS Code แล้วกด npm start ทันทีโดยยังไม่ได้รัน npm install
 if (!fs.existsSync(path.join(__dirname, 'node_modules', 'express'))) {
@@ -16,7 +16,7 @@ if (!fs.existsSync(path.join(__dirname, 'node_modules', 'express'))) {
   try {
     execSync('npm install', { cwd: __dirname, stdio: 'inherit' });
   } catch (e) {
-    console.warn('กรุณารันคำสั่ง npm install ในโฟลเดอร์ secX_grY_ws_src:', e.message);
+    console.warn('กรุณารันคำสั่ง npm install ในโฟลเดอร์ sec2_gr7_ws_src:', e.message);
   }
 }
 
@@ -80,7 +80,7 @@ app.get('/api', (req, res) => {
 });
 
 // Serve Static Frontend Files as convenience fallback if someone opens http://localhost:3000 directly
-const fePath = path.join(__dirname, '..', 'secX_grY_fe_src');
+const fePath = path.join(__dirname, '..', 'sec2_gr7_fe_src');
 app.use(express.static(fePath));
 
 // Start Web Service Server & Verify Database Connection
@@ -103,7 +103,7 @@ app.listen(PORT, '0.0.0.0', async () => {
         const fs = require('fs');
         const [rows] = await pool.query("SELECT id, image_url FROM products WHERE image_url LIKE 'data:%' OR LENGTH(image_url) > 500");
         if (rows && rows.length > 0) {
-          const imagesDir = path.join(__dirname, '..', 'secX_grY_fe_src', 'assets', 'images');
+          const imagesDir = path.join(__dirname, '..', 'sec2_gr7_fe_src', 'assets', 'images');
           if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
           for (const row of rows) {
             const raw = String(row.image_url || '').trim();

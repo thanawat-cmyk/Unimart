@@ -42,7 +42,10 @@ function shortenImageUrl(rawUrl, itemId = null) {
     const stamp = String(Date.now()).slice(-4);
     const suffix = itemId ? `${itemId}-${stamp}` : String(Date.now()).slice(-6);
     const fileName = `img-${suffix}.${ext}`;
-    const imagesDir = path.join(__dirname, '..', '..', 'secX_grY_fe_src', 'assets', 'images');
+    let imagesDir = path.join(__dirname, '..', '..', 'sec2_gr7_fe_src', 'assets', 'images');
+    if (!fs.existsSync(path.join(__dirname, '..', '..', 'sec2_gr7_fe_src'))) {
+      imagesDir = path.join(__dirname, '..', '..', 'secX_grY_fe_src', 'assets', 'images');
+    }
 
     if (!fs.existsSync(imagesDir)) {
       fs.mkdirSync(imagesDir, { recursive: true });

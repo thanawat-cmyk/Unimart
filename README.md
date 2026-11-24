@@ -6,7 +6,7 @@
 
 ## 👥 ข้อมูลสมาชิกกลุ่ม (Team Members)
 
-- **Section:** X | **Group:** Y
+- **Section:** 2 | **Group:** 7
 1. **6887018** ณิชาภัทร วิชาธรรม
 2. **6887063** อโยสรา ต้องทรัพย์
 3. **6887025** ธนวัฒน์ แสนโบราณ
@@ -45,7 +45,7 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 
 #### 2. โปรแกรมฐานข้อมูล MySQL (XAMPP) — *✨ มี In-Memory Fallback ไม่ต้องลงก็รันได้ทันที!*
 * **กรณีไม่มี XAMPP หรือไม่ได้เปิด MySQL:**  
-  **ไม่ต้องกังวลและไม่ต้องติดตั้งเพิ่มเลยครับ!** โค้ดของโปรเจกต์นี้มาพร้อมระบบ **Smart In-Memory SQL Fallback** โดยอัตโนมัติ เซิร์ฟเวอร์จะจำลองฐานข้อมูลที่ตรงกับไฟล์ `secX_grY_database.sql` ทุกประการให้ทันที สามารถเปิดหน้าเว็บ ค้นหาสินค้า เพิ่ม ลบ แก้ไข เติมสต็อก และยิง Postman ได้ครบทุกเส้น 100%!
+  **ไม่ต้องกังวลและไม่ต้องติดตั้งเพิ่มเลยครับ!** โค้ดของโปรเจกต์นี้มาพร้อมระบบ **Smart In-Memory SQL Fallback** โดยอัตโนมัติ เซิร์ฟเวอร์จะจำลองฐานข้อมูลที่ตรงกับไฟล์ `sec2_gr7_database.sql` ทุกประการให้ทันที สามารถเปิดหน้าเว็บ ค้นหาสินค้า เพิ่ม ลบ แก้ไข เติมสต็อก และยิง Postman ได้ครบทุกเส้น 100%!
 * **กรณีมีโปรแกรม XAMPP อยู่แล้ว และต้องการต่อฐานข้อมูล MySQL จริง:**
   1. เปิดโปรแกรม **XAMPP Control Panel**
   2. กดปุ่ม **Start** ที่โมดูล **MySQL** (พอร์ต 3306)
@@ -81,7 +81,7 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 1. ใน VS Code ไปที่เมนูด้านบน: **Terminal** &rarr; **New Terminal** (หรือกดปุ่มคีย์ลัด `` Ctrl + ` ``)
 2. พิมพ์คำสั่งเพื่อเข้าโฟลเดอร์ ติดตั้งไลบรารี และเริ่มรันเซิร์ฟเวอร์:
    ```bash
-   cd secX_grY_ws_src
+   cd sec2_gr7_ws_src
    npm install
    npm start
    ```
@@ -99,7 +99,7 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 1. ในหน้าต่าง Terminal ของ VS Code สังเกตแถบขวามือของ Terminal จะมีปุ่ม **`+` (Create New Terminal)** หรือปุ่ม **Split Terminal (แบ่งจอ 2 ข้าง หรือกด `Ctrl + Shift + 5`)** ให้กดเพื่อเปิด Terminal จอที่ 2
 2. ใน Terminal จอที่ 2 ให้พิมพ์คำสั่ง:
    ```bash
-   cd secX_grY_fe_src
+   cd sec2_gr7_fe_src
    npm install
    npm start
    ```
@@ -133,7 +133,7 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 1. เปิดโปรแกรม **Postman**
 2. คลิกปุ่ม **Import** ที่มุมบนซ้ายของหน้าต่าง
 3. ลากไฟล์หรือกดเลือกไฟล์:
-   📁 **`secX_grY_ws_src/Unimart_API.postman_collection.json`**
+   📁 **`sec2_gr7_ws_src/Unimart_API.postman_collection.json`**
 4. ในแถบด้านซ้ายของ Postman จะมีคอลเลกชันชื่อ **UNIMART Web Services API (ITDS242 Lab)**
 5. คลิกเลือกคำขอทดสอบที่ต้องการ (เช่น `GET Products - Select All`, `POST Insert New Product`, `PUT Update Product`) แล้วกดปุ่มสีฟ้า **Send** เพื่อดูผลลัพธ์ JSON ได้ทันที!
 
@@ -146,7 +146,7 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 ```text
 +-----------------------------------+            +-----------------------------------------------+
 |         Front-end Server          |   HTTP /   |              Web Service Server               |
-|         (secX_grY_fe_src)         |   Fetch    |               (secX_grY_ws_src)               |
+|         (sec2_gr7_fe_src)         |   Fetch    |               (sec2_gr7_ws_src)               |
 |                                   |  =======>  |                                               |
 |  - Node.js + Express.js           |   CORS     |  - Node.js + Express.js + CORS                |
 |  - express.Router() & sendFile()  |  <=======  |  - RESTful Web Services (/api/*)              |
@@ -155,25 +155,25 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 +-----------------------------------+            +-----------------------------------------------+
 ```
 
-1. **Front-end Server (`secX_grY_fe_src` - Port `3100`):**
+1. **Front-end Server (`sec2_gr7_fe_src` - Port `3100`):**
    - ทำหน้าที่เป็น Web Server ฝั่งหน้าบ้านด้วย `express`, `express.Router()`, `express.static()` และ `res.sendFile()` (ตามสไลด์ Lecture 10: Node.js Part II)
    - เสิร์ฟหน้าเว็บ HTML, CSS, JavaScript และเชื่อมต่อกับ Web Service Server ข้ามพอร์ตผ่าน `fetch('http://localhost:3000/api/...')`
 
-2. **Web Service Server (`secX_grY_ws_src` - Port `3000`):**
+2. **Web Service Server (`sec2_gr7_ws_src` - Port `3000`):**
    - ทำหน้าที่เป็น RESTful Web Services API Server ด้วย `express`, `cors`, `dotenv` และ `mysql2` (ตามสไลด์ Lecture 13: Web Services with Node.js)
    - มาพร้อมระบบ **Auto-Database Setup & Smart In-Memory SQL Fallback**:
-     - **หากเปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสร้างฐานข้อมูล `unimart_db` และนำเข้าไฟล์ `secX_grY_database.sql` ให้อัตโนมัติทันทีเมื่อสั่ง `npm start`
-     - **หากไม่ได้เปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสลับไปใช้ฐานข้อมูลจำลอง (**In-Memory SQL Database**) ที่มีข้อมูลตรงกับ `secX_grY_database.sql` ทุกตารางโดยอัตโนมัติ ทำให้ผู้ตรวจสามารถสั่ง `npm start` แล้วเปิด **Postman** ยิงทดสอบ API ทุกเส้น (`GET`, `POST`, `PUT`, `DELETE`) ได้ทันที 100% โดยไม่เกิด Error!
+     - **หากเปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสร้างฐานข้อมูล `unimart_db` และนำเข้าไฟล์ `sec2_gr7_database.sql` ให้อัตโนมัติทันทีเมื่อสั่ง `npm start`
+     - **หากไม่ได้เปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสลับไปใช้ฐานข้อมูลจำลอง (**In-Memory SQL Database**) ที่มีข้อมูลตรงกับ `sec2_gr7_database.sql` ทุกตารางโดยอัตโนมัติ ทำให้ผู้ตรวจสามารถสั่ง `npm start` แล้วเปิด **Postman** ยิงทดสอบ API ทุกเส้น (`GET`, `POST`, `PUT`, `DELETE`) ได้ทันที 100% โดยไม่เกิด Error!
 
 ---
 
 ## 📁 โครงสร้างโปรเจกต์ตามข้อกำหนดการส่งงาน (Project Structure)
 
-> **หมายเหตุสำคัญตามใบงานหน้า 5:** ทั้งโฟลเดอร์ `secX_grY_fe_src` และ `secX_grY_ws_src` ตั้งค่า `.gitignore` ให้ไม่รวมโฟลเดอร์ `node_modules` เรียบร้อยแล้ว
+> **หมายเหตุสำคัญตามใบงานหน้า 5:** ทั้งโฟลเดอร์ `sec2_gr7_fe_src` และ `sec2_gr7_ws_src` ตั้งค่า `.gitignore` ให้ไม่รวมโฟลเดอร์ `node_modules` เรียบร้อยแล้ว
 
 ```text
 unimart-web/
-├── secX_grY_fe_src/                     # [งานที่ 1 & งานที่ 4] Front-end Server & Source Code (Port 3100)
+├── sec2_gr7_fe_src/                     # [งานที่ 1 & งานที่ 4] Front-end Server & Source Code (Port 3100)
 │   ├── server.js                        # Front-end Express Server (express.Router + res.sendFile)
 │   ├── app.js                           # Alias Entrypoint สำหรับรัน node app.js / nodemon app.js
 │   ├── package.json                     # รายการ Dependencies และ Script (npm start) ของฝั่ง Front-end
@@ -195,9 +195,9 @@ unimart-web/
 │   │   └── products.js                  # Shared Data Model สินค้าและตัวกรอง
 │   └── assets/images/                   # รูปภาพ แบนเนอร์ ไอคอน และมาสคอตจาก Figma
 │
-├── secX_grY_database.sql                # [งานที่ 2] สคริปต์ฐานข้อมูล MySQL (Tables & Seed Data)
+├── sec2_gr7_database.sql                # [งานที่ 2] สคริปต์ฐานข้อมูล MySQL (Tables & Seed Data)
 │
-├── secX_grY_ws_src/                     # [งานที่ 3] Web Service Server (RESTful API & MySQL - Port 3000)
+├── sec2_gr7_ws_src/                     # [งานที่ 3] Web Service Server (RESTful API & MySQL - Port 3000)
 │   ├── config/
 │   │   └── db.js                        # MySQL Connection Pool + Auto-DB Import + In-Memory SQL Fallback
 │   ├── routes/
@@ -226,7 +226,7 @@ unimart-web/
 
 ---
 
-### 🌐 1. การตั้งค่าฝั่ง Front-end Server (`secX_grY_fe_src/.env`)
+### 🌐 1. การตั้งค่าฝั่ง Front-end Server (`sec2_gr7_fe_src/.env`)
 
 ไฟล์นี้ใช้กำหนดพอร์ตของเซิร์ฟเวอร์หน้าบ้าน และที่อยู่ของ Web Service API ที่หน้าบ้านจะเรียกใช้:
 
@@ -248,7 +248,7 @@ API_BASE_URL=http://localhost:3000/api
 
 ---
 
-### 💻 2. การตั้งค่าฝั่ง Web Service Server (`secX_grY_ws_src/.env`)
+### 💻 2. การตั้งค่าฝั่ง Web Service Server (`sec2_gr7_ws_src/.env`)
 
 ไฟล์นี้ใช้กำหนดการเชื่อมต่อไปยังฐานข้อมูล MySQL และพอร์ตของหลังบ้าน:
 
@@ -281,7 +281,7 @@ DB_NAME=unimart_db
 > 💡 **หมายเหตุเกี่ยวกับการคัดลอกไฟล์:**  
 > หากในโฟลเดอร์ยังไม่มีไฟล์ `.env` (เนื่องจากถูกซ่อนหรือยังไม่ได้สร้าง) สามารถคัดลอกจากไฟล์ต้นแบบ `.env.example` ได้ด้วยคำสั่ง:
 > ```bash
-> cd secX_grY_ws_src
+> cd sec2_gr7_ws_src
 > cp .env.example .env    # บน Mac / Linux
 > copy .env.example .env  # บน Windows Command Prompt / PowerShell
 > ```
@@ -296,19 +296,19 @@ DB_NAME=unimart_db
 
 ### 📥 1. การนำเข้าฐานข้อมูล (Import Database)
 
-ระบบหลังบ้านถูกออกแบบมาให้ **สร้างฐานข้อมูล `unimart_db` และนำเข้าไฟล์ `secX_grY_database.sql` ให้อัตโนมัติทันทีที่สั่ง `npm start`** หาก MySQL เปิดใช้งานอยู่  
+ระบบหลังบ้านถูกออกแบบมาให้ **สร้างฐานข้อมูล `unimart_db` และนำเข้าไฟล์ `sec2_gr7_database.sql` ให้อัตโนมัติทันทีที่สั่ง `npm start`** หาก MySQL เปิดใช้งานอยู่  
 แต่หากต้องการนำเข้าด้วยตนเอง สามารถทำได้ 2 วิธี:
 
 #### 🔹 วิธีที่ 1: นำเข้าผ่าน phpMyAdmin (GUI)
 1. เปิดเบราว์เซอร์ไปที่: **`http://localhost/phpmyadmin`**
 2. คลิกที่แท็บ **"Import" (นำเข้า)** บนแถบเมนูด้านบน
-3. คลิกปุ่ม **"Choose File" (เลือกไฟล์)** แล้วเลือกไฟล์ [secX_grY_database.sql](file:///C:/Users/thana/.gemini/antigravity/scratch/unimart-web/secX_grY_database.sql)
+3. คลิกปุ่ม **"Choose File" (เลือกไฟล์)** แล้วเลือกไฟล์ [sec2_gr7_database.sql](file:///C:/Users/thana/.gemini/antigravity/scratch/unimart-web/sec2_gr7_database.sql)
 4. เลื่อนลงมาล่างสุดแล้วคลิกปุ่ม **"Import" (นำเข้า)**
 5. ระบบจะสร้างฐานข้อมูล `unimart_db` พร้อมตารางและข้อมูลจำลองครบถ้วน
 
 #### 🔹 วิธีที่ 2: นำเข้าผ่าน Command Line / Terminal
 ```bash
-mysql -u root -p < secX_grY_database.sql
+mysql -u root -p < sec2_gr7_database.sql
 ```
 *(หากไม่มีรหัสผ่าน ให้กด Enter ข้ามไปได้ทันที)*
 
@@ -332,7 +332,7 @@ mysql -u root -p < secX_grY_database.sql
 6. ในส่วน **Global privileges (สิทธิ์ส่วนกลาง):**
    - ให้คลิกติ๊กถูกที่ **"Check all" (เลือกทั้งหมด)** เพื่อมอบสิทธิ์จัดการข้อมูล (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) และสิทธิ์จัดการโครงสร้าง (`CREATE`, `ALTER`, `INDEX`) ครบทุกด้าน
 7. เลื่อนลงมาที่มุมล่างขวา แล้วคลิกปุ่ม **"Go" (ลงมือ)**
-8. **ขั้นตอนสำคัญ ⚠️:** เมื่อสร้าง User สำเร็จแล้ว ให้เปิดไฟล์ `secX_grY_ws_src/.env` แล้วแก้ไขค่าให้ตรงกับที่สร้างไว้:
+8. **ขั้นตอนสำคัญ ⚠️:** เมื่อสร้าง User สำเร็จแล้ว ให้เปิดไฟล์ `sec2_gr7_ws_src/.env` แล้วแก้ไขค่าให้ตรงกับที่สร้างไว้:
    ```env
    DB_USER=unimart_user
    DB_PASSWORD=pass1234
@@ -363,7 +363,7 @@ FLUSH PRIVILEGES;
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'my_secret_password';
 FLUSH PRIVILEGES;
 ```
-จากนั้นอัปเดตไฟล์ `secX_grY_ws_src/.env`:
+จากนั้นอัปเดตไฟล์ `sec2_gr7_ws_src/.env`:
 ```env
 DB_USER=root
 DB_PASSWORD=my_secret_password
@@ -373,7 +373,7 @@ DB_PASSWORD=my_secret_password
 
 ### 🔄 3. สรุปความสอดคล้องระหว่าง MySQL และ `.env`
 
-ทุกครั้งที่มีการเปลี่ยนแปลงข้อมูลเกี่ยวกับ MySQL ให้ตรวจสอบว่าค่าใน `secX_grY_ws_src/.env` ตรงกันเสมอ:
+ทุกครั้งที่มีการเปลี่ยนแปลงข้อมูลเกี่ยวกับ MySQL ให้ตรวจสอบว่าค่าใน `sec2_gr7_ws_src/.env` ตรงกันเสมอ:
 
 | ค่าใน MySQL | ตัวแปรใน `.env` | ตัวอย่างค่า | คำอธิบาย |
 | :--- | :--- | :--- | :--- |
@@ -383,13 +383,13 @@ DB_PASSWORD=my_secret_password
 | Password | `DB_PASSWORD` | *(ค่าว่าง)* หรือ `pass1234` | รหัสผ่านของ User นั้น ๆ |
 | Database Name | `DB_NAME` | `unimart_db` | ชื่อฐานข้อมูลของโปรเจกต์ |
 
-เมื่อบันทึกไฟล์ `.env` เรียบร้อยแล้ว ให้สั่ง `npm start` ใน Terminal ของ `secX_grY_ws_src` ระบบจะเชื่อมต่อกับ MySQL ด้วยสิทธิ์และผู้ใช้ใหม่ได้ทันที!
+เมื่อบันทึกไฟล์ `.env` เรียบร้อยแล้ว ให้สั่ง `npm start` ใน Terminal ของ `sec2_gr7_ws_src` ระบบจะเชื่อมต่อกับ MySQL ด้วยสิทธิ์และผู้ใช้ใหม่ได้ทันที!
 
 ---
 
 ## 📡 ตัวอย่างการทดสอบ Web Services ด้วย Postman (Postman Testing Examples)
 
-> ทุกไฟล์ในโฟลเดอร์ `secX_grY_ws_src/routes/` มี **Comment Header ตัวอย่างการทดสอบใน Postman อย่างน้อย 2 ตัวอย่าง** กำกับอยู่ด้านบนของโค้ดอย่างครบถ้วนตามเกณฑ์ของอาจารย์ผู้สอน  
+> ทุกไฟล์ในโฟลเดอร์ `sec2_gr7_ws_src/routes/` มี **Comment Header ตัวอย่างการทดสอบใน Postman อย่างน้อย 2 ตัวอย่าง** กำกับอยู่ด้านบนของโค้ดอย่างครบถ้วนตามเกณฑ์ของอาจารย์ผู้สอน  
 > *(สำหรับคำขอแบบ `POST` และ `PUT` ให้ตั้งค่าใน Postman ที่แท็บ **Body** &rarr; เลือก **raw** &rarr; เลือกชนิดเป็น **JSON**)*
 
 ---
@@ -721,9 +721,9 @@ POST http://localhost:3000/api/users
 
 ## 🧪 การนำเข้าไฟล์ Collection เพื่อทดสอบใน Postman ทันทีใน 1 คลิก
 
-สามารถนำเข้าไฟล์ **`secX_grY_ws_src/Unimart_API.postman_collection.json`** เข้าสู่โปรแกรม Postman เพื่อทดสอบ API ทุก Endpoint ได้ทันที:
+สามารถนำเข้าไฟล์ **`sec2_gr7_ws_src/Unimart_API.postman_collection.json`** เข้าสู่โปรแกรม Postman เพื่อทดสอบ API ทุก Endpoint ได้ทันที:
 
-1. รันเซิร์ฟเวอร์ด้วยคำสั่ง `cd secX_grY_ws_src && npm start`
+1. รันเซิร์ฟเวอร์ด้วยคำสั่ง `cd sec2_gr7_ws_src && npm start`
 2. เปิดโปรแกรม **Postman** แล้วกดปุ่ม **Import**
-3. เลือกไฟล์ `secX_grY_ws_src/Unimart_API.postman_collection.json`
+3. เลือกไฟล์ `sec2_gr7_ws_src/Unimart_API.postman_collection.json`
 4. กด **Send** ทดสอบการทำงานของ CRUD, Multi-Criteria Search, Filter, Restock และ Authentication ได้ครบทุกเส้นทันที!
