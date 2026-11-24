@@ -89,7 +89,7 @@ unimart-web/
 │   ├── package.json                     # รายการ Dependencies และ Scripts (npm start) ของฝั่ง Web Service
 │   └── .env                             # การตั้งค่า Environment Variables (DB & PORT=3000)
 │
-└── package.json                         # Root Script อำนวยความสะดวกสำหรับรันทั้ง 2 เซิร์ฟเวอร์พร้อมกัน
+└── README.md                            # คู่มือการติดตั้งและผลการทดสอบ Web Services API
 ```
 
 ---
@@ -124,16 +124,6 @@ npm start
 ```
 
 * **Front-end Web URL:** เปิดเบราว์เซอร์ไปที่ `http://localhost:3100`
-
----
-
-### 💡 ทางลัด: รันทั้ง 2 เซิร์ฟเวอร์พร้อมกันในคำสั่งเดียว (จากโฟลเดอร์หลัก)
-
-หากเปิด Terminal ที่โฟลเดอร์หลัก `unimart-web` สามารถสั่งรันทั้ง **Web Service Server (Port 3000)** และ **Front-end Server (Port 3100)** พร้อมกันได้ทันทีด้วยคำสั่ง:
-
-```bash
-npm start
-```
 
 ---
 

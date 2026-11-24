@@ -20,3 +20,7 @@ $RECYCLE.BIN/
 # Editor directories
 .vscode/
 .idea/
+
+# Distribution & Test archives
+For_test/
+*.zip
