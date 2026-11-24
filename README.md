@@ -6,7 +6,7 @@
 
 ## 👥 ข้อมูลสมาชิกกลุ่ม (Team Members)
 
-- **Section:** 2 | **Group:** 7
+- **Section:** X | **Group:** Y
 1. **6887018** ณิชาภัทร วิชาธรรม
 2. **6887063** อโยสรา ต้องทรัพย์
 3. **6887025** ธนวัฒน์ แสนโบราณ
@@ -45,12 +45,11 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 
 #### 2. โปรแกรมฐานข้อมูล MySQL (XAMPP) — *✨ มี In-Memory Fallback ไม่ต้องลงก็รันได้ทันที!*
 * **กรณีไม่มี XAMPP หรือไม่ได้เปิด MySQL:**  
-  **ไม่ต้องกังวลและไม่ต้องติดตั้งเพิ่มเลยครับ!** โค้ดของโปรเจกต์นี้มาพร้อมระบบ **Smart In-Memory SQL Fallback** โดยอัตโนมัติ เซิร์ฟเวอร์จะจำลองฐานข้อมูลที่ตรงกับไฟล์ `sec2_gr7_database.sql` ทุกประการให้ทันที สามารถเปิดหน้าเว็บ ค้นหาสินค้า เพิ่ม ลบ แก้ไข เติมสต็อก และยิง Postman ได้ครบทุกเส้น 100%!
+  **ไม่ต้องกังวลและไม่ต้องติดตั้งเพิ่มเลยครับ!** โค้ดของโปรเจกต์นี้มาพร้อมระบบ **Smart In-Memory SQL Fallback** โดยอัตโนมัติ เซิร์ฟเวอร์จะจำลองฐานข้อมูลที่ตรงกับไฟล์ `secX_grY_database.sql` ทุกประการให้ทันที สามารถเปิดหน้าเว็บ ค้นหาสินค้า เพิ่ม ลบ แก้ไข เติมสต็อก และยิง Postman ได้ครบทุกเส้น 100%!
 * **กรณีมีโปรแกรม XAMPP อยู่แล้ว และต้องการต่อฐานข้อมูล MySQL จริง:**
   1. เปิดโปรแกรม **XAMPP Control Panel**
   2. กดปุ่ม **Start** ที่โมดูล **MySQL** (พอร์ต 3306)
   3. เซิร์ฟเวอร์จะเชื่อมต่อไปยัง MySQL อัตโนมัติทันที
-  4. หากต้องการสร้าง User เฉพาะ หรือตั้งค่ารหัสผ่านใน MySQL สามารถดูคู่มือได้ที่ [หัวข้อการจัดการฐานข้อมูล MySQL และการตั้งค่า User](#%EF%B8%8F-การจัดการฐานข้อมูล-mysql-และการตั้งค่า-user-mysql-setup--user-management)
 
 <br>
 
@@ -81,7 +80,7 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 1. ใน VS Code ไปที่เมนูด้านบน: **Terminal** &rarr; **New Terminal** (หรือกดปุ่มคีย์ลัด `` Ctrl + ` ``)
 2. พิมพ์คำสั่งเพื่อเข้าโฟลเดอร์ ติดตั้งไลบรารี และเริ่มรันเซิร์ฟเวอร์:
    ```bash
-   cd sec2_gr7_ws_src
+   cd secX_grY_ws_src
    npm install
    npm start
    ```
@@ -99,7 +98,7 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 1. ในหน้าต่าง Terminal ของ VS Code สังเกตแถบขวามือของ Terminal จะมีปุ่ม **`+` (Create New Terminal)** หรือปุ่ม **Split Terminal (แบ่งจอ 2 ข้าง หรือกด `Ctrl + Shift + 5`)** ให้กดเพื่อเปิด Terminal จอที่ 2
 2. ใน Terminal จอที่ 2 ให้พิมพ์คำสั่ง:
    ```bash
-   cd sec2_gr7_fe_src
+   cd secX_grY_fe_src
    npm install
    npm start
    ```
@@ -133,7 +132,7 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 1. เปิดโปรแกรม **Postman**
 2. คลิกปุ่ม **Import** ที่มุมบนซ้ายของหน้าต่าง
 3. ลากไฟล์หรือกดเลือกไฟล์:
-   📁 **`sec2_gr7_ws_src/Unimart_API.postman_collection.json`**
+   📁 **`secX_grY_ws_src/Unimart_API.postman_collection.json`**
 4. ในแถบด้านซ้ายของ Postman จะมีคอลเลกชันชื่อ **UNIMART Web Services API (ITDS242 Lab)**
 5. คลิกเลือกคำขอทดสอบที่ต้องการ (เช่น `GET Products - Select All`, `POST Insert New Product`, `PUT Update Product`) แล้วกดปุ่มสีฟ้า **Send** เพื่อดูผลลัพธ์ JSON ได้ทันที!
 
@@ -146,7 +145,7 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 ```text
 +-----------------------------------+            +-----------------------------------------------+
 |         Front-end Server          |   HTTP /   |              Web Service Server               |
-|         (sec2_gr7_fe_src)         |   Fetch    |               (sec2_gr7_ws_src)               |
+|         (secX_grY_fe_src)         |   Fetch    |               (secX_grY_ws_src)               |
 |                                   |  =======>  |                                               |
 |  - Node.js + Express.js           |   CORS     |  - Node.js + Express.js + CORS                |
 |  - express.Router() & sendFile()  |  <=======  |  - RESTful Web Services (/api/*)              |
@@ -155,25 +154,25 @@ Node.js คือตัวรันเอนจินของ JavaScript บน
 +-----------------------------------+            +-----------------------------------------------+
 ```
 
-1. **Front-end Server (`sec2_gr7_fe_src` - Port `3100`):**
+1. **Front-end Server (`secX_grY_fe_src` - Port `3100`):**
    - ทำหน้าที่เป็น Web Server ฝั่งหน้าบ้านด้วย `express`, `express.Router()`, `express.static()` และ `res.sendFile()` (ตามสไลด์ Lecture 10: Node.js Part II)
    - เสิร์ฟหน้าเว็บ HTML, CSS, JavaScript และเชื่อมต่อกับ Web Service Server ข้ามพอร์ตผ่าน `fetch('http://localhost:3000/api/...')`
 
-2. **Web Service Server (`sec2_gr7_ws_src` - Port `3000`):**
+2. **Web Service Server (`secX_grY_ws_src` - Port `3000`):**
    - ทำหน้าที่เป็น RESTful Web Services API Server ด้วย `express`, `cors`, `dotenv` และ `mysql2` (ตามสไลด์ Lecture 13: Web Services with Node.js)
    - มาพร้อมระบบ **Auto-Database Setup & Smart In-Memory SQL Fallback**:
-     - **หากเปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสร้างฐานข้อมูล `unimart_db` และนำเข้าไฟล์ `sec2_gr7_database.sql` ให้อัตโนมัติทันทีเมื่อสั่ง `npm start`
-     - **หากไม่ได้เปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสลับไปใช้ฐานข้อมูลจำลอง (**In-Memory SQL Database**) ที่มีข้อมูลตรงกับ `sec2_gr7_database.sql` ทุกตารางโดยอัตโนมัติ ทำให้ผู้ตรวจสามารถสั่ง `npm start` แล้วเปิด **Postman** ยิงทดสอบ API ทุกเส้น (`GET`, `POST`, `PUT`, `DELETE`) ได้ทันที 100% โดยไม่เกิด Error!
+     - **หากเปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสร้างฐานข้อมูล `unimart_db` และนำเข้าไฟล์ `secX_grY_database.sql` ให้อัตโนมัติทันทีเมื่อสั่ง `npm start`
+     - **หากไม่ได้เปิด MySQL (XAMPP):** เซิร์ฟเวอร์จะสลับไปใช้ฐานข้อมูลจำลอง (**In-Memory SQL Database**) ที่มีข้อมูลตรงกับ `secX_grY_database.sql` ทุกตารางโดยอัตโนมัติ ทำให้ผู้ตรวจสามารถสั่ง `npm start` แล้วเปิด **Postman** ยิงทดสอบ API ทุกเส้น (`GET`, `POST`, `PUT`, `DELETE`) ได้ทันที 100% โดยไม่เกิด Error!
 
 ---
 
 ## 📁 โครงสร้างโปรเจกต์ตามข้อกำหนดการส่งงาน (Project Structure)
 
-> **หมายเหตุสำคัญตามใบงานหน้า 5:** ทั้งโฟลเดอร์ `sec2_gr7_fe_src` และ `sec2_gr7_ws_src` ตั้งค่า `.gitignore` ให้ไม่รวมโฟลเดอร์ `node_modules` เรียบร้อยแล้ว
+> **หมายเหตุสำคัญตามใบงานหน้า 5:** ทั้งโฟลเดอร์ `secX_grY_fe_src` และ `secX_grY_ws_src` ตั้งค่า `.gitignore` ให้ไม่รวมโฟลเดอร์ `node_modules` เรียบร้อยแล้ว
 
 ```text
 unimart-web/
-├── sec2_gr7_fe_src/                     # [งานที่ 1 & งานที่ 4] Front-end Server & Source Code (Port 3100)
+├── secX_grY_fe_src/                     # [งานที่ 1 & งานที่ 4] Front-end Server & Source Code (Port 3100)
 │   ├── server.js                        # Front-end Express Server (express.Router + res.sendFile)
 │   ├── app.js                           # Alias Entrypoint สำหรับรัน node app.js / nodemon app.js
 │   ├── package.json                     # รายการ Dependencies และ Script (npm start) ของฝั่ง Front-end
@@ -195,9 +194,9 @@ unimart-web/
 │   │   └── products.js                  # Shared Data Model สินค้าและตัวกรอง
 │   └── assets/images/                   # รูปภาพ แบนเนอร์ ไอคอน และมาสคอตจาก Figma
 │
-├── sec2_gr7_database.sql                # [งานที่ 2] สคริปต์ฐานข้อมูล MySQL (Tables & Seed Data)
+├── secX_grY_database.sql                # [งานที่ 2] สคริปต์ฐานข้อมูล MySQL (Tables & Seed Data)
 │
-├── sec2_gr7_ws_src/                     # [งานที่ 3] Web Service Server (RESTful API & MySQL - Port 3000)
+├── secX_grY_ws_src/                     # [งานที่ 3] Web Service Server (RESTful API & MySQL - Port 3000)
 │   ├── config/
 │   │   └── db.js                        # MySQL Connection Pool + Auto-DB Import + In-Memory SQL Fallback
 │   ├── routes/
@@ -218,178 +217,22 @@ unimart-web/
 
 ---
 
-## ⚙️ คู่มือการตั้งค่าตัวแปรสภาพแวดล้อม (.env Configuration Guide)
+## 🗄️ การนำเข้าฐานข้อมูล MySQL ด้วยตนเอง (ตัวเลือกเสริมสำหรับงานที่ 2)
 
-ไฟล์ `.env` (Environment Variables) ใช้สำหรับเก็บการตั้งค่าสำคัญของระบบ เช่น หมายเลขพอร์ต, การเชื่อมต่อฐานข้อมูล และ URL ที่ไม่ควรฝังไว้ในโค้ดโดยตรง เพื่อให้สามารถปรับแต่งค่าได้ง่ายตามสภาพแวดล้อมของแต่ละเครื่อง
+> **💡 ระบบ Auto-DB & In-Memory Fallback:** หากเปิดรัน Web Service โดยเปิด XAMPP MySQL ไว้ ระบบจะสร้างฐานข้อมูลและนำเข้าไฟล์ SQL นี้ให้อัตโนมัติ หรือถ้าไม่ได้เปิด MySQL ระบบจะสลับไปใช้ In-Memory Database ให้อัตโนมัติเช่นกัน  
+> แต่หากต้องการนำเข้าไฟล์ `secX_grY_database.sql` ผ่าน **phpMyAdmin** หรือ **MySQL CLI** ด้วยตนเอง สามารถทำได้ดังนี้:
 
-โปรเจกต์นี้มีไฟล์ `.env` แยกอิสระสำหรับแต่ละเซิร์ฟเวอร์ดังนี้:
-
----
-
-### 🌐 1. การตั้งค่าฝั่ง Front-end Server (`sec2_gr7_fe_src/.env`)
-
-ไฟล์นี้ใช้กำหนดพอร์ตของเซิร์ฟเวอร์หน้าบ้าน และที่อยู่ของ Web Service API ที่หน้าบ้านจะเรียกใช้:
-
-```env
-# ==============================================================================
-# Front-end Server Configuration (.env)
-# ==============================================================================
-
-# พอร์ตสำหรับรัน Front-end Web Server (ค่าเริ่มต้นคือ 3100 ตามข้อกำหนด CORS)
-PORT=3100
-
-# ที่อยู่ Web Service API URL ของฝั่งหลังบ้านที่ Front-end จะส่งคำขอ (Fetch) ไปหา
-API_BASE_URL=http://localhost:3000/api
-```
-
-> **คำอธิบายตัวแปร:**
-> - `PORT`: กำหนดหมายเลขพอร์ตของหน้าเว็บ (ค่าเริ่มต้น `3100`) หากพอร์ต 3100 ชนกับโปรแกรมอื่น สามารถเปลี่ยนเป็นพอร์ตอื่น เช่น `3200` ได้
-> - `API_BASE_URL`: URL ปลายทางของ Web Service API เพื่อให้สคริปต์หน้าบ้าน (`js/api.js`) รู้ว่าจะต้องยิงดึงข้อมูลสินค้าหรือส่งข้อมูลล็อกอินไปที่พอร์ตใด
-
----
-
-### 💻 2. การตั้งค่าฝั่ง Web Service Server (`sec2_gr7_ws_src/.env`)
-
-ไฟล์นี้ใช้กำหนดการเชื่อมต่อไปยังฐานข้อมูล MySQL และพอร์ตของหลังบ้าน:
-
-```env
-# ==============================================================================
-# Web Service Server Configuration (.env)
-# ==============================================================================
-
-# พอร์ตสำหรับรัน Web Service RESTful API (ค่าเริ่มต้นคือ 3000)
-PORT=3000
-NODE_ENV=development
-
-# การเชื่อมต่อฐานข้อมูล MySQL Database
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=unimart_db
-```
-
-> **คำอธิบายตัวแปร:**
-> - `PORT`: หมายเลขพอร์ตของหลังบ้าน (ค่าเริ่มต้น `3000`)
-> - `NODE_ENV`: โหมดการทำงาน (ค่าเริ่มต้น `development`)
-> - `DB_HOST`: ที่อยู่เซิร์ฟเวอร์ MySQL (ปกติคือ `localhost` หรือ `127.0.0.1`)
-> - `DB_PORT`: หมายเลขพอร์ตของ MySQL (พอร์ตมาตรฐานคือ `3306`)
-> - `DB_USER`: ชื่อผู้ใช้ฐานข้อมูล (ค่าเริ่มต้นของ XAMPP คือ `root` หรือใส่ชื่อ User ที่สร้างขึ้นใหม่)
-> - `DB_PASSWORD`: รหัสผ่านฐานข้อมูล (ค่าเริ่มต้นของ XAMPP มักเป็น **ค่าว่าง** ให้ปล่อยว่างไว้ แต่หากมีการตั้งรหัสผ่านให้ระบุลงไป เช่น `DB_PASSWORD=pass1234`)
-> - `DB_NAME`: ชื่อฐานข้อมูล (ค่าเริ่มต้น `unimart_db`)
-
-> 💡 **หมายเหตุเกี่ยวกับการคัดลอกไฟล์:**  
-> หากในโฟลเดอร์ยังไม่มีไฟล์ `.env` (เนื่องจากถูกซ่อนหรือยังไม่ได้สร้าง) สามารถคัดลอกจากไฟล์ต้นแบบ `.env.example` ได้ด้วยคำสั่ง:
-> ```bash
-> cd sec2_gr7_ws_src
-> cp .env.example .env    # บน Mac / Linux
-> copy .env.example .env  # บน Windows Command Prompt / PowerShell
-> ```
-
----
-
-## 🗄️ การจัดการฐานข้อมูล MySQL และการตั้งค่า User (MySQL Setup & User Management)
-
-โปรเจกต์นี้มีระบบ **Smart In-Memory Fallback** ในตัว ทำให้สามารถรันได้ทันทีแม้ไม่ได้เปิดหรือติดตั้ง MySQL แต่หากต้องการต่อใช้งานกับ **ฐานข้อมูล MySQL จริง (เช่น ผ่าน XAMPP)** สามารถจัดการได้ตามคำแนะนำด้านล่างนี้:
-
----
-
-### 📥 1. การนำเข้าฐานข้อมูล (Import Database)
-
-ระบบหลังบ้านถูกออกแบบมาให้ **สร้างฐานข้อมูล `unimart_db` และนำเข้าไฟล์ `sec2_gr7_database.sql` ให้อัตโนมัติทันทีที่สั่ง `npm start`** หาก MySQL เปิดใช้งานอยู่  
-แต่หากต้องการนำเข้าด้วยตนเอง สามารถทำได้ 2 วิธี:
-
-#### 🔹 วิธีที่ 1: นำเข้าผ่าน phpMyAdmin (GUI)
-1. เปิดเบราว์เซอร์ไปที่: **`http://localhost/phpmyadmin`**
-2. คลิกที่แท็บ **"Import" (นำเข้า)** บนแถบเมนูด้านบน
-3. คลิกปุ่ม **"Choose File" (เลือกไฟล์)** แล้วเลือกไฟล์ [sec2_gr7_database.sql](file:///C:/Users/thana/.gemini/antigravity/scratch/unimart-web/sec2_gr7_database.sql)
-4. เลื่อนลงมาล่างสุดแล้วคลิกปุ่ม **"Import" (นำเข้า)**
-5. ระบบจะสร้างฐานข้อมูล `unimart_db` พร้อมตารางและข้อมูลจำลองครบถ้วน
-
-#### 🔹 วิธีที่ 2: นำเข้าผ่าน Command Line / Terminal
 ```bash
-mysql -u root -p < sec2_gr7_database.sql
-```
-*(หากไม่มีรหัสผ่าน ให้กด Enter ข้ามไปได้ทันที)*
-
----
-
-### 👤 2. การสร้างและตั้งค่า User ใน MySQL (User Management & Privileges)
-
-ในกรณีที่ต้องการสร้าง User บัญชีใหม่สำหรับโปรเจกต์ หรือต้องการกำหนดสิทธิ์ (Privileges) ให้กับฐานข้อมูล มีขั้นตอนดังนี้:
-
-#### 🔹 วิธีที่ 1: ตั้งค่าผ่าน phpMyAdmin (แนะนำ - ทำตามได้ง่ายที่สุด)
-1. เปิดเบราว์เซอร์ไปที่: **`http://localhost/phpmyadmin`**
-2. คลิกที่แท็บ **"User accounts" (บัญชีผู้ใช้)** บนแถบเมนูด้านบน
-3. เลื่อนลงมาคลิกที่ปุ่ม/ลิงก์ **"Add user account" (เพิ่มบัญชีผู้ใช้)**
-4. ในส่วน **Login Information (ข้อมูลการเข้าสู่ระบบ):**
-   - **User name (ชื่อผู้ใช้):** เลือก *Use text field* แล้วพิมพ์ชื่อที่ต้องการ เช่น `unimart_user` หรือ `itds_admin`
-   - **Host name (ชื่อโฮสต์):** เลือก *Local* หรือพิมพ์ `localhost`
-   - **Password (รหัสผ่าน):** พิมพ์รหัสผ่านที่ต้องการ เช่น `pass1234`
-   - **Re-type (พิมพ์ซ้ำ):** พิมพ์รหัสผ่านเดิมอีกครั้งเพื่อยืนยัน
-5. ในส่วน **Database for user account (ฐานข้อมูลสำหรับบัญชีผู้ใช้):**
-   - สามารถเลือก *Grant all privileges on wildcard name (username_%)* หรือข้ามไปข้อ 6
-6. ในส่วน **Global privileges (สิทธิ์ส่วนกลาง):**
-   - ให้คลิกติ๊กถูกที่ **"Check all" (เลือกทั้งหมด)** เพื่อมอบสิทธิ์จัดการข้อมูล (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) และสิทธิ์จัดการโครงสร้าง (`CREATE`, `ALTER`, `INDEX`) ครบทุกด้าน
-7. เลื่อนลงมาที่มุมล่างขวา แล้วคลิกปุ่ม **"Go" (ลงมือ)**
-8. **ขั้นตอนสำคัญ ⚠️:** เมื่อสร้าง User สำเร็จแล้ว ให้เปิดไฟล์ `sec2_gr7_ws_src/.env` แล้วแก้ไขค่าให้ตรงกับที่สร้างไว้:
-   ```env
-   DB_USER=unimart_user
-   DB_PASSWORD=pass1234
-   ```
-
----
-
-#### 🔹 วิธีที่ 2: ตั้งค่าผ่านคำสั่ง SQL (SQL Query / MySQL CLI)
-สามารถเปิดแท็บ **SQL** ใน phpMyAdmin หรือใช้ MySQL Command Line แล้วรันชุดคำสั่งด้านล่างนี้:
-
-```sql
--- 1. สร้างผู้ใช้ใหม่ (เปลี่ยน unimart_user และ pass1234 ตามที่ต้องการ)
-CREATE USER 'unimart_user'@'localhost' IDENTIFIED BY 'pass1234';
-
--- 2. มอบสิทธิ์การจัดการทุกอย่างบนฐานข้อมูล unimart_db ให้กับผู้ใช้คนนี้
-GRANT ALL PRIVILEGES ON unimart_db.* TO 'unimart_user'@'localhost';
-
--- 3. รีเฟรชสิทธิ์ของระบบให้มีผลบังคับใช้ทันที
-FLUSH PRIVILEGES;
+mysql -u root -p < secX_grY_database.sql
 ```
 
----
-
-#### 🔹 วิธีที่ 3: กรณีต้องการเปลี่ยนหรือตั้งรหัสผ่านให้ผู้ใช้ `root`
-หากต้องการใช้ผู้ใช้หลัก `root` แต่ต้องการตั้งรหัสผ่านเพิ่มเติม:
-```sql
--- ตั้งรหัสผ่านใหม่ให้กับ root บน localhost
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'my_secret_password';
-FLUSH PRIVILEGES;
-```
-จากนั้นอัปเดตไฟล์ `sec2_gr7_ws_src/.env`:
-```env
-DB_USER=root
-DB_PASSWORD=my_secret_password
-```
-
----
-
-### 🔄 3. สรุปความสอดคล้องระหว่าง MySQL และ `.env`
-
-ทุกครั้งที่มีการเปลี่ยนแปลงข้อมูลเกี่ยวกับ MySQL ให้ตรวจสอบว่าค่าใน `sec2_gr7_ws_src/.env` ตรงกันเสมอ:
-
-| ค่าใน MySQL | ตัวแปรใน `.env` | ตัวอย่างค่า | คำอธิบาย |
-| :--- | :--- | :--- | :--- |
-| Database Host | `DB_HOST` | `localhost` | เครื่องที่รันฐานข้อมูล |
-| Port | `DB_PORT` | `3306` | พอร์ตมาตรฐานของ MySQL |
-| User Account | `DB_USER` | `root` หรือ `unimart_user` | ชื่อบัญชีผู้ใช้ที่สร้างใน MySQL |
-| Password | `DB_PASSWORD` | *(ค่าว่าง)* หรือ `pass1234` | รหัสผ่านของ User นั้น ๆ |
-| Database Name | `DB_NAME` | `unimart_db` | ชื่อฐานข้อมูลของโปรเจกต์ |
-
-เมื่อบันทึกไฟล์ `.env` เรียบร้อยแล้ว ให้สั่ง `npm start` ใน Terminal ของ `sec2_gr7_ws_src` ระบบจะเชื่อมต่อกับ MySQL ด้วยสิทธิ์และผู้ใช้ใหม่ได้ทันที!
+*(สคริปต์จะสร้างฐานข้อมูล `unimart_db` พร้อมตาราง `users`, `login_logs`, `categories`, `products`, `orders`, `order_items` และข้อมูลเริ่มต้นครบถ้วน)*
 
 ---
 
 ## 📡 ตัวอย่างการทดสอบ Web Services ด้วย Postman (Postman Testing Examples)
 
-> ทุกไฟล์ในโฟลเดอร์ `sec2_gr7_ws_src/routes/` มี **Comment Header ตัวอย่างการทดสอบใน Postman อย่างน้อย 2 ตัวอย่าง** กำกับอยู่ด้านบนของโค้ดอย่างครบถ้วนตามเกณฑ์ของอาจารย์ผู้สอน  
+> ทุกไฟล์ในโฟลเดอร์ `secX_grY_ws_src/routes/` มี **Comment Header ตัวอย่างการทดสอบใน Postman อย่างน้อย 2 ตัวอย่าง** กำกับอยู่ด้านบนของโค้ดอย่างครบถ้วนตามเกณฑ์ของอาจารย์ผู้สอน  
 > *(สำหรับคำขอแบบ `POST` และ `PUT` ให้ตั้งค่าใน Postman ที่แท็บ **Body** &rarr; เลือก **raw** &rarr; เลือกชนิดเป็น **JSON**)*
 
 ---
@@ -721,9 +564,9 @@ POST http://localhost:3000/api/users
 
 ## 🧪 การนำเข้าไฟล์ Collection เพื่อทดสอบใน Postman ทันทีใน 1 คลิก
 
-สามารถนำเข้าไฟล์ **`sec2_gr7_ws_src/Unimart_API.postman_collection.json`** เข้าสู่โปรแกรม Postman เพื่อทดสอบ API ทุก Endpoint ได้ทันที:
+สามารถนำเข้าไฟล์ **`secX_grY_ws_src/Unimart_API.postman_collection.json`** เข้าสู่โปรแกรม Postman เพื่อทดสอบ API ทุก Endpoint ได้ทันที:
 
-1. รันเซิร์ฟเวอร์ด้วยคำสั่ง `cd sec2_gr7_ws_src && npm start`
+1. รันเซิร์ฟเวอร์ด้วยคำสั่ง `cd secX_grY_ws_src && npm start`
 2. เปิดโปรแกรม **Postman** แล้วกดปุ่ม **Import**
-3. เลือกไฟล์ `sec2_gr7_ws_src/Unimart_API.postman_collection.json`
+3. เลือกไฟล์ `secX_grY_ws_src/Unimart_API.postman_collection.json`
 4. กด **Send** ทดสอบการทำงานของ CRUD, Multi-Criteria Search, Filter, Restock และ Authentication ได้ครบทุกเส้นทันที!
